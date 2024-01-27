@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CreateRootCert": {
+      "commandName": "Project",
+      "commandLineArgs": "--Subject2 \"CN=Test AG\" --Name \"test\""
+    }
+  }
+}
