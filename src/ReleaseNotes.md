@@ -1,8 +1,8 @@
-## 0.11.1
-fixes Visual Studio 17.4 prerequisite
+## 1.0.0
+Initial release
 
 ### Features
-- none
+- Added Code Signing Certificate Tools
 
 ### Bug Fixes
-- fixed VS prerequisites
+- none
