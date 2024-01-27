@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "File": {
+      "commandName": "Project",
+      "commandLineArgs": "--Subject \"CN=My Cert\" --Name \"cert\" --SignerPfx root.pfx"
+    },
+    "Store": {
+      "commandName": "Project",
+      "commandLineArgs": "--Subject \"CN=My Cert\" --Name \"cert\" --SignerThumbprint 6E027CD9AB1030A4701466BD58B01721BFA87D0F"
+    }
+  }
+}
