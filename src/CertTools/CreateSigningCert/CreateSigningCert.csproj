@@ -13,6 +13,7 @@
     <Authors>Michael Koster</Authors>
     <Title>Code Signing Certificate Creation Tool</Title>
     <Product>Crypto Tools</Product>
+    <VersionPrefix>1.1.0</VersionPrefix>
     <TrimMode>partial</TrimMode>
 
   </PropertyGroup>

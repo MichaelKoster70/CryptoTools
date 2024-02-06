@@ -10,7 +10,7 @@
     },
     "Store": {
       "commandName": "Project",
-      "commandLineArgs": "--Subject \"CN=My Cert\" --Name \"cert\" --SignerThumbprint 6E027CD9AB1030A4701466BD58B01721BFA87D0F"
+      "commandLineArgs": "--Subject \"CN=My Cert\" --Name \"cert\" --SignerThumbprint D1090EA6E52B4324B45831949104BBC0CB72F964 --ExpireDays 30"
     }
   }
 }
