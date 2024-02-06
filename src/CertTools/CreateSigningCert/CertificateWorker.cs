@@ -5,6 +5,7 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
+using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
@@ -32,10 +33,11 @@ internal class CertificateWorker
    /// <param name="fileName">The name of the PFX file.</param>
    /// <param name="password">The password to protect the private key</param>
    /// <param name="signerThumbprint">Cert thumbprint identifying the root cert to load.</param>
-   public static void CreateSigningCertificate(string subjectName, string fileName, string password, string signerThumbprint)
+   /// <param name="expireDays">The number of days until the certificate expires.</param>
+   public static void CreateSigningCertificate(string subjectName, string fileName, string password, string signerThumbprint, int expireDays)
    {
       using var rootCert = LoadeSelfSignedRootCertificateFromStore(signerThumbprint);
-      using var cert = CreateSigningCertificate(subjectName, rootCert);
+      using var cert = CreateSigningCertificate(subjectName, rootCert, expireDays);
 
       // Export the certificate
       var certBytes = cert.Export(X509ContentType.Pfx, password);
@@ -50,17 +52,18 @@ internal class CertificateWorker
    /// <param name="password">The password to protect the private key.</param>
    /// <param name="signerPfx">The PFX file holding the root cert.</param>
    /// <param name="signerPassword">The passwordprotec ting the root cert private key</param>
-   public static void CreateSigningCertificate(string subjectName, string fileName, string password, string signerPfx, string signerPassword)
+   /// <param name="expireDays">The number of days until the certificate expires.</param>
+   public static void CreateSigningCertificate(string subjectName, string fileName, string password, string signerPfx, string signerPassword, int expireDays)
    {
       using var rootCert = LoadeSelfSignedRootCertificateFromFile(signerPfx, signerPassword);
-      using var cert = CreateSigningCertificate(subjectName, rootCert);
+      using var cert = CreateSigningCertificate(subjectName, rootCert, expireDays);
 
       // Export the certificate
       var certBytes = cert.Export(X509ContentType.Pfx, password);
       File.WriteAllBytes($"{fileName}.pfx", certBytes);
    }
 
-   private static X509Certificate2 CreateSigningCertificate(string subjectName, X509Certificate2 rootCert)
+   private static X509Certificate2 CreateSigningCertificate(string subjectName, X509Certificate2 rootCert, int expireDays)
    {
       var cspParameter = new CspParameters();
       cspParameter = new CspParameters(cspParameter.ProviderType, cspParameter.ProviderName, Guid.NewGuid().ToString());
@@ -82,7 +85,8 @@ internal class CertificateWorker
       };
 
       // Create the certificate
-      using var cert = csr.Create(rootCert, DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddYears(1), serialNumber);
+      var utcNow = DateTimeOffset.UtcNow;
+      using var cert = csr.Create(rootCert, utcNow.AddDays(-1), utcNow.AddDays(expireDays), serialNumber);
 
       return cert.CopyWithPrivateKey(keyPair);
    }

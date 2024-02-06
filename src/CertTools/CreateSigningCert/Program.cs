@@ -42,7 +42,7 @@ internal class Program
       {
          if (options.SignerThumbprint != null)
          {
-            CertificateWorker.CreateSigningCertificate(options.Subject, options.Name, signingPassword, options.SignerThumbprint);
+            CertificateWorker.CreateSigningCertificate(options.Subject, options.Name, signingPassword, options.SignerThumbprint, options.ExpireDays);
          }
          else
          {
@@ -55,7 +55,7 @@ internal class Program
                return;
             }
 
-            CertificateWorker.CreateSigningCertificate(options.Subject, options.Name, signingPassword, options.SignerPfx, rootPassword);
+            CertificateWorker.CreateSigningCertificate(options.Subject, options.Name, signingPassword, options.SignerPfx, rootPassword, options.ExpireDays);
          }
 
          Console.WriteLine($"Certificate created: filename={options.Name}.pfx");
