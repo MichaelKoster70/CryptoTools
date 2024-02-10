@@ -45,6 +45,27 @@ Where:
 * SignerPfx: the PFX file holding the root CA certificate used to sign the code signing certificate.
 * SignerPassword: the password to open the PFX file holding the root CA certificate used to sign the code signing certificate.
 
+### AzureCreateRootCert
+```
+AzureCreateRootCert --Subject <subject> --Name <name> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --ClientSecret <clientSecret>
+```
+or
+```
+AzureCreateRootCert --Subject <subject> --Name <name> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
+```
+
+Where:
+* Subject: The subject of the certificate in form CN=\<subject\>.
+* Name: The name of the certificate file (without extension).
+* KeyVaultUri: The URI of the Azure Key Vault to store the certificate (like https://some-name.vault.azure.net/).
+* TenantId: The Entra ID tenant ID.
+* ClientId: The client ID of the service principal used to access the Key Vault.
+* ClientSecret: The client secret of the service principal used to access the Key Vault.
+* Interactive: If set, the tool will use interactive login to Entra ID to access the Key Vault.
+
+Required permissions on Azure KeyVault:
+- Import Certificate (Microsoft.KeyVault/vaults/certificates/import/action)
+
 ## Getting Started
 
 ### Desktop PC prerequisites

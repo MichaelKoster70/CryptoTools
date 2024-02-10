@@ -8,7 +8,7 @@ This folder contains custom role templates for Azure Key Vault.
 | `SignWithKeyVaultCertificate.json` | This template holds the required permissions to sign with a Key Vault certificate. |
 | `ImportKeyVaultCertificate.json` | This template holds the required permissions to import a certificate to Key Vault. |
 
-## How to use the policy templates
+## How to use the role templates
   - Open the policy file in a text editor, change the `assignableScopes`to the scope you want the role to be available
  - Use Azure PowerShell `Set-AzRoleDefinition`
  - Use Azure CLI `az role definition create`
