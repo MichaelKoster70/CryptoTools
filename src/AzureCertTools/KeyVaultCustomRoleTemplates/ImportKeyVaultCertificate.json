@@ -1,0 +1,13 @@
+{
+  "Name": "Key Vault Import Certificate",
+  "Description": "Import an x.509 certificate to KeyVault",
+    "assignableScopes": [
+      "/subscriptions/{subscription}"
+  ],
+  "Actions": [],
+  "NoActions": [],
+  "DataActions": [
+    "Microsoft.KeyVault/vaults/certificates/import/action"
+  ],
+  "NotDataActions": []
+}

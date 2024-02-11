@@ -1,0 +1,16 @@
+{
+  "Name": "Key Vault Create and Sign Certificate",
+  "IsCustom": true,
+  "Description": "Perform import and key signing operations with a KeyVault based x.509 certificate",
+  "AssignableScopes": [
+      "/subscriptions/{subscription}"
+  ],
+  "Actions": [],
+  "NotActions": [],
+  "DataActions": [
+    "Microsoft.KeyVault/vaults/keys/sign/action",
+    "Microsoft.KeyVault/vaults/certificates/read",
+    "Microsoft.KeyVault/vaults/certificates/create/action"
+  ],
+   "NotDataActions": []
+}

@@ -6,18 +6,21 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <RootNamespace>CertTools.CreateRootCert</RootNamespace>
+    <RootNamespace>CertTools.AzureCreateSigningCert</RootNamespace>
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
     <Authors>Michael Koster</Authors>
-    <Title>Self Signed Root Certificate Creation Tool</Title>
+    <Title>Code Signing Certificate Creation Tool for Azure Key Vault</Title>
     <Product>Crypto Tools</Product>
     <VersionPrefix>1.0.0</VersionPrefix>
     <TrimMode>partial</TrimMode>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.10.4" />
+    <PackageReference Include="Azure.Security.KeyVault.Certificates" Version="4.5.1" />
+    <PackageReference Include="Azure.Security.KeyVault.Keys" Version="4.5.0" />
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
   </ItemGroup>
 
