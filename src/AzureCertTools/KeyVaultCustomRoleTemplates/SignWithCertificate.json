@@ -1,0 +1,14 @@
+{
+  "Name": "Key Vault Sign with Certificate",
+  "Description": "Perform key signing operations with a Key Vault based x.509 certificate",
+  "AssignableScopes": [
+      "/subscriptions/{subscription}"
+  ],
+  "Actions": [],
+  "NotActions": [],
+  "DataActions": [
+    "Microsoft.KeyVault/vaults/keys/sign/action",
+    "Microsoft.KeyVault/vaults/certificates/read"
+  ],
+  "NotDataActions": []
+}

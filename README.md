@@ -10,6 +10,8 @@
 The current release supports the following features:
 * CreateRootCert: Tool to create an X.509 root CA certificate
 * CreateSigningCert: Tool to create an X.509 code signing certificate signed by the root CA certificate created withe the above tools
+* AzureCreateRootCert: Tool to create an X.509 root CA certificate in Azure Key Vault
+* AzureCreateSigningCert: Tool to create an X.509 code signing certificate signed by the root CA certificate in Azure Key Vault
 
 ## Usage
 
@@ -56,7 +58,7 @@ AzureCreateRootCert --Subject <subject> --Name <name> --KeyVaultUri <uri> --Tena
 
 Where:
 * Subject: The subject of the certificate in form CN=\<subject\>.
-* Name: The name of the certificate file (without extension).
+* Name: The name of the certificate in Azure Key Vault.
 * KeyVaultUri: The URI of the Azure Key Vault to store the certificate (like https://some-name.vault.azure.net/).
 * TenantId: The Entra ID tenant ID.
 * ClientId: The client ID of the service principal used to access the Key Vault.
@@ -65,6 +67,30 @@ Where:
 
 Required permissions on Azure KeyVault:
 - Import Certificate (Microsoft.KeyVault/vaults/certificates/import/action)
+
+### AzureCreateSigningCert
+```
+AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --ClientSecret <clientSecret>
+```
+or
+```
+AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
+```
+
+Where:
+* Subject: The subject of the certificate in form CN=\<subject\>.
+* CertificateName: The name of the certificate in Azure Key Vault.
+* SignerCertificateName: The name of the root CA certficate int Azure Key Vault used for signing the leaf certificate.
+* KeyVaultUri: The URI of the Azure Key Vault to store the certificate (like https://some-name.vault.azure.net/).
+* TenantId: The Entra ID tenant ID.
+* ClientId: The client ID of the service principal used to access the Key Vault.
+* ClientSecret: The client secret of the service principal used to access the Key Vault.
+* Interactive: If set, the tool will use interactive login to Entra ID to access the Key Vault.
+
+Required permissions on Azure KeyVault:
+- Sign with Key (Microsoft.KeyVault/vaults/keys/sign/action)
+- Read Certificate Properties  (Microsoft.KeyVault/vaults/certificates/read)
+- Create Certificate (Microsoft.KeyVault/vaults/certificates/create/action)
 
 ## Getting Started
 
@@ -80,6 +106,6 @@ You need a Windows based PC with:
 1. Clone the repository
 1. Open the solution in Visual Studio 2022 in [src](src) folder
 1. Build the solution
- 
+
 ## License
 The tools are licensed under the [MIT license](LICENSE).

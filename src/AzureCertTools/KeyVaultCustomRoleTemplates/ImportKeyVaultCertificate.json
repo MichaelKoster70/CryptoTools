@@ -1,21 +1,13 @@
 {
-  "id": "/MichaelKoster/roleDefinitions/31CD023E-C319-4BCA-B2F9-654337D87792",
-
-  "properties": {
-    "roleName": "Import KeyVault Certificate",
-    "description": "Import an x.509 certificate to KeyVault",
+  "Name": "Key Vault Import Certificate",
+  "Description": "Import an x.509 certificate to KeyVault",
     "assignableScopes": [
       "/subscriptions/{subscription}"
-    ],
-    "permissions": [
-      {
-        "actions": [],
-        "notActions": [],
-        "dataActions": [
-          "Microsoft.KeyVault/vaults/certificates/import/action"
-        ],
-        "notDataActions": []
-      }
-    ]
-  }
+  ],
+  "Actions": [],
+  "NoActions": [],
+  "DataActions": [
+    "Microsoft.KeyVault/vaults/certificates/import/action"
+  ],
+  "NotDataActions": []
 }

@@ -11,8 +11,9 @@
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
     <Authors>Michael Koster</Authors>
-    <Title>Self Signed Root Certificate Creation Tool</Title>
+    <Title>Self Signed Root Certificate Creation Tool for Azure KeyVault</Title>
     <Product>Crypto Tools</Product>
+    <VersionPrefix>1.0.0</VersionPrefix>
     <TrimMode>partial</TrimMode>
   </PropertyGroup>
 

@@ -397,3 +397,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /src/AzureCertTools/AzureCreateRootCert/Properties/launchSettings.json
+/src/AzureCertTools/AzureCreateSigningCert/Properties/launchSettings.json
