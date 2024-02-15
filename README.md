@@ -4,7 +4,6 @@
 .NET 8 based crypto tools for
 * Creating x.509 based code signing certificates for develoopment and testing purposes
 
-
 ## Overview
 
 The current release supports the following features:
@@ -66,7 +65,9 @@ Where:
 * Interactive: If set, the tool will use interactive login to Entra ID to access the Key Vault.
 
 Required permissions on Azure KeyVault:
-- Import Certificate (Microsoft.KeyVault/vaults/certificates/import/action)
+- Sign with Key (Microsoft.KeyVault/vaults/keys/sign/action)
+- Read Certificate Properties  (Microsoft.KeyVault/vaults/certificates/read)
+- Create Certificate (Microsoft.KeyVault/vaults/certificates/create/action)
 
 ### AzureCreateSigningCert
 ```
