@@ -22,5 +22,9 @@
     <PackageReference Include="Azure.Security.KeyVault.Certificates" Version="4.5.1" />
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AzureCertCore\AzureCertCore.csproj" />
+  </ItemGroup>
   
 </Project>

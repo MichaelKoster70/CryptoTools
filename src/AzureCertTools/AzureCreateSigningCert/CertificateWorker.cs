@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Azure.Core;
 using Azure.Security.KeyVault.Certificates;
+using CertTools.AzureCertCore;
 
 namespace CertTools.AzureCreateSigningCert;
 
@@ -17,9 +18,6 @@ namespace CertTools.AzureCreateSigningCert;
 /// </summary>
 internal static class CertificateWorker
 {
-   /// <summary>RSA key size</summary>
-   private const int RsaKeySize = 4096;
-
    /// <summary>Extended Key Usage OID for Code Signing</summary>
    private const string CodeSigningEnhancedKeyUsageOid = "1.3.6.1.5.5.7.3.3";
 
@@ -45,17 +43,10 @@ internal static class CertificateWorker
       var csr = await KeyVaultCreateSigningCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonth);
 
       // Sign the CSR
-      var cert = SignCertificateRequest(csr, signerName, signerSignaturGenerator, expireMonth);
+      var cert = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signerSignaturGenerator, expireMonth);
 
       // and upload it to Key Vault
-      await KeyVaultUploadCertificateAsync(certificateName, cert, client);
-   }
-
-   private static async Task KeyVaultUploadCertificateAsync(string certificateName, X509Certificate2 cert, CertificateClient client)
-   {
-      var x509Certificate = cert.Export(X509ContentType.Cert);
-      var operation = new MergeCertificateOptions(certificateName, [x509Certificate]);
-      var result = await client.MergeCertificateAsync(operation);
+      await CertificateWorkerCore.KeyVaultMergeCertificateAsync(certificateName, cert, client);
    }
 
    private static async Task<(X500DistinguishedName, X509SignatureGenerator)> KeyVaultGetSignerCertificateAsync(string certificateName, CertificateClient client, TokenCredential tokenCredential)
@@ -72,7 +63,7 @@ internal static class CertificateWorker
       var certificatePolicy = new CertificatePolicy(WellKnownIssuerNames.Unknown, subjectNameValue)
       {
          KeyType = CertificateKeyType.Rsa,
-         KeySize = RsaKeySize,
+         KeySize = CertificateWorkerCore.RsaKeySize,
          ReuseKey = true,
          ValidityInMonths = expireMonth,
       };
@@ -87,27 +78,13 @@ internal static class CertificateWorker
       var certOperationCertSigningRequest = certificateOperation.Properties.Csr;
 
       // Stage 4: Get the .NET CSR object
-      var certSigningReques = CertificateRequest.LoadSigningRequest(pkcs10: certOperationCertSigningRequest, 
+      var certSigningRequest = CertificateRequest.LoadSigningRequest(pkcs10: certOperationCertSigningRequest, 
          signerHashAlgorithm: HashAlgorithmName.SHA384, signerSignaturePadding: RSASignaturePadding.Pkcs1);
 
-      certSigningReques.CertificateExtensions.Add(new X509BasicConstraintsExtension(false, false, 0, true));
-      certSigningReques.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature, true));
-      certSigningReques.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(CodeSigningEnhancedKeyUsageOid, CodeSigningEnhancedKeyUsageOidFriendlyName)], true));
+      certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(false, false, 0, true));
+      certSigningRequest.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature, true));
+      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(CodeSigningEnhancedKeyUsageOid, CodeSigningEnhancedKeyUsageOidFriendlyName)], true));
 
-      return certSigningReques;
-   }
-
-   private static X509Certificate2 SignCertificateRequest(CertificateRequest csr, X500DistinguishedName signerName, X509SignatureGenerator signerSignature, int expireMonth)
-   {
-      // Create the Cert serial numbert
-      byte[] serialNumber = new byte[9];
-      using (RandomNumberGenerator randomNumberGenerator = RandomNumberGenerator.Create())
-      {
-         randomNumberGenerator.GetBytes(serialNumber);
-      };
-
-      // Create the certificate
-      var utcNow = DateTimeOffset.UtcNow;
-      return csr.Create(signerName, signerSignature, utcNow.AddDays(-1), utcNow.AddMonths(expireMonth), serialNumber);
+      return certSigningRequest;
    }
 }
