@@ -10,7 +10,7 @@ using System.Security.Cryptography.X509Certificates;
 using Azure.Core;
 using Azure.Security.KeyVault.Keys.Cryptography;
 
-namespace CertTools.AzureCreateSigningCert;
+namespace CertTools.AzureCertCore;
 
 /// <summary>
 /// The X509 signature generator to sign a digest with a KeyVault key.
@@ -18,7 +18,7 @@ namespace CertTools.AzureCreateSigningCert;
 /// <param name="credential">The credetials to use to authenticate against KeyVault.</param>
 /// <param name="signingKey">The KeyVault signing key</param>
 /// <param name="issuerCertificate">The issuer certificate used for signing</param>
-internal class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri signingKey, PublicKey signingPublicKey) : X509SignatureGenerator
+public class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri signingKey, PublicKey signingPublicKey) : X509SignatureGenerator
 {
    private readonly TokenCredential credential = credential;
    private readonly Uri signingKey = signingKey;
@@ -57,7 +57,6 @@ internal class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri si
          return signature;
       }
    }
-
 
    /// <summary>
    /// Produces the certificate's public key that has the correctly encoded Oid, public key parameters and public key values.
