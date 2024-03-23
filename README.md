@@ -17,25 +17,26 @@ The current release supports the following features:
 ### CreateRootCert
 
 ```
-CreateRootCert --Subject <subject> --Name <name> --Password <password>
+CreateRootCert --Subject <subject> --Name <name> --Password <password> --ExpiryMonths <months>
 ```
 Where:
 * Subject: The subject of the certificate in form CN=\<subject\>.
 * Name: The name of the certificate file (without extension).
 * Password: The password to protect the private key contained in the certificate.
+* ExpiryMonths: The number of months the certificate is valid, default is 240.
 
 The tool will create a certificate file \<name\>.pfx in the current directory. The certificate file contains the private key and is protected by the password provided.
 The generated certificate will be available in the certificate store of the current user under 'Personal'.
-The generated certificate is self-signed and valid for 20 years using 4096 Bit RSA and SHA384.
+The generated certificate is self-signed using 4096 Bit RSA and SHA384.
 
 ### CreateSigningCert
 
 ```
-CreateSigningCert --Subject <subject> --Name <name> --Password <password> --SignerThumbprint <thumbprint>
+CreateSigningCert --Subject <subject> --Name <name> --Password <password> --ExpireDays <days> --SignerThumbprint <thumbprint> 
 ```
 or
 ```
-CreateSigningCert --Subject <subject> --Name <name> --Password <password> --SignerPfx <pfxFile> --SignerPassword <store>
+CreateSigningCert --Subject <subject> --Name <name> --Password <password> --ExpireDays <days> --SignerPfx <pfxFile> --SignerPassword <store>
 ```
 
 Where:
@@ -45,14 +46,15 @@ Where:
 * SignerThumbprint: the certificate thumbprint of the root CA certificate used to sign the code signing certificate. The thumbprint can be obtained from the certificate store.
 * SignerPfx: the PFX file holding the root CA certificate used to sign the code signing certificate.
 * SignerPassword: the password to open the PFX file holding the root CA certificate used to sign the code signing certificate.
+* ExpireDays: The number of days the certificate is valid, default is 365.
 
 ### AzureCreateRootCert
 ```
-AzureCreateRootCert --Subject <subject> --Name <name> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --ClientSecret <clientSecret>
+AzureCreateRootCert --Subject <subject> --Name <name> --ExpiryMonths <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --ClientSecret <clientSecret>
 ```
 or
 ```
-AzureCreateRootCert --Subject <subject> --Name <name> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
+AzureCreateRootCert --Subject <subject> --Name <name> --ExpiryMonths <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
 ```
 
 Where:
@@ -63,6 +65,7 @@ Where:
 * ClientId: The client ID of the service principal used to access the Key Vault.
 * ClientSecret: The client secret of the service principal used to access the Key Vault.
 * Interactive: If set, the tool will use interactive login to Entra ID to access the Key Vault.
+* ExpiryMonths: The number of months the certificate is valid, default is 240.
 
 Required permissions on Azure KeyVault:
 - Sign with Key (Microsoft.KeyVault/vaults/keys/sign/action)
@@ -71,11 +74,11 @@ Required permissions on Azure KeyVault:
 
 ### AzureCreateSigningCert
 ```
-AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --ClientSecret <clientSecret>
+AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpiryMonths <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --ClientSecret <clientSecret>
 ```
 or
 ```
-AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
+AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpiryMonths <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
 ```
 
 Where:
@@ -87,7 +90,8 @@ Where:
 * ClientId: The client ID of the service principal used to access the Key Vault.
 * ClientSecret: The client secret of the service principal used to access the Key Vault.
 * Interactive: If set, the tool will use interactive login to Entra ID to access the Key Vault.
-
+* ExpiryMonths: The number of months the certificate is valid, default is 1.
+* 
 Required permissions on Azure KeyVault:
 - Sign with Key (Microsoft.KeyVault/vaults/keys/sign/action)
 - Read Certificate Properties  (Microsoft.KeyVault/vaults/certificates/read)

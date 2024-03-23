@@ -28,6 +28,12 @@ internal class Options
    public required string Name { get; set; }
 
    /// <summary>
+   /// Gets or sets the number of months until the certificate expires.
+   /// </summary>
+   [Option("ExpireMonth", Required = false, HelpText = "The number of months until the certificate expires, default if not specifed is 240 months (20 Years).")]
+   public int ExpireMonth { get; set; } = 240;
+
+   /// <summary>
    /// Gets or sets the path to the PFX file to export the certificate to.
    /// </summary>
    [Option("Password", Required = false, HelpText = "The password to use for the PFX file")]

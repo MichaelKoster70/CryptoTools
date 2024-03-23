@@ -5,7 +5,6 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-using System.Runtime.ConstrainedExecution;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Azure.Core;
@@ -19,9 +18,6 @@ namespace CertTools.AzureCreateRootCert;
 /// </summary>
 internal class CertificateWorker
 {
-   /// <summary>The number of months until the root certificate expires.</summary>
-   private const int RootCertExpireMonth = 120;
-
    /// <summary>Extended Key Usage OID for Code Signing</summary>
    private const string CodeSigningEnhancedKeyUsageOid = "1.3.6.1.5.5.7.3.3";
 
@@ -29,13 +25,14 @@ internal class CertificateWorker
    private const string CodeSigningEnhancedKeyUsageOidFriendlyName = " Code Signing";
 
    /// <summary>
-   /// Create a self signed root certificate with the given subject name and export it as PFX and CER.
-   /// The files are written to the current directory.
+   /// Create a self signed root certificate with the given name, subject name and store it in Azure Key Vault.
    /// </summary>
-   /// <param name="subjectNameValue"></param>
-   /// <param name="fileName">The filename w/o extension of the cert files</param>
-   /// <param name="passwordValue"></param>
-   public static async Task<string> CreateRootCertAsync(string certificateName, string subjectNameValue, Uri vaultUri, TokenCredential tokenCredential)
+   /// <param name="certificateName">The Azure Key Vault certificate name.</param>
+   /// <param name="subjectNameValue">The subject name for the certificate.</param>
+   /// <param name="expireMonth">The number of month until the certificate expires.</param>
+   /// <param name="vaultUri">The URI to the Azure Key Vault.</param>
+   /// <param name="tokenCredential">The Azure Key Vault token credential.</param>
+   public static async Task<string> CreateRootCertAsync(string certificateName, string subjectNameValue, int expireMonth, Uri vaultUri, TokenCredential tokenCredential)
    {
       var client = new CertificateClient(vaultUri, tokenCredential);
 
@@ -44,8 +41,8 @@ internal class CertificateWorker
       var signerName = new X500DistinguishedName(subjectNameValue);
       
       // create a CSR and sign it with the temporary cert
-      var csr = await KeyVaultCreateRootCertificateRequestAsync(certificateName, subjectNameValue, client, RootCertExpireMonth);
-      using var certificate = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signatureGenerator, RootCertExpireMonth);
+      var csr = await KeyVaultCreateRootCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonth);
+      using var certificate = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signatureGenerator, expireMonth);
 
       // Merge with the pending certificate operation
       await CertificateWorkerCore.KeyVaultMergeCertificateAsync(certificateName, certificate, client);

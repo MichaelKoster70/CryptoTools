@@ -28,6 +28,12 @@ internal class Options
    public required string Name { get; set; }
 
    /// <summary>
+   /// Gets or sets the number of monith until the certificate expires.
+   /// </summary>
+   [Option("ExpireMonth", Required = false, HelpText = "The number of month until the certificate expires, default if not specifed is 240 month.")]
+   public int ExpireMonth { get; set; } = 240;
+
+   /// <summary>
    /// Gets or sets the Azure Key Vault URI where to upload the certifcate.
    /// </summary>
    [Option("KeyVaultUri", Required = true, HelpText = "The URI to an Azure Key Vault")]
