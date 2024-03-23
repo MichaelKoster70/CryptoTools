@@ -13,7 +13,7 @@
     <Authors>Michael Koster</Authors>
     <Title>Self Signed Root Certificate Creation Tool</Title>
     <Product>Crypto Tools</Product>
-    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionPrefix>1.1.0</VersionPrefix>
     <TrimMode>partial</TrimMode>
   </PropertyGroup>
 

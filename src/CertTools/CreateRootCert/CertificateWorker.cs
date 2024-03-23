@@ -29,13 +29,14 @@ internal class CertificateWorker
    /// Create a self signed root certificate with the given subject name and export it as PFX and CER.
    /// The files are written to the current directory.
    /// </summary>
-   /// <param name="subjectNameValue"></param>
-   /// <param name="fileName">The filename w/o extension of the cert files</param>
-   /// <param name="passwordValue"></param>
-   public static string CreateRootCert(string subjectNameValue, string fileName, string passwordValue)
+   /// <param name="subjectNameValue">The subject name for the certificate.</param>
+   /// <param name="fileName">The filename w/o extension of the cert files.</param>
+   /// <param name="passwordValue">The password protecting the private key.</param>
+   /// <paramref name="expireMonth"/>The number of months the certificate is valid.</param>
+   public static string CreateRootCert(string subjectNameValue, string fileName, string passwordValue, int expireMonth)
    {
       // Create the certificate and export as PFX and CER
-      var cert = CreateSelfSignedRootCertificate(subjectNameValue);
+      var cert = CreateSelfSignedRootCertificate(subjectNameValue, expireMonth);
       using (cert = StoreSelfSignedRootCertificate(cert))
       {
          // export the certificate as PFX and CER
@@ -53,9 +54,10 @@ internal class CertificateWorker
    /// <summary>
    /// Create a self signed root certificate.
    /// </summary>
-   /// <param name="subjectNameValue">The value (CN=<value>) to be used as Subject</param>
+   /// <param name="subjectNameValue">The value (CN=<value>) to be used as Subject.</param>
+   /// <paramref name="expireMonth"/>The number of months the certificate is valid.</param>
    /// <returns>The certtifc</returns>
-   private static X509Certificate2 CreateSelfSignedRootCertificate(string subjectNameValue)
+   private static X509Certificate2 CreateSelfSignedRootCertificate(string subjectNameValue, int expireMonth)
    {
       // Create a RSA keypair
       using var keyPair = RSA.Create(RsaKeySize);
@@ -69,7 +71,7 @@ internal class CertificateWorker
       csr.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(CodeSigningEnhancedKeyUsageOid, CodeSigningEnhancedKeyUsageOidFriendlyName)], false));
 
       // create a self signed cert
-      var cert = csr.CreateSelfSigned(DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddYears(10));
+      var cert = csr.CreateSelfSigned(DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddMonths(expireMonth));
 
       return cert;
    }

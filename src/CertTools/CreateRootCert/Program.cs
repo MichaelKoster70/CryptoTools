@@ -42,7 +42,7 @@ internal static class Program
 
       try
       {
-        var thumbPrint = CertificateWorker.CreateRootCert(options.Subject, options.Name, password);
+        var thumbPrint = CertificateWorker.CreateRootCert(options.Subject, options.Name, password, options.ExpireMonth);
         Console.WriteLine($"Certificate created: Thumbprint=\"{thumbPrint}\", filename={options.Name}.pfx");
       }
       catch (CryptographicException ex)

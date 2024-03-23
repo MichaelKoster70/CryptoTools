@@ -2,7 +2,7 @@
   "profiles": {
     "CreateRootCert": {
       "commandName": "Project",
-      "commandLineArgs": "--Subject2 \"CN=Test AG\" --Name \"test\""
+      "commandLineArgs": "--Subject \"CN=Test AG\" --Name \"test\" --ExpireMonth 150"
     }
   }
 }

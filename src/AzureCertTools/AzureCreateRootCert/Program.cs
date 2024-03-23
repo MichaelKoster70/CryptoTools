@@ -39,7 +39,7 @@ internal static class Program
 
       Uri keyVaultUri = new(options.KeyVaultUri);
 
-      var cert = CertificateWorker.CreateRootCertAsync(options.Name, options.Subject, keyVaultUri, credentrials).Result;
+      var cert = CertificateWorker.CreateRootCertAsync(options.Name, options.Subject, options.ExpireMonth, keyVaultUri, credentrials).Result;
 
       Console.WriteLine($"Certificate {cert} created in Key Vault {keyVaultUri}");
    }
