@@ -15,7 +15,12 @@
     <Product>Crypto Tools</Product>
     <VersionPrefix>1.1.0</VersionPrefix>
     <TrimMode>partial</TrimMode>
+    <ApplicationIcon>AzureCreateSigningCert.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="AzureCreateSigningCert.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.10.4" />

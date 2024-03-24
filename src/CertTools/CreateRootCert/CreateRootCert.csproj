@@ -15,7 +15,12 @@
     <Product>Crypto Tools</Product>
     <VersionPrefix>1.1.0</VersionPrefix>
     <TrimMode>partial</TrimMode>
+    <ApplicationIcon>CreateRootCert.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="CreateRootCert.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />

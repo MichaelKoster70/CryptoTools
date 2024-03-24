@@ -15,8 +15,13 @@
     <Product>Crypto Tools</Product>
     <VersionPrefix>1.1.0</VersionPrefix>
     <TrimMode>partial</TrimMode>
+    <ApplicationIcon>CreateSigningCert.ico</ApplicationIcon>
 
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="CreateSigningCert.ico" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
