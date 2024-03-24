@@ -53,7 +53,7 @@ internal class Options
    /// <summary>
    /// Gets the password to unlock the private key as part of the PFX file 
    /// </summary>
-   [Option("Password", Required = false, HelpText = "The password to use for the signer certificate")]
+   [Option("SignerPassword", Required = false, HelpText = "The password to use for the signer certificate")]
    public string? SignerPassword { get; set; }
 
    /// <summary>
