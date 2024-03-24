@@ -50,11 +50,11 @@ Where:
 
 ### AzureCreateRootCert
 ```
-AzureCreateRootCert --Subject <subject> --Name <name> --ExpiryMonths <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --ClientSecret <clientSecret>
+AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --ClientSecret <clientSecret>
 ```
 or
 ```
-AzureCreateRootCert --Subject <subject> --Name <name> --ExpiryMonths <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
+AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
 ```
 
 Where:
@@ -74,11 +74,11 @@ Required permissions on Azure KeyVault:
 
 ### AzureCreateSigningCert
 ```
-AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpiryMonths <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --ClientSecret <clientSecret>
+AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --ClientSecret <clientSecret>
 ```
 or
 ```
-AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpiryMonths <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
+AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
 ```
 
 Where:
