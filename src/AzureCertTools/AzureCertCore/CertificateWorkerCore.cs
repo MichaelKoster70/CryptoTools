@@ -74,7 +74,7 @@ public static class CertificateWorkerCore
       using (RandomNumberGenerator randomNumberGenerator = RandomNumberGenerator.Create())
       {
          randomNumberGenerator.GetBytes(serialNumber);
-      };
+      }
 
       // Create the certificate
       var utcNow = DateTimeOffset.UtcNow;
