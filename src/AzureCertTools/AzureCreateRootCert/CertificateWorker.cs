@@ -16,7 +16,7 @@ namespace CertTools.AzureCreateRootCert;
 /// <summary>
 /// Class providing the functionality to create a self signed root certificate and upload it to Azure Key Vault.
 /// </summary>
-internal class CertificateWorker
+internal static class CertificateWorker
 {
    /// <summary>Extended Key Usage OID for Code Signing</summary>
    private const string CodeSigningEnhancedKeyUsageOid = "1.3.6.1.5.5.7.3.3";

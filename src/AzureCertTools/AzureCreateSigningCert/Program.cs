@@ -11,7 +11,7 @@ using CommandLine;
 
 namespace CertTools.AzureCreateSigningCert;
 
-internal class Program
+internal static class Program
 {
    static void Main(string[] args)
    {

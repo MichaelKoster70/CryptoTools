@@ -13,7 +13,7 @@ namespace CertTools.CreateSigningCert;
 /// <summary>
 /// Class holding teh application entry point.
 /// </summary>
-internal class Program
+internal static class Program
 {
    /// <summary>
    /// Application entry point.

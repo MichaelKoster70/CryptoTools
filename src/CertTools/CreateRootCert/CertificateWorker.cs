@@ -13,7 +13,7 @@ namespace CertTools.CreateRootCert;
 /// <summary>
 /// Class providing the functionality to create a self signed root certificate.
 /// </summary>
-internal class CertificateWorker
+internal static class CertificateWorker
 {
    /// <summary>RSA key size</summary>
    private const int RsaKeySize = 4096;
