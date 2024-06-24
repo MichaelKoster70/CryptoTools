@@ -9,10 +9,6 @@ using CommandLine;
 
 namespace CertTools.CreateSigningCert;
 
-/// <summary>
-/// Container class for the command line options.
-/// </summary>
-/// 
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes
 
 /// <summary>

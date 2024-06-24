@@ -14,7 +14,7 @@ namespace CertTools.CreateSigningCert;
 /// <summary>
 /// Class providing the functionality to create a code signing certificate.
 /// </summary>
-internal class CertificateWorker
+internal static class CertificateWorker
 {
    /// <summary>RSA key size</summary>
    private const int RsaKeySize = 4096;
@@ -82,7 +82,7 @@ internal class CertificateWorker
       using (RandomNumberGenerator randomNumberGenerator = RandomNumberGenerator.Create())
       {
          randomNumberGenerator.GetBytes(serialNumber);
-      };
+      }
 
       // Create the certificate
       var utcNow = DateTimeOffset.UtcNow;
