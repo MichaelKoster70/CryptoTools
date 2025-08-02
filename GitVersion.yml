@@ -1,0 +1,10 @@
+next-version: 1.0.0
+mode: ContinuousDelivery
+branches:
+  main:
+   mode: ContinuousDelivery
+   tag: ''
+   increment: None
+  feature:
+   mode: ContinuousDelivery
+   tag: 'dev'
