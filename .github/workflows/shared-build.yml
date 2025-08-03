@@ -92,8 +92,7 @@ jobs:
         Write-Host "##vso[task.setvariable variable=Build.VersionSuffix]$versionSuffix"
         Write-Host "##vso[task.setvariable variable=Build.AssemblyVersion]$assemblyVersion"
         Write-Host "##vso[task.setvariable variable=Build.FileVersion]$fileVersion"
-        Write-Host "##vso[task.setvariable variable=Build.ProductVersion]$productVcd ..
-        ersion"
+        Write-Host "##vso[task.setvariable variable=Build.ProductVersion]$productVersion"
         Write-Host "##vso[task.setvariable variable=Build.InformationalVersion]$informationalVersion"
       shell: pwsh
 
