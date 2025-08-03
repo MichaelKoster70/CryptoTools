@@ -121,7 +121,7 @@ jobs:
     - name: 'Build: Publish CertTools/CreateSigningCert'
       if: ${{ inputs.store-artifacts }}
       run: |
-        dotnet publish ${{ env.CertToolsPath }}\CreateSigningCert\CreateSigningCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfil
+        dotnet publish ${{ env.CertToolsPath }}\CreateSigningCert\CreateSigningCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
       shell: pwsh
 
     - name: 'Build: Restore AzureCertTools'
