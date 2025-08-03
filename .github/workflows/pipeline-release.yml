@@ -1,6 +1,7 @@
 name: 'Project: Release'
 # shall trigger on the main branch when a tag named 'v*' gets created
 on: 
+  workflow_dispatch:
   push:
     branches:
     - main
