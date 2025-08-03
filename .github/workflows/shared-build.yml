@@ -59,7 +59,7 @@ jobs:
       id: git-version
       uses: ./eng/actions/git-version
 
-    - name: 'Build: Apply assembly version DEV'
+    - name: 'Build: Apply Version DEV'
       if: ${{ github.ref_type == 'branch' && github.ref != 'refs/heads/main' }}
       run: |
         $versionPrefix = '${{ steps.git-version.outputs.versionPrefix }}'
@@ -78,7 +78,7 @@ jobs:
         Write-Host "##vso[task.setvariable variable=Build.InformationalVersion]$informationalVersion"
       shell: pwsh
 
-    - name: 'Build: Apply Version to CertTools PROD'
+    - name: 'Build: Apply Version PROD'
       if: ${{ (github.ref_type == 'branch' && github.ref == 'refs/heads/main') || github.ref_type == 'tag' }}
       run: |
         $versionPrefix = '${{ steps.git-version.outputs.versionPrefix }}'
@@ -120,12 +120,12 @@ jobs:
           --configuration ${{ inputs.configuration }} `
           --no-build `
           --no-restore `
-          --profile ${{ env.CertToolsPath }}\CreateRootCert\Properties\PublishProfiles\FolderProfile.pubxml'
+          /p ${{ env.CertToolsPath }}\CreateRootCert\Properties\PublishProfiles\FolderProfile.pubxml'
         dotnet publish ${{ env.CertToolsPath }}\CreateSigningCert\CreateSigningCert.csproj `
           --configuration ${{ inputs.configuration }} `
           --no-build `
           --no-restore `
-          --profile ${{ env.CertToolsPath }}\CreateSigningCert\Properties\PublishProfiles\FolderProfile.pubxml'
+          /p ${{ env.CertToolsPath }}\CreateSigningCert\Properties\PublishProfiles\FolderProfile.pubxml'
       shell: pwsh
 
     - name: 'Build: Restore AzureCertTools'
@@ -143,12 +143,12 @@ jobs:
           --configuration ${{ inputs.configuration }} `
           --no-build `
           --no-restore `
-          --profile ${{ env.AzureCertToolsPath }}/AzureCreateRootCert/Properties/PublishProfiles/FolderProfile.pubxml'
+          /p ${{ env.AzureCertToolsPath }}/AzureCreateRootCert/Properties/PublishProfiles/FolderProfile.pubxml'
         dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/AzureCreateSigningCert.csproj `
           --configuration ${{ inputs.configuration }} `
           --no-build `
           --no-restore `
-          --profile ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/Properties/PublishProfiles/FolderProfile.pubxml'
+          /p ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/Properties/PublishProfiles/FolderProfile.pubxml'
       shell: pwsh
 
     - name: 'Build: signing cleanup'
