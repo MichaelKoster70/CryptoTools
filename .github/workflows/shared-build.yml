@@ -115,7 +115,7 @@ jobs:
     - name: 'Build: Publish CertTools CreateRootCert'
       if: ${{ inputs.store-artifacts }}
       run: |
-        dotnet publish ${{ env.CertToolsPath }}\CreateRootCert\CreateRootCert.csproj --configuration ${{ inputs.configuration }} --no-build --no-restore -p:PublishProfile=${{ env.CertToolsPath }}\CreateRootCert\Properties\PublishProfiles\FolderProfile.pubxml
+        dotnet publish ${{ env.CertToolsPath }}\CreateRootCert\CreateRootCert.csproj --configuration ${{ inputs.configuration }} --no-build --no-restore --self-contained -p:PublishProfile=${{ env.CertToolsPath }}\CreateRootCert\Properties\PublishProfiles\FolderProfile.pubxml
       shell: pwsh
 
     - name: 'Build: Publish CertTools CreateSigningCert'
