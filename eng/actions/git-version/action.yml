@@ -1,0 +1,41 @@
+name: Determine Version
+description: Determines the version using GitVersion
+
+outputs:
+  versionPrefix:
+    description: The version prefix in major.minor.patch notation
+    value: ${{ steps.gitversion-execute.outputs.majorMinorPatch }}
+  versionSuffix:
+    description: The version suffix (pre release label)
+    value: ${{ steps.gitversion-execute.outputs.preReleaseLabel }}
+  assemblyVersion:
+    description: The assembly version in major.minor.patch.revision notation
+    value: ${{ steps.gitversion-execute.outputs.assemblySemVer }}
+  fileVersion:
+    description: The file version in major.minor.patch notation
+    value: ${{ steps.gitversion-execute.outputs.assemblySemFileVer }}
+  productVersion:
+    description: The product version in major.minor.patch notation
+    value: ${{ steps.gitversion-execute.outputs.assemblySemFileVer }}
+  informationalVersion:
+    description: The assembly informational version in major.minor.patch.preReleaseLabel+preReleaseNumber.sha notation
+    value: ${{ steps.gitversion-execute.outputs.informationalVersion }}
+
+  versionRevision:
+    description: The revison for the assembly version
+    value: ${{ steps.gitversion-execute.outputs.CommitsSinceVersionSource }}
+
+runs:
+  using: "composite"
+
+  steps:
+  - id: gitversion-install
+    uses: gittools/actions/gitversion/setup@v4.0.1
+    with:
+      versionSpec: '6.x'
+
+  - id: gitversion-execute
+    uses: gittools/actions/gitversion/execute@v4.0.1
+    with:
+      useConfigFile: true
+      configFilePath: GitVersion.yml

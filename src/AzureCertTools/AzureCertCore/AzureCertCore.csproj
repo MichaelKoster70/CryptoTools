@@ -7,10 +7,8 @@
     <RootNamespace>CertTools.AzureCertCore</RootNamespace>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
-    <Authors>Michael Koster</Authors>
     <Title>Code Signing Certificate Creation Tool for Azure Key Vault</Title>
-    <Product>Crypto Tools</Product>
-    <VersionPrefix>1.0.0</VersionPrefix>
+	<AssemblyTitle>$(Title)</AssemblyTitle>
   </PropertyGroup>
 
   <ItemGroup>

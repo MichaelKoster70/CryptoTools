@@ -1,0 +1,34 @@
+<Project>
+
+  <!-- Assembly Information to be applied to all assemblies -->
+  <PropertyGroup>
+    <Authors>Michael Koster</Authors>
+    <Copyright>(c) 2025 Michael Koster</Copyright>
+    <Company>Michael Koster</Company>
+    <Product>Crypto Tools</Product>
+    <SourceRevisionId Condition="'$(SourceRevisionId)' == ''">$(BUILD_SOURCEVERSION)</SourceRevisionId>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition=" '$(BUILD_VERSIONPREFIX)' != '' ">
+      <PropertyGroup>
+        <!-- on the build server, use the provided values -->
+        <VersionPrefix>$(BUILD_VERSIONPREFIX)</VersionPrefix>
+        <VersionSuffix>$(BUILD_VERSIONSUFFIX)</VersionSuffix>
+        <AssemblyVersion>$(BUILD_ASSEMBLYVERSION)</AssemblyVersion>
+        <FileVersion>$(BUILD_FILEVERSION)</FileVersion>
+        <ProductVersion>$(BUILD_PRODUCTVERSION)</ProductVersion>
+        <InformationalVersion>$(BUILD_INFORMATIONALVERSION)</InformationalVersion>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <!-- for local builds, use the fixed number 0.1.0.0 -->
+        <VersionPrefix>0.1.0</VersionPrefix>
+        <VersionSuffix>local</VersionSuffix>
+        <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
+        <FileVersion>$(VersionPrefix).0</FileVersion>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+</Project>
