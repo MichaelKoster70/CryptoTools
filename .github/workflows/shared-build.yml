@@ -112,16 +112,16 @@ jobs:
       run: dotnet build ${{ env.CertToolsSolutionPath }} --configuration ${{ inputs.configuration }} --no-restore
       shell: pwsh
 
-    - name: 'Build: Publish CertTools CreateRootCert'
+    - name: 'Build: Publish CertTools/CreateRootCert'
       if: ${{ inputs.store-artifacts }}
       run: |
         dotnet publish ${{ env.CertToolsPath }}\CreateRootCert\CreateRootCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
       shell: pwsh
 
-    - name: 'Build: Publish CertTools CreateSigningCert'
+    - name: 'Build: Publish CertTools/CreateSigningCert'
       if: ${{ inputs.store-artifacts }}
       run: |
-        dotnet publish ${{ env.CertToolsPath }}\CreateSigningCert\CreateSigningCert.csproj --configuration ${{ inputs.configuration }} --no-build --no-restore
+        dotnet publish ${{ env.CertToolsPath }}\CreateSigningCert\CreateSigningCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfil
       shell: pwsh
 
     - name: 'Build: Restore AzureCertTools'
@@ -135,18 +135,8 @@ jobs:
     - name: 'Build: Publish AzureCertTools'
       if: ${{ inputs.store-artifacts }}
       run: |
-        dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateRootCert/AzureCreateRootCert.csproj `
-          --configuration ${{ inputs.configuration }} `
-          --no-build `
-          --no-restore `
-          --self-contained `
-          --runtime win-x64 `
-          /p:PublishProfile=${{ env.AzureCertToolsPath }}/AzureCreateRootCert/Properties/PublishProfiles/FolderProfile.pubxml
-        dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/AzureCreateSigningCert.csproj `
-          --configuration ${{ inputs.configuration }} `
-          --no-build `
-          --no-restore `
-          /p:PublishProfile=${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/Properties/PublishProfiles/FolderProfile.pubxml
+        dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateRootCert/AzureCreateRootCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
+        dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/AzureCreateSigningCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
       shell: pwsh
     
     - name: 'Build: Sign published binaries'
