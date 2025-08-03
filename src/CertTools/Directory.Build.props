@@ -15,9 +15,10 @@
         <!-- on the build server, use the provided values -->
         <VersionPrefix>$(BUILD_VERSIONPREFIX)</VersionPrefix>
         <VersionSuffix>$(BUILD_VERSIONSUFFIX)</VersionSuffix>
-        <FileVersion>$(BUILD_VERSIONFILE)</FileVersion>
-        <AssemblyVersion>$(BUILD_VERSIONFILE)</AssemblyVersion>
-        <InformationalVersion>$(BUILD_VERSIONINFORMATION)</InformationalVersion>
+        <AssemblyVersion>$(BUILD_ASSEMBLYVERSION)</AssemblyVersion>
+        <FileVersion>$(BUILD_FILEVERSION)</FileVersion>
+        <ProductVersion>$(BUILD_PRODUCTVERSION)</ProductVersion>
+        <InformationalVersion>$(BUILD_INFORMATIONALVERSION)</InformationalVersion>
       </PropertyGroup>
     </When>
     <Otherwise>
@@ -25,8 +26,8 @@
         <!-- for local builds, use the fixed number 0.1.0.0 -->
         <VersionPrefix>0.1.0</VersionPrefix>
         <VersionSuffix>local</VersionSuffix>
-        <FileVersion>$(VersionPrefix).0</FileVersion>
         <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
+        <FileVersion>$(VersionPrefix).0</FileVersion>
       </PropertyGroup>
     </Otherwise>
   </Choose>
