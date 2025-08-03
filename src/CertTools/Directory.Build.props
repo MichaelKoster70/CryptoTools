@@ -13,7 +13,7 @@
     <When Condition=" '$(BUILD_VERSIONPREFIX)' != '' ">
       <PropertyGroup>
         <!-- on the build server, use the provided values -->
-        <VersionPrefix>$(BUILD_VERSIONPREFIX)</VersionPrefix>
+         <VersionPrefix>$(BUILD_VERSIONPREFIX)</VersionPrefix>
         <VersionSuffix>$(BUILD_VERSIONSUFFIX)</VersionSuffix>
         <AssemblyVersion>$(BUILD_ASSEMBLYVERSION)</AssemblyVersion>
         <FileVersion>$(BUILD_FILEVERSION)</FileVersion>

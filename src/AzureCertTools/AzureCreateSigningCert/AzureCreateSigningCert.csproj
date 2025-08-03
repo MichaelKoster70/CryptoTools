@@ -15,6 +15,7 @@
 	<AssemblyTitle>$(Title)</AssemblyTitle>
     <TrimMode>partial</TrimMode>
     <ApplicationIcon>AzureCreateSigningCert.ico</ApplicationIcon>
+	<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
