@@ -115,19 +115,8 @@ jobs:
     - name: 'Build: Publish CertTools'
       if: ${{ inputs.store-artifacts }}
       run: |
-        dotnet publish ${{ env.CertToolsPath }}/CreateRootCert/CreateRootCert.csproj `
-          --configuration ${{ inputs.configuration }} `
-          --no-build --no-restore `
-          --self-contained --single-file `
-          --runtime win-x64 ` 
-          /p:PublishProfile=${{ env.CertToolsPath }}\CreateRootCert\Properties\PublishProfiles\FolderProfile.pubxml
-          
-        dotnet publish ${{ env.CertToolsPath }}\CreateSigningCert\CreateSigningCert.csproj `
-          --configuration ${{ inputs.configuration }} `
-          --no-build --no-restore `
-          --self-contained `
-          --runtime win-x64 `
-          /p:PublishProfile=${{ env.CertToolsPath }}\CreateSigningCert\Properties\PublishProfiles\FolderProfile.pubxml
+        dotnet publish ${{ env.CertToolsPath }}\CreateRootCert\CreateRootCert.csproj --configuration ${{ inputs.configuration }} --no-build --no-restore /p:PublishProfile=${{ env.CertToolsPath }}\CreateRootCert\Properties\PublishProfiles\FolderProfile.pubxml
+        dotnet publish ${{ env.CertToolsPath }}\CreateSigningCert\CreateSigningCert.csproj --configuration ${{ inputs.configuration }} --no-build --no-restore /p:PublishProfile=${{ env.CertToolsPath }}\CreateSigningCert\Properties\PublishProfiles\FolderProfile.pubxml
       shell: pwsh
 
     - name: 'Build: Restore AzureCertTools'
