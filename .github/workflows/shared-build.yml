@@ -61,39 +61,25 @@ jobs:
     - name: 'Build: Apply Version DEV'
       if: ${{ github.ref_type == 'branch' && github.ref != 'refs/heads/main' }}
       run: |
-        $versionPrefix = '${{ steps.git-version.outputs.versionPrefix }}'
-        $versionSuffix = '${{ steps.git-version.outputs.versionSuffix }}'
-        $versionRevision = '${{ steps.git-version.outputs.versionRevision }}'
-        $assemblyVersion = '${{ steps.git-version.outputs.assemblyVersion }}'
-        $fileVersion = '${{ steps.git-version.outputs.fileVersion }}'
-        $productVersion = '${{ steps.git-version.outputs.productVersion }}'
-        $informationalVersion = '${{ steps.git-version.outputs.informationalVersion }}'
-
-        Write-Host "##vso[task.setvariable variable=Build.VersionPrefix]$versionPrefix"
-        Write-Host "##vso[task.setvariable variable=Build.VersionSuffix]$versionSuffix"
-        Write-Host "##vso[task.setvariable variable=Build.AssemblyVersion]$assemblyVersion"
-        Write-Host "##vso[task.setvariable variable=Build.FileVersion]$fileVersion"
-        Write-Host "##vso[task.setvariable variable=Build.ProductVersion]$productVersion"
-        Write-Host "##vso[task.setvariable variable=Build.InformationalVersion]$informationalVersion"
+        echo "BUILD_VERSIONPREFIX=${{ steps.git-version.outputs.versionPrefix }}" >> $GITHUB_ENV
+        echo "BUILD_VERSIONSUFFIX=${{ steps.git-version.outputs.versionSuffix }}" >> $GITHUB_ENV
+        echo "BUILD_VERSIONREVISION=${{ steps.git-version.outputs.versionRevision }}" >> $GITHUB_ENV
+        echo "BUILD_ASSEMBLYVERSION=${{ steps.git-version.outputs.assemblyVersion }}" >> $GITHUB_ENV
+        echo "BUILD_FILEVERSION=${{ steps.git-version.outputs.fileVersion }}" >> $GITHUB_ENV
+        echo "BUILD_PRODUCTVERSION=${{ steps.git-version.outputs.productVersion }}" >> $GITHUB_ENV
+        echo "BUILD_INFORMATIONALVERSION=${{ steps.git-version.outputs.informationalVersion }}" >> $GITHUB_ENV
       shell: pwsh
 
     - name: 'Build: Apply Version PROD'
       if: ${{ (github.ref_type == 'branch' && github.ref == 'refs/heads/main') || github.ref_type == 'tag' }}
       run: |
-        $versionPrefix = '${{ steps.git-version.outputs.versionPrefix }}'
-        $versionSuffix = '${{ steps.git-version.outputs.versionSuffix }}'
-        $versionRevision = '${{ steps.git-version.outputs.versionRevision }}'
-        $assemblyVersion = '${{ steps.git-version.outputs.assemblyVersion }}'
-        $fileVersion = '${{ steps.git-version.outputs.fileVersion }}'
-        $productVersion = '${{ steps.git-version.outputs.productVersion }}'
-        $informationalVersion = '${{ steps.git-version.outputs.informationalVersion }}'
-
-        Write-Host "##vso[task.setvariable variable=Build.VersionPrefix]$versionPrefix"
-        Write-Host "##vso[task.setvariable variable=Build.VersionSuffix]$versionSuffix"
-        Write-Host "##vso[task.setvariable variable=Build.AssemblyVersion]$assemblyVersion"
-        Write-Host "##vso[task.setvariable variable=Build.FileVersion]$fileVersion"
-        Write-Host "##vso[task.setvariable variable=Build.ProductVersion]$productVersion"
-        Write-Host "##vso[task.setvariable variable=Build.InformationalVersion]$informationalVersion"
+        echo "BUILD_VERSIONPREFIX=${{ steps.git-version.outputs.versionPrefix }}" >> $GITHUB_ENV
+        echo "BUILD_VERSIONSUFFIX=${{ steps.git-version.outputs.versionSuffix }}" >> $GITHUB_ENV
+        echo "BUILD_VERSIONREVISION=${{ steps.git-version.outputs.versionRevision }}" >> $GITHUB_ENV
+        echo "BUILD_ASSEMBLYVERSION=${{ steps.git-version.outputs.assemblyVersion }}" >> $GITHUB_ENV
+        echo "BUILD_FILEVERSION=${{ steps.git-version.outputs.fileVersion }}" >> $GITHUB_ENV
+        echo "BUILD_PRODUCTVERSION=${{ steps.git-version.outputs.productVersion }}" >> $GITHUB_ENV
+        echo "BUILD_INFORMATIONALVERSION=${{ steps.git-version.outputs.informationalVersion }}" >> $GITHUB_ENV
       shell: pwsh
 
     # Build Solution: creates PFX file from BASe64 secret if signing is enabled
