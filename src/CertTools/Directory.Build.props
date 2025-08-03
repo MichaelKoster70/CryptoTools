@@ -6,14 +6,14 @@
     <Copyright>(c) 2025 Michael Koster</Copyright>
     <Company>Michael Koster</Company>
     <Product>Crypto Tools</Product>
-    <SourceRevisionId Condition="'$(SourceRevisionId)' == ''">$(BUILD_SOURCEVERSION)</SourceRevisionId>
+    <SourceRevisionId Condition="'$(SourceRevisionId)' == ''">$(GITHUB_SHA)</SourceRevisionId>
   </PropertyGroup>
 
   <Choose>
     <When Condition=" '$(BUILD_VERSIONPREFIX)' != '' ">
       <PropertyGroup>
         <!-- on the build server, use the provided values -->
-        <VersionPrefix>$(BUILD_VERSIONPREFIX)</VersionPrefix>
+         <VersionPrefix>$(BUILD_VERSIONPREFIX)</VersionPrefix>
         <VersionSuffix>$(BUILD_VERSIONSUFFIX)</VersionSuffix>
         <AssemblyVersion>$(BUILD_ASSEMBLYVERSION)</AssemblyVersion>
         <FileVersion>$(BUILD_FILEVERSION)</FileVersion>

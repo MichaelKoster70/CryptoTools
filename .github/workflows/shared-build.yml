@@ -35,7 +35,6 @@ jobs:
     runs-on: windows-2022
 
     env:
-      ScriptPath: ${{ github.workspace }}\eng\scripts
       CertToolsPath: ${{ github.workspace }}\src\CertTools
       CertToolsSolutionPath: ${{ github.workspace }}\src\CertTools\CertTools.sln
       AzureCertToolsPath: ${{ github.workspace }}\src\AzureCertTools
@@ -62,43 +61,29 @@ jobs:
     - name: 'Build: Apply Version DEV'
       if: ${{ github.ref_type == 'branch' && github.ref != 'refs/heads/main' }}
       run: |
-        $versionPrefix = '${{ steps.git-version.outputs.versionPrefix }}'
-        $versionSuffix = '${{ steps.git-version.outputs.versionSuffix }}'
-        $versionRevision = '${{ steps.git-version.outputs.versionRevision }}'
-        $assemblyVersion = '${{ steps.git-version.outputs.assemblyVersion }}'
-        $fileVersion = '${{ steps.git-version.outputs.fileVersion }}'
-        $productVersion = '${{ steps.git-version.outputs.productVersion }}'
-        $informationalVersion = '${{ steps.git-version.outputs.informationalVersion }}'
-
-        Write-Host "##vso[task.setvariable variable=Build.VersionPrefix]$versionPrefix"
-        Write-Host "##vso[task.setvariable variable=Build.VersionSuffix]$versionSuffix"
-        Write-Host "##vso[task.setvariable variable=Build.AssemblyVersion]$assemblyVersion"
-        Write-Host "##vso[task.setvariable variable=Build.FileVersion]$fileVersion"
-        Write-Host "##vso[task.setvariable variable=Build.ProductVersion]$productVersion"
-        Write-Host "##vso[task.setvariable variable=Build.InformationalVersion]$informationalVersion"
+        echo "BUILD_VERSIONPREFIX=${{ steps.git-version.outputs.versionPrefix }}" >> $GITHUB_ENV
+        echo "BUILD_VERSIONSUFFIX=${{ steps.git-version.outputs.versionSuffix }}" >> $GITHUB_ENV
+        echo "BUILD_VERSIONREVISION=${{ steps.git-version.outputs.versionRevision }}" >> $GITHUB_ENV
+        echo "BUILD_ASSEMBLYVERSION=${{ steps.git-version.outputs.assemblyVersion }}" >> $GITHUB_ENV
+        echo "BUILD_FILEVERSION=${{ steps.git-version.outputs.fileVersion }}" >> $GITHUB_ENV
+        echo "BUILD_PRODUCTVERSION=${{ steps.git-version.outputs.productVersion }}" >> $GITHUB_ENV
+        echo "BUILD_INFORMATIONALVERSION=${{ steps.git-version.outputs.informationalVersion }}" >> $GITHUB_ENV
       shell: pwsh
 
     - name: 'Build: Apply Version PROD'
       if: ${{ (github.ref_type == 'branch' && github.ref == 'refs/heads/main') || github.ref_type == 'tag' }}
       run: |
-        $versionPrefix = '${{ steps.git-version.outputs.versionPrefix }}'
-        $versionSuffix = '${{ steps.git-version.outputs.versionSuffix }}'
-        $versionRevision = '${{ steps.git-version.outputs.versionRevision }}'
-        $assemblyVersion = '${{ steps.git-version.outputs.assemblyVersion }}'
-        $fileVersion = '${{ steps.git-version.outputs.fileVersion }}'
-        $productVersion = '${{ steps.git-version.outputs.productVersion }}'
-        $informationalVersion = '${{ steps.git-version.outputs.informationalVersion }}'
-
-        Write-Host "##vso[task.setvariable variable=Build.VersionPrefix]$versionPrefix"
-        Write-Host "##vso[task.setvariable variable=Build.VersionSuffix]$versionSuffix"
-        Write-Host "##vso[task.setvariable variable=Build.AssemblyVersion]$assemblyVersion"
-        Write-Host "##vso[task.setvariable variable=Build.FileVersion]$fileVersion"
-        Write-Host "##vso[task.setvariable variable=Build.ProductVersion]$productVersion"
-        Write-Host "##vso[task.setvariable variable=Build.InformationalVersion]$informationalVersion"
+        echo "BUILD_VERSIONPREFIX=${{ steps.git-version.outputs.versionPrefix }}" >> $GITHUB_ENV
+        echo "BUILD_VERSIONSUFFIX=${{ steps.git-version.outputs.versionSuffix }}" >> $GITHUB_ENV
+        echo "BUILD_VERSIONREVISION=${{ steps.git-version.outputs.versionRevision }}" >> $GITHUB_ENV
+        echo "BUILD_ASSEMBLYVERSION=${{ steps.git-version.outputs.assemblyVersion }}" >> $GITHUB_ENV
+        echo "BUILD_FILEVERSION=${{ steps.git-version.outputs.fileVersion }}" >> $GITHUB_ENV
+        echo "BUILD_PRODUCTVERSION=${{ steps.git-version.outputs.productVersion }}" >> $GITHUB_ENV
+        echo "BUILD_INFORMATIONALVERSION=${{ steps.git-version.outputs.informationalVersion }}" >> $GITHUB_ENV
       shell: pwsh
 
     # Build Solution: creates PFX file from BASe64 secret if signing is enabled
-    - name: 'Build Solution: prepare VSIX signing'
+    - name: 'Build Solution: prepare signing'
       if:  ${{ inputs.store-artifacts && inputs.sign-binaries }}
       run: |
         $encodedBytes = "${{ secrets.SIGNING_CERT_PFX }}"
@@ -113,19 +98,16 @@ jobs:
       run: dotnet build ${{ env.CertToolsSolutionPath }} --configuration ${{ inputs.configuration }} --no-restore
       shell: pwsh
 
-    - name: 'Build: Publish CertTools'
+    - name: 'Build: Publish CertTools/CreateRootCert'
       if: ${{ inputs.store-artifacts }}
       run: |
-        dotnet publish ${{ env.CertToolsPath }}/CreateRootCert/CreateRootCert.csproj `
-          --configuration ${{ inputs.configuration }} `
-          --no-build `
-          --no-restore `
-          /p ${{ env.CertToolsPath }}\CreateRootCert\Properties\PublishProfiles\FolderProfile.pubxml'
-        dotnet publish ${{ env.CertToolsPath }}\CreateSigningCert\CreateSigningCert.csproj `
-          --configuration ${{ inputs.configuration }} `
-          --no-build `
-          --no-restore `
-          /p ${{ env.CertToolsPath }}\CreateSigningCert\Properties\PublishProfiles\FolderProfile.pubxml'
+        dotnet publish ${{ env.CertToolsPath }}\CreateRootCert\CreateRootCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
+      shell: pwsh
+
+    - name: 'Build: Publish CertTools/CreateSigningCert'
+      if: ${{ inputs.store-artifacts }}
+      run: |
+        dotnet publish ${{ env.CertToolsPath }}\CreateSigningCert\CreateSigningCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
       shell: pwsh
 
     - name: 'Build: Restore AzureCertTools'
@@ -136,25 +118,16 @@ jobs:
       run: dotnet build ${{ env.AzureCertToolsSolutionPath }} --configuration ${{ inputs.configuration }} --no-restore
       shell: pwsh
 
-    - name: 'Build: Publish AzureCertTools'
+    - name: 'Build: Publish AzureCertTools/AzureCreateRootCert'
       if: ${{ inputs.store-artifacts }}
       run: |
-        dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateRootCert/AzureCreateRootCert.csproj `
-          --configuration ${{ inputs.configuration }} `
-          --no-build `
-          --no-restore `
-          /p ${{ env.AzureCertToolsPath }}/AzureCreateRootCert/Properties/PublishProfiles/FolderProfile.pubxml'
-        dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/AzureCreateSigningCert.csproj `
-          --configuration ${{ inputs.configuration }} `
-          --no-build `
-          --no-restore `
-          /p ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/Properties/PublishProfiles/FolderProfile.pubxml'
+        dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateRootCert/AzureCreateRootCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
       shell: pwsh
 
-    - name: 'Build: signing cleanup'
-      if:  ${{ inputs.store-artifacts && inputs.sign-binaries }}
+    - name: 'Build: Publish AzureCertTools/AzureCreateSigningCert'
+      if: ${{ inputs.store-artifacts }}
       run: |
-        Remove-Item -Path ${{ runner.temp }}\cert.pfx -ErrorAction Continue
+        dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/AzureCreateSigningCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
       shell: pwsh
     
     - name: 'Build: Sign published binaries'
@@ -166,6 +139,12 @@ jobs:
         signing-cert-password: ${{ secrets.SIGNING_CERT_PASSWORD }}
         signing-cert-thumbprint: ${{ secrets.SIGNING_CERT_THUMBPRINT }}
         signing-timestamp-server: 'http://timestamp.sectigo.com'
+
+    - name: 'Build: signing cleanup'
+      if:  ${{ inputs.store-artifacts && inputs.sign-binaries }}
+      run: |
+        Remove-Item -Path ${{ runner.temp }}\cert.pfx -ErrorAction Continue
+      shell: pwsh
 
     - name: 'Store Artifacts: Binaries'
       uses: actions/upload-artifact@v4
