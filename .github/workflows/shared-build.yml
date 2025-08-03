@@ -97,6 +97,14 @@ jobs:
         Write-Host "##vso[task.setvariable variable=Build.InformationalVersion]$informationalVersion"
       shell: pwsh
 
+    # Build Solution: creates PFX file from BASe64 secret if signing is enabled
+    - name: 'Build Solution: prepare VSIX signing'
+      if:  ${{ inputs.store-artifacts && inputs.sign-binaries }}
+      run: |
+        $encodedBytes = "${{ secrets.SIGNING_CERT_PFX }}"
+        [convert]::FromBase64String($encodedBytes) | Set-Content -Path ${{ runner.temp }}\cert.pfx -Encoding Byte
+      shell: powershell
+
     - name: 'Build: Restore CertTools'
       run: dotnet restore ${{ env.CertToolsSolutionPath }}
       shell: pwsh
@@ -142,6 +150,22 @@ jobs:
           --no-restore `
           --profile ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/Properties/PublishProfiles/FolderProfile.pubxml'
       shell: pwsh
+
+    - name: 'Build: signing cleanup'
+      if:  ${{ inputs.store-artifacts && inputs.sign-binaries }}
+      run: |
+        Remove-Item -Path ${{ runner.temp }}\cert.pfx -ErrorAction Continue
+      shell: pwsh
+    
+    - name: 'Build: Sign published binaries'
+      if: ${{ inputs.store-artifacts && inputs.sign-binaries }}
+      uses: ./eng/actions/sign-binaries
+      with:
+        binaries-path: ${{ env.BinaryOutputPath }}
+        signing-cert-file: ${{ runner.temp }}\cert.pfx
+        signing-cert-password: ${{ secrets.SIGNING_CERT_PASSWORD }}
+        signing-cert-thumbprint: ${{ secrets.SIGNING_CERT_THUMBPRINT }}
+        signing-timestamp-server: 'http://timestamp.sectigo.com'
 
     - name: 'Store Artifacts: Binaries'
       uses: actions/upload-artifact@v4

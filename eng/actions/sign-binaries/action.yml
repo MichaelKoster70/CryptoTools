@@ -1,0 +1,34 @@
+name: Sign Binaries
+description: Signs binaries using a PFX certificate
+inputs:
+  binaries-path:
+    description: Path to the binaries to sign
+    required: true
+  signing-cert-file: 
+    description: The path to the PFX file
+    required: true
+  signing-cert-password: 
+    description: The password for the PFX file
+    required: true
+  signing-cert-thumbprint:
+    description: The cert footprint
+    required: true
+  signing-timestamp-server:
+    description: The timestamp server URL
+    required: false
+    default: 'http://timestamp.sectigo.com'
+runs:
+  using: "composite"
+
+  steps:
+  - run: |
+      $binariesPath = '${{ inputs.binaries-path }}'
+      Get-ChildItem -Path $binariesPath -Recurse -Include *.exe, *.dll | ForEach-Object {
+          if (-not (& signtool verify /pa "$($_.FullName)" 2>$null)) {
+            Write-Host "Signing file: $_"
+            & signtool sign /f "${{ inputs.signing-cert-file }}" /p "${{ inputs.signing-cert-password }}" /tr ${{ inputs.signing-timestamp-server }} /td sha256 /fd sha256 "$($_.FullName)"
+          } else {
+            Write-Host "Skipping already signed file: $_"
+          }
+      }
+    shell: pwsh
