@@ -98,7 +98,7 @@ jobs:
       shell: pwsh
 
     - name: 'Build: Restore CertTools'
-      run: dotnet restore ${{ env.CertToolsSolutionPath }} --configuration ${{ inputs.configuration }}
+      run: dotnet restore ${{ env.CertToolsSolutionPath }}
       shell: pwsh
 
     - name: 'Build: Build CertTools'
@@ -121,7 +121,7 @@ jobs:
       shell: pwsh
 
     - name: 'Build: Restore AzureCertTools'
-      run: dotnet restore ${{ env.AzureCertToolsSolutionPath }} --configuration ${{ inputs.configuration }}
+      run: dotnet restore ${{ env.AzureCertToolsSolutionPath }}
       shell: pwsh
 
     - name: 'Build: Build AzureCertTools'
