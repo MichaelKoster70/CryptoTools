@@ -35,7 +35,6 @@ jobs:
     runs-on: windows-2022
 
     env:
-      ScriptPath: ${{ github.workspace }}\eng\scripts
       CertToolsPath: ${{ github.workspace }}\src\CertTools
       CertToolsSolutionPath: ${{ github.workspace }}\src\CertTools\CertTools.sln
       AzureCertToolsPath: ${{ github.workspace }}\src\AzureCertTools
@@ -98,7 +97,7 @@ jobs:
       shell: pwsh
 
     # Build Solution: creates PFX file from BASe64 secret if signing is enabled
-    - name: 'Build Solution: prepare VSIX signing'
+    - name: 'Build Solution: prepare signing'
       if:  ${{ inputs.store-artifacts && inputs.sign-binaries }}
       run: |
         $encodedBytes = "${{ secrets.SIGNING_CERT_PFX }}"
@@ -120,11 +119,13 @@ jobs:
           --configuration ${{ inputs.configuration }} `
           --no-build `
           --no-restore `
+          --self-contained `
           /p:PublishProfile=${{ env.CertToolsPath }}\CreateRootCert\Properties\PublishProfiles\FolderProfile.pubxml'
         dotnet publish ${{ env.CertToolsPath }}\CreateSigningCert\CreateSigningCert.csproj `
           --configuration ${{ inputs.configuration }} `
           --no-build `
           --no-restore `
+          --self-contained `  
           /p:PublishProfile=${{ env.CertToolsPath }}\CreateSigningCert\Properties\PublishProfiles\FolderProfile.pubxml'
       shell: pwsh
 
@@ -150,12 +151,6 @@ jobs:
           --no-restore `
           /p:PublishProfile=${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/Properties/PublishProfiles/FolderProfile.pubxml'
       shell: pwsh
-
-    - name: 'Build: signing cleanup'
-      if:  ${{ inputs.store-artifacts && inputs.sign-binaries }}
-      run: |
-        Remove-Item -Path ${{ runner.temp }}\cert.pfx -ErrorAction Continue
-      shell: pwsh
     
     - name: 'Build: Sign published binaries'
       if: ${{ inputs.store-artifacts && inputs.sign-binaries }}
@@ -166,6 +161,12 @@ jobs:
         signing-cert-password: ${{ secrets.SIGNING_CERT_PASSWORD }}
         signing-cert-thumbprint: ${{ secrets.SIGNING_CERT_THUMBPRINT }}
         signing-timestamp-server: 'http://timestamp.sectigo.com'
+
+    - name: 'Build: signing cleanup'
+      if:  ${{ inputs.store-artifacts && inputs.sign-binaries }}
+      run: |
+        Remove-Item -Path ${{ runner.temp }}\cert.pfx -ErrorAction Continue
+      shell: pwsh
 
     - name: 'Store Artifacts: Binaries'
       uses: actions/upload-artifact@v4
