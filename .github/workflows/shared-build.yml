@@ -120,12 +120,12 @@ jobs:
           --configuration ${{ inputs.configuration }} `
           --no-build `
           --no-restore `
-          /p ${{ env.CertToolsPath }}\CreateRootCert\Properties\PublishProfiles\FolderProfile.pubxml'
+          /p:PublishProfile=${{ env.CertToolsPath }}\CreateRootCert\Properties\PublishProfiles\FolderProfile.pubxml'
         dotnet publish ${{ env.CertToolsPath }}\CreateSigningCert\CreateSigningCert.csproj `
           --configuration ${{ inputs.configuration }} `
           --no-build `
           --no-restore `
-          /p ${{ env.CertToolsPath }}\CreateSigningCert\Properties\PublishProfiles\FolderProfile.pubxml'
+          /p:PublishProfile=${{ env.CertToolsPath }}\CreateSigningCert\Properties\PublishProfiles\FolderProfile.pubxml'
       shell: pwsh
 
     - name: 'Build: Restore AzureCertTools'
@@ -143,12 +143,12 @@ jobs:
           --configuration ${{ inputs.configuration }} `
           --no-build `
           --no-restore `
-          /p ${{ env.AzureCertToolsPath }}/AzureCreateRootCert/Properties/PublishProfiles/FolderProfile.pubxml'
+          /p:PublishProfile=${{ env.AzureCertToolsPath }}/AzureCreateRootCert/Properties/PublishProfiles/FolderProfile.pubxml'
         dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/AzureCreateSigningCert.csproj `
           --configuration ${{ inputs.configuration }} `
           --no-build `
           --no-restore `
-          /p ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/Properties/PublishProfiles/FolderProfile.pubxml'
+          /p:PublishProfile=${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/Properties/PublishProfiles/FolderProfile.pubxml'
       shell: pwsh
 
     - name: 'Build: signing cleanup'
