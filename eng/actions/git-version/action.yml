@@ -37,5 +37,4 @@ runs:
   - id: gitversion-execute
     uses: gittools/actions/gitversion/execute@v4.0.1
     with:
-      useConfigFile: true
       configFilePath: GitVersion.yml

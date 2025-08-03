@@ -117,16 +117,17 @@ jobs:
       run: |
         dotnet publish ${{ env.CertToolsPath }}/CreateRootCert/CreateRootCert.csproj `
           --configuration ${{ inputs.configuration }} `
-          --no-build `
-          --no-restore `
-          --self-contained `
-          /p:PublishProfile=${{ env.CertToolsPath }}\CreateRootCert\Properties\PublishProfiles\FolderProfile.pubxml'
+          --no-build --no-restore `
+          --self-contained --single-file `
+          --runtime win-x64 ` 
+          /p:PublishProfile=${{ env.CertToolsPath }}\CreateRootCert\Properties\PublishProfiles\FolderProfile.pubxml
+          
         dotnet publish ${{ env.CertToolsPath }}\CreateSigningCert\CreateSigningCert.csproj `
           --configuration ${{ inputs.configuration }} `
-          --no-build `
-          --no-restore `
-          --self-contained `  
-          /p:PublishProfile=${{ env.CertToolsPath }}\CreateSigningCert\Properties\PublishProfiles\FolderProfile.pubxml'
+          --no-build --no-restore `
+          --self-contained `
+          --runtime win-x64 `
+          /p:PublishProfile=${{ env.CertToolsPath }}\CreateSigningCert\Properties\PublishProfiles\FolderProfile.pubxml
       shell: pwsh
 
     - name: 'Build: Restore AzureCertTools'
@@ -144,12 +145,14 @@ jobs:
           --configuration ${{ inputs.configuration }} `
           --no-build `
           --no-restore `
-          /p:PublishProfile=${{ env.AzureCertToolsPath }}/AzureCreateRootCert/Properties/PublishProfiles/FolderProfile.pubxml'
+          --self-contained `
+          --runtime win-x64 `
+          /p:PublishProfile=${{ env.AzureCertToolsPath }}/AzureCreateRootCert/Properties/PublishProfiles/FolderProfile.pubxml
         dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/AzureCreateSigningCert.csproj `
           --configuration ${{ inputs.configuration }} `
           --no-build `
           --no-restore `
-          /p:PublishProfile=${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/Properties/PublishProfiles/FolderProfile.pubxml'
+          /p:PublishProfile=${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/Properties/PublishProfiles/FolderProfile.pubxml
       shell: pwsh
     
     - name: 'Build: Sign published binaries'
