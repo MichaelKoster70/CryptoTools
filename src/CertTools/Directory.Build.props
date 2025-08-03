@@ -6,7 +6,7 @@
     <Copyright>(c) 2025 Michael Koster</Copyright>
     <Company>Michael Koster</Company>
     <Product>Crypto Tools</Product>
-    <SourceRevisionId Condition="'$(SourceRevisionId)' == ''">$(BUILD_SOURCEVERSION)</SourceRevisionId>
+    <SourceRevisionId Condition="'$(SourceRevisionId)' == ''">$(GITHUB_SHA)</SourceRevisionId>
   </PropertyGroup>
 
   <Choose>
