@@ -20,7 +20,7 @@ inputs:
   windows-sdk-version:
     description: The version of the Windows SDK to use for signing
     required: false
-    default: '10.0.22000.0'
+    default: '10.0.26100.0'
 runs:
   using: "composite"
 
