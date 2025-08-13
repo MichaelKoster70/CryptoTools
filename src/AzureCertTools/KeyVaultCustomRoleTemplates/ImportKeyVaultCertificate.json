@@ -1,6 +1,6 @@
 {
   "Name": "Key Vault Import Certificate",
-  "Description": "Perform Key Vault import certificate operations",
+  "Description": "Perform Key Vault x.509 certificate import operations",
     "assignableScopes": [
       "/subscriptions/{subscription}"
   ],
