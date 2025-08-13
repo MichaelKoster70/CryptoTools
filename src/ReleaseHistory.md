@@ -24,4 +24,4 @@ Minor release
 - Retargeting to support Windows 11 24H2 and newer only
 
 ### Bug Fixes
-- fixed options mismatch in the command line interface
+- Fixed options mismatch in the command line interface
