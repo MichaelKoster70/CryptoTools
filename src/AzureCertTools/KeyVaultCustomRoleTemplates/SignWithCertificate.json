@@ -1,6 +1,6 @@
 {
   "Name": "Key Vault Sign with Certificate",
-  "Description": "Perform key signing operations with a Key Vault based x.509 certificate",
+  "Description": "Perform Key Vault x.59 certificate signing operations",
   "AssignableScopes": [
       "/subscriptions/{subscription}"
   ],
