@@ -1,7 +1,7 @@
 {
   "Name": "Key Vault Create and Sign Certificate",
   "IsCustom": true,
-  "Description": "Perform Key Vault create and signing operations with x.509 certificates",
+  "Description": "Perform Key Vault x.509 certificate create and signing operations",
   "AssignableScopes": [
       "/subscriptions/{subscription}"
   ],
