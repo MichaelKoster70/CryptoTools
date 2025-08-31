@@ -62,10 +62,15 @@ internal class Options
    public required bool Interactive { get; set; }
 
    /// <summary>
-   /// Gets or sets the interactive login flag.
+   /// Gets or sets the Entra ID Application (Client) Secret.
    /// </summary>
    [Option("ClientSecret", Required = true, SetName="ClientSecret", HelpText = "The Azure Entra ID Application (Client) Secret of the application accessing Key Vault")]
    public required string ClientSecret { get; set; }
 
+   /// <summary>
+   /// Gets or sets the managed identity login flag.
+   /// </summary>
+   [Option("ManagedIdentity", Required = true, SetName="ManagedIdentity", HelpText = "Use Managed Identity to access Key Vault")]
+   public required bool ManagedIdentity { get; set; }
 }
 #pragma warning restore CA1812 // Avoid uninstantiated internal classes
