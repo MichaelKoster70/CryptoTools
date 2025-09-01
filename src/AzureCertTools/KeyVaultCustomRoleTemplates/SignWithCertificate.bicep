@@ -7,7 +7,7 @@ resource roleDefinitionSignWithCertificate 'Microsoft.Authorization/roleDefiniti
   name: keyVaultSignWithCertificateRoleDefinitionId
   properties: {
     roleName: 'Key Vault Sign with Certificate'
-    description: 'Perform Key Vault x.59 certificate signing operations'
+    description: 'Perform Key Vault x.509 certificate signing operations'
     type: 'CustomRole'
     permissions: [
       {
