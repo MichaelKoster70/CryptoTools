@@ -6,7 +6,6 @@ This folder contains custom role templates for Azure Key Vault.
 | Template Name | Description |
 | --- | --- |
 | `SignWithCertificate.json` | This template holds the required permissions to sign with a Key Vault certificate. |
-| `ImportKeyVaultCertificate.json` | This template holds the required permissions to import a certificate to Key Vault. |
 | `CreateAndSignCertificate.json` | This template holds the required permissions to get and import certificates, and sign with a cert key |
 
 ## How to use the role templates
