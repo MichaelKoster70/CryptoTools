@@ -127,7 +127,7 @@ steps:
       Write-Host "Client ID: $env:AZURE_CLIENT_ID"
       Write-Host "Tenant ID: $env:AZURE_TENANT_ID"
 
-      .\AzureCreateRootCert --Subject "My Root CA" --Name "MyRootCA" --ExpireMonth 240 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --ManagedIdentity
+      .\AzureCreateRootCert --Subject "My Root CA" --Name "MyRootCA" --ExpireMonth 240 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
 ```
 
 ## Getting Started
