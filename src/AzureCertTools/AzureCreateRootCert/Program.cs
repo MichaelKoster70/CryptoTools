@@ -31,15 +31,22 @@ internal static class Program
          return;
       }
 
-      TokenCredential credentrials = options.Interactive ? new InteractiveBrowserCredential(new InteractiveBrowserCredentialOptions()
+      // Create the token provider
+      TokenCredential credentials = options switch
       {
-         TenantId = options.TenantId,
-         ClientId = options.ClientId
-      }) : new ClientSecretCredential(options.TenantId, options.ClientId, options.ClientSecret);
+         { Interactive: true } => new InteractiveBrowserCredential(new InteractiveBrowserCredentialOptions
+         {
+            TenantId = options.TenantId,
+            ClientId = options.ClientId,
+            RedirectUri = new Uri("http://localhost")
+         }),
+         { WorkloadIdentity: true } => new WorkloadIdentityCredential(),
+         _ => new ClientSecretCredential(options.TenantId, options.ClientId, options.ClientSecret)
+      };
 
       Uri keyVaultUri = new(options.KeyVaultUri);
 
-      var cert = CertificateWorker.CreateRootCertAsync(options.Name, options.Subject, options.ExpireMonth, keyVaultUri, credentrials).Result;
+      var cert = CertificateWorker.CreateRootCertAsync(options.Name, options.Subject, options.ExpireMonth, keyVaultUri, credentials).Result;
 
       Console.WriteLine($"Certificate {cert} created in Key Vault {keyVaultUri}");
    }

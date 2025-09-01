@@ -25,3 +25,12 @@ Minor release
 
 ### Bug Fixes
 - Fixed options mismatch in the command line interface
+
+## 1.3.0
+Minor release
+
+### Features
+- Added support for Entra ID Managed Identity authentication
+
+### Bug Fixes
+- None

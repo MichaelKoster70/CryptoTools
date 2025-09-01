@@ -28,13 +28,13 @@ internal class Options
    public required string Name { get; set; }
 
    /// <summary>
-   /// Gets or sets the number of monith until the certificate expires.
+   /// Gets or sets the number of month until the certificate expires.
    /// </summary>
    [Option("ExpireMonth", Required = false, HelpText = "The number of month until the certificate expires, default if not specifed is 240 month.")]
    public int ExpireMonth { get; set; } = 240;
 
    /// <summary>
-   /// Gets or sets the Azure Key Vault URI where to upload the certifcate.
+   /// Gets or sets the Azure Key Vault URI where to upload the certificate.
    /// </summary>
    [Option("KeyVaultUri", Required = true, HelpText = "The URI to an Azure Key Vault")]
    public required string KeyVaultUri { get; set; }
@@ -58,9 +58,15 @@ internal class Options
    public required bool Interactive { get; set; }
 
    /// <summary>
-   /// Gets or sets the interactive login flag.
+   /// Gets or sets the Entra ID Application (Client) Secret.
    /// </summary>
    [Option("ClientSecret", Required = true, SetName="ClientSecret", HelpText = "The Azure Entra ID Application (Client) Secret of the application accessing Key Vault")]
    public required string ClientSecret { get; set; }
+
+   /// <summary>
+   /// Gets or sets the managed identity login flag.
+   /// </summary>
+   [Option("WorkloadIdentity", Required = true, SetName = "WorkloadIdentity", HelpText = "Use Workload Identity to access Key Vault")]
+   public required bool WorkloadIdentity { get; set; }
 }
 #pragma warning restore CA1812 // Avoid uninstantiated internal classes

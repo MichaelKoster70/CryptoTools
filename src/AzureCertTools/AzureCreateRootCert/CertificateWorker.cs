@@ -22,7 +22,7 @@ internal static class CertificateWorker
    private const string CodeSigningEnhancedKeyUsageOid = "1.3.6.1.5.5.7.3.3";
 
    /// <summary>Extended Key Usage OID for Code Signing friendly name</summary>
-   private const string CodeSigningEnhancedKeyUsageOidFriendlyName = " Code Signing";
+   private const string CodeSigningEnhancedKeyUsageOidFriendlyName = "Code Signing";
 
    /// <summary>
    /// Create a self signed root certificate with the given name, subject name and store it in Azure Key Vault.

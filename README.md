@@ -55,6 +55,9 @@ AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --K
 or
 ```
 AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
+or
+```
+AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --KeyVaultUri <uri> --WorkloadIdentity
 ```
 
 Where:
@@ -64,6 +67,7 @@ Where:
 * TenantId: The Entra ID tenant ID.
 * ClientId: The client ID of the service principal used to access the Key Vault.
 * ClientSecret: The client secret of the service principal used to access the Key Vault.
+* WorkloadIdentity: If set, the tool will use an Entra ID Managed Identity [Workload identity federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation) to access the Key Vault. Use this option when running the tool in an Azure Pipeline or a GitHub Action with workload identity federation configured.
 * Interactive: If set, the tool will use interactive login to Entra ID to access the Key Vault.
 * ExpiryMonths: The number of months the certificate is valid, default is 240.
 
@@ -80,6 +84,10 @@ or
 ```
 AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
 ```
+or
+```
+AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --WorkloadIdentity
+```
 
 Where:
 * Subject: The subject of the certificate in form CN=\<subject\>.
@@ -89,13 +97,38 @@ Where:
 * TenantId: The Entra ID tenant ID.
 * ClientId: The client ID of the service principal used to access the Key Vault.
 * ClientSecret: The client secret of the service principal used to access the Key Vault.
+* WorkloadIdentity: If set, the tool will a Entra ID Managed Identity [Workload identity federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation) to access the Key Vault. Use this option when running the tool in an Azure Pipeline or an GitHub Action with workload identity federation configured.
 * Interactive: If set, the tool will use interactive login to Entra ID to access the Key Vault.
 * ExpiryMonths: The number of months the certificate is valid, default is 1.
-* 
+ 
 Required permissions on Azure KeyVault:
 - Sign with Key (Microsoft.KeyVault/vaults/keys/sign/action)
 - Read Certificate Properties  (Microsoft.KeyVault/vaults/certificates/read)
 - Create Certificate (Microsoft.KeyVault/vaults/certificates/create/action)
+
+The WorkloadIdentity parameter relies on the [Azure Identity SDK for .NET](https://learn.microsoft.com/en-us/dotnet/api/azure.identity.workloadidentitycredential?view=azure-dotnet) and requires the following environment variables to be set:
+- AZURE_CLIENT_ID: The client ID of the Entra ID application representing the workload identity.
+- AZURE_TENANT_ID: The tenant ID of the Entra ID tenant.
+- AZURE_FEDERATED_TOKEN_FILE: The path to the file containing the OIDC token issued by the workload identity provider.
+
+## Azure Pipelines usage
+The tools can be used in Azure Pipelines with [Azure Resource Manager (ARM) service connection](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/connect-to-azure?view=azure-devops) with Workload identity federation configured. 
+
+The following example shows how to use the tools in an Azure Pipeline.
+```yaml
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'My-WIF-Service-Connection'  # Must be WIF-enabled
+    scriptType: 'pscore'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      Write-Host "Using federated token from: $env:AZURE_FEDERATED_TOKEN_FILE"
+      Write-Host "Client ID: $env:AZURE_CLIENT_ID"
+      Write-Host "Tenant ID: $env:AZURE_TENANT_ID"
+
+      .\AzureCreateRootCert --Subject "My Root CA" --Name "MyRootCA" --ExpireMonth 240 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
+```
 
 ## Getting Started
 
@@ -114,3 +147,6 @@ You need a Windows based PC with:
 
 ## License
 The tools are licensed under the [MIT license](LICENSE).
+
+## References
+- Azure Workload Identity Federation: https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation

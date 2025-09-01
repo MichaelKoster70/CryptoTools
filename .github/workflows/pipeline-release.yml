@@ -45,9 +45,9 @@ jobs:
       with:
         name: binaries
 
-#     - run: echo ${{steps.download.outputs.download-path}}
-#     - name: Display structure of downloaded files
-#       run: ls -R
+    - run: echo ${{steps.download.outputs.download-path}}
+    - name: Display structure of downloaded files
+      run: ls -R
 
     - name: Create Release
       uses: ncipollo/release-action@v1

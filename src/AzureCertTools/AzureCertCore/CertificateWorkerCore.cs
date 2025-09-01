@@ -5,16 +5,10 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Cryptography.X509Certificates;
 using Azure.Core;
 using Azure.Security.KeyVault.Certificates;
-using System.Runtime.ConstrainedExecution;
 
 namespace CertTools.AzureCertCore;
 
