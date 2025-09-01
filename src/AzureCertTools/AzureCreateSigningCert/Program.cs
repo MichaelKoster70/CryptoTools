@@ -25,15 +25,20 @@ internal static class Program
       }
 
       // Create the token provider
-      TokenCredential credentrials = options.Interactive ? new InteractiveBrowserCredential(new InteractiveBrowserCredentialOptions()
+      TokenCredential credentials = options switch
       {
-         TenantId = options.TenantId,
-         ClientId = options.ClientId
-      }) : new ClientSecretCredential(options.TenantId, options.ClientId, options.ClientSecret);
+         { Interactive: true } => new InteractiveBrowserCredential(new InteractiveBrowserCredentialOptions
+         {
+            TenantId = options.TenantId,
+            ClientId = options.ClientId
+         }),
+         { WorkloadIdentity: true } => new WorkloadIdentityCredential(),
+         _ => new ClientSecretCredential(options.TenantId, options.ClientId, options.ClientSecret)
+      };
 
       Uri keyVaultUri = new(options.KeyVaultUri);
 
-      CertificateWorker.CreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentrials, options.ExpireMonth).Wait();
+      CertificateWorker.CreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonth).Wait();
 
       Console.WriteLine($"Certificate {options.CertificateName} created in Key Vault {keyVaultUri}");
    }

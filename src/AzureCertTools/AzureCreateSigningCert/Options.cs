@@ -70,7 +70,7 @@ internal class Options
    /// <summary>
    /// Gets or sets the managed identity login flag.
    /// </summary>
-   [Option("ManagedIdentity", Required = true, SetName="ManagedIdentity", HelpText = "Use Managed Identity to access Key Vault")]
-   public required bool ManagedIdentity { get; set; }
+   [Option("WorkloadIdentity", Required = true, SetName= "WorkloadIdentity", HelpText = "Use Workload Identity to access Key Vault")]
+   public required bool WorkloadIdentity { get; set; }
 }
 #pragma warning restore CA1812 // Avoid uninstantiated internal classes

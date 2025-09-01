@@ -57,7 +57,7 @@ or
 AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
 or
 ```
-AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --KeyVaultUri <uri> --ManagedIdentity
+AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --KeyVaultUri <uri> --WorkloadIdentity
 ```
 
 Where:
@@ -67,7 +67,7 @@ Where:
 * TenantId: The Entra ID tenant ID.
 * ClientId: The client ID of the service principal used to access the Key Vault.
 * ClientSecret: The client secret of the service principal used to access the Key Vault.
-* ManagedIdentity: If set, the tool will a Entra ID Managed Identity [Workload identity federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation) to access the Key Vault. Use this option when running the tool in an Azure Pipeline or an GitHub Action with workload identity federation configured.
+* WorkloadIdentity: If set, the tool will a Entra ID Managed Identity [Workload identity federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation) to access the Key Vault. Use this option when running the tool in an Azure Pipeline or an GitHub Action with workload identity federation configured.
 * Interactive: If set, the tool will use interactive login to Entra ID to access the Key Vault.
 * ExpiryMonths: The number of months the certificate is valid, default is 240.
 
@@ -86,7 +86,7 @@ AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCert
 ```
 or
 ```
-AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --ManagedIdentity
+AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --WorkloadIdentity
 ```
 
 Where:
@@ -97,7 +97,7 @@ Where:
 * TenantId: The Entra ID tenant ID.
 * ClientId: The client ID of the service principal used to access the Key Vault.
 * ClientSecret: The client secret of the service principal used to access the Key Vault.
-* ManagedIdentity: If set, the tool will a Entra ID Managed Identity [Workload identity federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation) to access the Key Vault. Use this option when running the tool in an Azure Pipeline or an GitHub Action with workload identity federation configured.
+* WorkloadIdentity: If set, the tool will a Entra ID Managed Identity [Workload identity federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation) to access the Key Vault. Use this option when running the tool in an Azure Pipeline or an GitHub Action with workload identity federation configured.
 * Interactive: If set, the tool will use interactive login to Entra ID to access the Key Vault.
 * ExpiryMonths: The number of months the certificate is valid, default is 1.
  
@@ -106,7 +106,7 @@ Required permissions on Azure KeyVault:
 - Read Certificate Properties  (Microsoft.KeyVault/vaults/certificates/read)
 - Create Certificate (Microsoft.KeyVault/vaults/certificates/create/action)
 
-The ManagedIdentity parameter relies on the [Azure Identity SDK for .NET](https://learn.microsoft.com/en-us/dotnet/api/azure.identity.workloadidentitycredential?view=azure-dotnet) and requires the following environment variables to be set:
+The WorkloadIdentity parameter relies on the [Azure Identity SDK for .NET](https://learn.microsoft.com/en-us/dotnet/api/azure.identity.workloadidentitycredential?view=azure-dotnet) and requires the following environment variables to be set:
 - AZURE_CLIENT_ID: The client ID of the Entra ID application representing the workload identity.
 - AZURE_TENANT_ID: The tenant ID of the Entra ID tenant.
 - AZURE_FEDERATED_TOKEN_FILE: The path to the file containing the OIDC token issued by the workload identity provider.
