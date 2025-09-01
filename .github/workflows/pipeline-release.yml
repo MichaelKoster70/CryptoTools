@@ -52,5 +52,5 @@ jobs:
     - name: Create Release
       uses: ncipollo/release-action@v1
       with:
-         artifacts: '${{steps.download.outputs.download-path}}'
+         artifacts: '${{steps.download.outputs.download-path}}/*.exe'
          bodyFile: ${{ env.GitHubReleaseBodyFile }}
