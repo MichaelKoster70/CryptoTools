@@ -32,13 +32,13 @@ internal class Options
    public required string SignerCertificateName { get; set; }
 
    /// <summary>
-   /// Gets or sets the number of monith until the certificate expires.
+   /// Gets or sets the number of month until the certificate expires.
    /// </summary>
    [Option("ExpireMonth", Required = false, HelpText = "The number of month until the certificate expires, default if not specifed is 1 month.")]
    public int ExpireMonth { get; set; } = 1;
 
    /// <summary>
-   /// Gets or sets the Azure Key Vault URI where to upload the certifcate.
+   /// Gets or sets the Azure Key Vault URI where to upload the certificate.
    /// </summary>
    [Option("KeyVaultUri", Required = true, HelpText = "The URI to an Azure Key Vault")]
    public required string KeyVaultUri { get; set; }

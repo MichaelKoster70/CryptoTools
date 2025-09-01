@@ -30,7 +30,8 @@ internal static class Program
          { Interactive: true } => new InteractiveBrowserCredential(new InteractiveBrowserCredentialOptions
          {
             TenantId = options.TenantId,
-            ClientId = options.ClientId
+            ClientId = options.ClientId,
+            RedirectUri = new Uri("http://localhost")
          }),
          { WorkloadIdentity: true } => new WorkloadIdentityCredential(),
          _ => new ClientSecretCredential(options.TenantId, options.ClientId, options.ClientSecret)
