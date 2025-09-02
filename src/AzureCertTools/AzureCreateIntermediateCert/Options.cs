@@ -7,7 +7,7 @@
 
 using CommandLine;
 
-namespace CertTools.AzureCreateRootCert;
+namespace CertTools.AzureCreateIntermediateCert;
 
 /// <summary>
 /// Container class for the command line options.
@@ -23,8 +23,14 @@ internal class Options
    /// <summary>
    /// Gets or sets the name of the certificate to create in Key Vault.
    /// </summary>
-   [Option("CertificateName", Required = true, HelpText = "The name of the certificate to create in Key Vault")]
+   [Option("Name", Required = true, HelpText = "The name of the certificate to create in Key Vault")]
    public required string CertificateName { get; set; }
+
+   /// <summary>
+   /// Gets or sets the name of the signer certificate stored in Key Vault.
+   /// </summary>
+   [Option("SignerCertificateName", Required = true, HelpText = "The name of the signer certificate in Key Vault")]
+   public required string SignerCertificateName { get; set; }
 
    /// <summary>
    /// Gets or sets the number of month until the certificate expires.

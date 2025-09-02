@@ -124,6 +124,12 @@ jobs:
         dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateRootCert/AzureCreateRootCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
       shell: pwsh
 
+    - name: 'Build: Publish AzureCertTools/AzureCreateIntermediateCert'
+      if: ${{ inputs.store-artifacts }}
+      run: |
+        dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateRootCert/AzureCreateRootCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
+      shell: pwsh
+
     - name: 'Build: Publish AzureCertTools/AzureCreateSigningCert'
       if: ${{ inputs.store-artifacts }}
       run: |

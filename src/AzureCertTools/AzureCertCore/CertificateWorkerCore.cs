@@ -57,6 +57,35 @@ public static class CertificateWorkerCore
       return new KeyVaultX509SignatureGenerator(tokenCredential, privateKeyId, x509Cert.PublicKey);
    }
 
+   /// <summary>
+   /// Retrieves a certificate from Azure Key Vault and creates a signature generator for signing operations.
+   /// </summary>
+   /// <param name="certificateName">The name of the certificate to retrieve from Key Vault.</param>
+   /// <param name="client">The <see cref="CertificateClient"/> instance used to interact with Azure Key Vault.</param>
+   /// <param name="tokenCredential">The <see cref="TokenCredential"/> used to authenticate requests to Azure Key Vault.</param>
+   /// <returns>A tuple containing the subject name of the certificate as an <see cref="X500DistinguishedName"/>  and an <see cref="X509SignatureGenerator"/> for performing cryptographic signing operations.</returns>
+   public static async Task<(X500DistinguishedName, X509SignatureGenerator)> KeyVaultGetSignerCertificateAsync(string certificateName, CertificateClient client, TokenCredential tokenCredential)
+   {
+      ArgumentNullException.ThrowIfNull(certificateName);
+      ArgumentNullException.ThrowIfNull(client);
+      ArgumentNullException.ThrowIfNull(tokenCredential);
+
+      var cert = await client.GetCertificateAsync(certificateName);
+
+      using var x509Cert = new X509Certificate2(cert.Value.Cer);
+      var privateKeyId = cert.Value.KeyId;
+      return (x509Cert.SubjectName, new KeyVaultX509SignatureGenerator(tokenCredential, privateKeyId, x509Cert.PublicKey));
+   }
+
+   /// <summary>
+   /// Signs a certificate request and generates an X.509 certificate.
+   /// </summary>
+   /// <param name="csr">The certificate request to be signed. This parameter cannot be <see langword="null"/>.</param>
+   /// <param name="signerName">The distinguished name of the certificate authority (CA) or signer. This parameter cannot be <see
+   /// langword="null"/>.</param>
+   /// <param name="signerSignature">The signature generator used to sign the certificate. This parameter cannot be <see langword="null"/>.</param>
+   /// <param name="expireMonth">The validity period of the certificate, in months, starting from the current date.</param>
+   /// <returns>An <see cref="X509Certificate2"/> object representing the signed certificate.</returns>
    public static X509Certificate2 SignCertificateRequest(CertificateRequest csr, X500DistinguishedName signerName, X509SignatureGenerator signerSignature, int expireMonth)
    {
       ArgumentNullException.ThrowIfNull(csr);

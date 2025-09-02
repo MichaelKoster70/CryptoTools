@@ -9,7 +9,7 @@ using Azure.Core;
 using Azure.Identity;
 using CommandLine;
 
-namespace CertTools.AzureCreateRootCert;
+namespace CertTools.AzureCreateIntermediateCert;
 
 /// <summary>
 /// Class holding teh application entry point.
@@ -22,7 +22,7 @@ internal static class Program
    /// <param name="args">The args</param>
    static void Main(string[] args)
    {
-      Console.WriteLine("Crypto Tools - Azure Key Vault create root certificate");
+      Console.WriteLine("Crypto Tools - Azure Key Vault create intermediate CA certificate");
 
       // Parse the command line options, get at least SubjectName and Name
       var options = Parser.Default.ParseArguments<Options>(args).Value;
@@ -46,7 +46,7 @@ internal static class Program
 
       Uri keyVaultUri = new(options.KeyVaultUri);
 
-      var cert = CertificateWorker.CreateRootCertAsync(options.CertificateName, options.Subject, options.ExpireMonth, keyVaultUri, credentials).Result;
+      var cert = CertificateWorker.CreateIntermediateCertAsync(options.CertificateName, options.Subject, options.SignerCertificateName, options.ExpireMonth, keyVaultUri, credentials).Result;
 
       Console.WriteLine($"Certificate {cert} created in Key Vault {keyVaultUri}");
    }

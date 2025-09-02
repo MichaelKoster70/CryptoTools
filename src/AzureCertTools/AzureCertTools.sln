@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureCreateSigningCert", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureCertCore", "AzureCertCore\AzureCertCore.csproj", "{84B57FBE-F5A4-4857-8601-9A9F3E5A616D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureCreateIntermediateCert", "AzureCreateIntermediateCert\AzureCreateIntermediateCert.csproj", "{EAC89338-876B-40B0-C2B2-09541671D6E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{84B57FBE-F5A4-4857-8601-9A9F3E5A616D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84B57FBE-F5A4-4857-8601-9A9F3E5A616D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84B57FBE-F5A4-4857-8601-9A9F3E5A616D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAC89338-876B-40B0-C2B2-09541671D6E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAC89338-876B-40B0-C2B2-09541671D6E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAC89338-876B-40B0-C2B2-09541671D6E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAC89338-876B-40B0-C2B2-09541671D6E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
