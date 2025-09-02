@@ -5,8 +5,7 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-using System.Text;
+using CertTools.CertCore;
 using CommandLine;
 
 namespace CertTools.CreateRootCert;
@@ -32,7 +31,7 @@ internal static class Program
       }
 
       // Check if the password is given, if not, ask for it 
-      string? password = options.Password ?? ReadPassword();
+      string? password = options.Password ?? ConsoleHelper.ReadPassword("root cert");
 
       if (password == null)
       {
@@ -45,43 +44,9 @@ internal static class Program
         var thumbPrint = CertificateWorker.CreateRootCert(options.Subject, options.Name, password, options.ExpireMonth);
         Console.WriteLine($"Certificate created: Thumbprint=\"{thumbPrint}\", filename={options.Name}.pfx");
       }
-      catch (CryptographicException ex)
+      catch (Exception ex)
       {
          Console.WriteLine($"Error creating certificate: {ex.Message}");
-      }
-   }
-
-   /// <summary>
-   /// Read a password from the console.
-   /// </summary>
-   /// <returns>The password string, null if user abort</returns>
-   private static string? ReadPassword()
-   {
-      Console.Write("Enter password: ");
-      var password = new StringBuilder();
-      while (true)
-      {
-         var key = Console.ReadKey(true);
-         switch(key.Key)
-         {
-            case ConsoleKey.Escape:
-               Console.WriteLine();
-               return null;
-            case ConsoleKey.Enter:
-               Console.WriteLine();
-               return password.ToString();
-            case ConsoleKey.Backspace:
-               if (password.Length > 0)
-               {
-                  password = password.Remove(password.Length - 1, 1);
-                  Console.Write("\b \b");
-               }
-               break;
-               default:
-               _ = password.Append(key.KeyChar);
-               Console.Write("*");
-               break;
-         }
       }
    }
 }

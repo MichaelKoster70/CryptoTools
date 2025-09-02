@@ -10,5 +10,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Instantiated via CommandLineParser reflection.", Scope = "type", Target = "~T:CertTools.CreateRootCert.Options")]
-[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "by Design", Scope = "member", Target = "~M:CertTools.CreateRootCert.Program.Main(System.String[])")]
+[assembly: SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "Not localized", Scope = "member", Target = "~M:CertTools.CertCore.ConsoleHelper.ReadPassword(System.String)~System.String")]
