@@ -76,7 +76,7 @@ public static class CertificateWorkerCore
    }
 
    /// <summary>
-   /// Merges the given certificate into the existing certificater in Azure Key Vault.
+   /// Merges the given certificate into the existing certificate in Azure Key Vault.
    /// </summary>
    /// <param name="certificateName">The certificate name to merge.</param>
    /// <param name="certificate">The .NEt certificate source.</param>

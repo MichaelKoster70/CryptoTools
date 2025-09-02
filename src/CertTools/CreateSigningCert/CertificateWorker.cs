@@ -7,6 +7,7 @@
 
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using CertTools.CertCore;
 
 namespace CertTools.CreateSigningCert;
 
@@ -17,13 +18,6 @@ internal static class CertificateWorker
 {
    /// <summary>RSA key size</summary>
    private const int RsaKeySize = 4096;
-
-   /// <summary>Extended Key Usage OID for Code Signing</summary>
-   private const string CodeSigningEnhancedKeyUsageOid = "1.3.6.1.5.5.7.3.3";
-
-   /// <summary>Extended Key Usage OID for Code Signing friendly name</summary>
-   private const string CodeSigningEnhancedKeyUsageOidFriendlyName = " Code Signing";
-
 
    /// <summary>
    /// Create a code signing certificate signed with the root loaded from CurrentUser\My stire
@@ -74,7 +68,7 @@ internal static class CertificateWorker
       var csr = new CertificateRequest(subject, keyPair, HashAlgorithmName.SHA384, RSASignaturePadding.Pkcs1);
       csr.CertificateExtensions.Add(new X509BasicConstraintsExtension(false, false, 0, true));
       csr.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature, true));
-      csr.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(CodeSigningEnhancedKeyUsageOid, CodeSigningEnhancedKeyUsageOidFriendlyName)], true));
+      csr.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(X509Constants.CodeSigningEnhancedKeyUsageOid, X509Constants.CodeSigningEnhancedKeyUsageOidFriendlyName)], true));
 
       // Create the Cert serial numbert
       byte[] serialNumber = new byte[9];

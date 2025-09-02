@@ -12,8 +12,6 @@ namespace CertTools.CreateSigningCert;
 /// <summary>
 /// Container class for the command line options.
 /// </summary>
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes
-
 internal class Options
 {
    /// <summary>
@@ -58,4 +56,3 @@ internal class Options
    [Option("ExpireDays", Required = false, HelpText = "The number of days until the certificate expires, default if not specifed is 365 days.")]
    public int ExpireDays { get; set; } = 365;
 }
-#pragma warning restore CA1812 // Avoid uninstantiated internal classes

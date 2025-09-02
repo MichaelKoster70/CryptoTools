@@ -12,5 +12,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:CertTools.CreateSigningCert.CertificateWorker.DisposeCertificates(System.Security.Cryptography.X509Certificates.X509Certificate2Collection)")]
-[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:CertTools.CreateSigningCert.Program.Main(System.String[])")]
+[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "By Design", Scope = "member", Target = "~M:CertTools.CreateSigningCert.CertificateWorker.DisposeCertificates(System.Security.Cryptography.X509Certificates.X509Certificate2Collection)")]
+[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "By Design", Scope = "member", Target = "~M:CertTools.CreateSigningCert.Program.Main(System.String[])")]
+[assembly: SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Instantiated via CommandLineParser reflection.", Scope = "type", Target = "~T:CertTools.CreateSigningCert.Options")]
