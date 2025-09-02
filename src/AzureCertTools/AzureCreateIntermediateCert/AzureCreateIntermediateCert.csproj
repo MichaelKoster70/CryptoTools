@@ -11,11 +11,11 @@
     <SupportedOSPlatformVersion>10.0.26100.0</SupportedOSPlatformVersion>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
-    <Title>Self Signed Root Certificate Creation Tool for Azure KeyVault</Title>
+    <Title>Intermediate CA Certificate Creation Tool for Azure KeyVault</Title>
     <AssemblyTitle>$(Title)</AssemblyTitle>
     <TrimMode>partial</TrimMode>
     <ApplicationIcon>AzureCreateIntermediateCert.ico</ApplicationIcon>
-	<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,5 +31,5 @@
   <ItemGroup>
     <ProjectReference Include="..\AzureCertCore\AzureCertCore.csproj" />
   </ItemGroup>
-  
+
 </Project>

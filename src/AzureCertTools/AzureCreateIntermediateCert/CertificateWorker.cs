@@ -14,7 +14,7 @@ using CertTools.AzureCertCore;
 namespace CertTools.AzureCreateIntermediateCert;
 
 /// <summary>
-/// Class providing the functionality to create a self signed root certificate and upload it to Azure Key Vault.
+/// Class providing the functionality to create a intermediate CA certificate and upload it to Azure Key Vault.
 /// </summary>
 internal static class CertificateWorker
 {
