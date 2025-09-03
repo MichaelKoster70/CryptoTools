@@ -17,14 +17,20 @@ internal class Options
    /// <summary>
    /// Gets or set the x.509 Subject Name for the certificate.
    /// </summary>
-   [Option("Subject", Required = true, HelpText = "The subject name for the certificate in the form \"CN=<subject name>\"")]
-   public required string Subject { get; set; }
+   [Option("FQDN", Required = true, HelpText = "The fully qualified DNS domain name")]
+   public required string FQDN { get; set; }
 
    /// <summary>
    /// Gets or sets the name of the certificate to create in Key Vault.
    /// </summary>
-   [Option("FileName", Required = true, HelpText = "The name of the file to export the certificate to (PFX and CER)")]
-   public required string FileName { get; set; }
+   [Option("CertificateName", Required = true, HelpText = "The name of the file to export the certificate to (PFX and CER) / Azure KeyVault Certificate Name")]
+   public required string CertificateName { get; set; }
+
+   /// <summary>
+   /// Gets or sets the the flag on whether to create the certificate locally or on KeyVault
+   /// </summary>
+   [Option("Local", Required = false, HelpText = "Flag to create the certificate locally (true) or in Key Vault (false)")]
+   public required bool Local { get; set; } = false;
 
    /// <summary>
    /// Gets or sets the path to the PFX file to export the certificate to.

@@ -48,6 +48,6 @@ internal static class Program
 
       var cert = CertificateWorker.CreateIntermediateCertAsync(options.CertificateName, options.Subject, options.SignerCertificateName, options.ExpireMonth, keyVaultUri, credentials).Result;
 
-      Console.WriteLine($"Certificate {cert} created in Key Vault {keyVaultUri}");
+      Console.WriteLine($"Certificate created: name={cert}, Key Vault={keyVaultUri}");
    }
 }

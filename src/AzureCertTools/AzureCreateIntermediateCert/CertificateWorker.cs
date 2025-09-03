@@ -18,9 +18,6 @@ namespace CertTools.AzureCreateIntermediateCert;
 /// </summary>
 internal static class CertificateWorker
 {
-   /// <summary>Extended Key Usage OID for Code Signing friendly name</summary>
-   private const string CodeSigningEnhancedKeyUsageOidFriendlyName = "Code Signing";
-
    /// <summary>
    /// Create a self signed root certificate with the given name, subject name and store it in Azure Key Vault.
    /// </summary>
@@ -71,12 +68,13 @@ internal static class CertificateWorker
       var certSigningRequest = CertificateRequest.LoadSigningRequest(pkcs10: certOperationCertSigningRequest,
          signerHashAlgorithm: HashAlgorithmName.SHA384, signerSignaturePadding: RSASignaturePadding.Pkcs1);
 
+      // Stage 5: Add required extensions for a CA certificate
       certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(true, true, 0, true));
       certSigningRequest.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.KeyCertSign | X509KeyUsageFlags.CrlSign | X509KeyUsageFlags.DigitalSignature, false));
       certSigningRequest.CertificateExtensions.Add(new X509SubjectKeyIdentifierExtension(certSigningRequest.PublicKey, false));
-      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(Constants.ServerAuthEnhancedKeyUsageOid, Constants.ServerAuthEnhancedKeyUsageOidFriendlyName)], false));
-      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(Constants.ClientAuthEnhancedKeyUsageOid, Constants.ClientAuthEnhancedKeyUsageOidFriendlyName)], false));
-      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(Constants.CodeSigningEnhancedKeyUsageOid, CodeSigningEnhancedKeyUsageOidFriendlyName)], true));
+      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(Constants.ServerAuthenticationEnhancedKeyUsageOid, Constants.ServerAuthenticationEnhancedKeyUsageOidFriendlyName)], false));
+      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(Constants.ClientAuthenticationEnhancedKeyUsageOid, Constants.ClientAuthenticationEnhancedKeyUsageOidFriendlyName)], false));
+      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(Constants.CodeSigningEnhancedKeyUsageOid, Constants.CodeSigningEnhancedKeyUsageOidFriendlyName)], true));
 
       return certSigningRequest;
    }

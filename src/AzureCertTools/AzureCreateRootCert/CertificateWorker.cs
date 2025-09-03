@@ -31,7 +31,7 @@ internal static class CertificateWorker
       var client = new CertificateClient(vaultUri, tokenCredential);
 
       // create a temporary self signed cert in Azure Key Vault, only used to sign a single CSR
-      var signatureGenerator = await CertificateWorkerCore.KeyVaultCreateSelfSignedCertAsync(certificateName, subjectNameValue, client, tokenCredential, false, 1);
+      var signatureGenerator = await CertificateWorkerCore.KeyVaultCreateSelfSignedSignatureGeneratorAsync(certificateName, subjectNameValue, client, tokenCredential, false, 1);
       var signerName = new X500DistinguishedName(subjectNameValue);
       
       // create a CSR and sign it with the temporary cert
@@ -70,8 +70,8 @@ internal static class CertificateWorker
       certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(true, true, 0, true));
       certSigningRequest.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.KeyCertSign | X509KeyUsageFlags.CrlSign | X509KeyUsageFlags.DigitalSignature, false));
       certSigningRequest.CertificateExtensions.Add(new X509SubjectKeyIdentifierExtension(certSigningRequest.PublicKey, false));
-      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(Constants.ServerAuthEnhancedKeyUsageOid, Constants.ServerAuthEnhancedKeyUsageOidFriendlyName)], false));
-      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(Constants.ClientAuthEnhancedKeyUsageOid, Constants.ClientAuthEnhancedKeyUsageOidFriendlyName)], false));
+      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(Constants.ServerAuthenticationEnhancedKeyUsageOid, Constants.ServerAuthenticationEnhancedKeyUsageOidFriendlyName)], false));
+      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(Constants.ClientAuthenticationEnhancedKeyUsageOid, Constants.ClientAuthenticationEnhancedKeyUsageOidFriendlyName)], false));
       certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(Constants.CodeSigningEnhancedKeyUsageOid, Constants.CodeSigningEnhancedKeyUsageOidFriendlyName)], true));
 
       return certSigningRequest;

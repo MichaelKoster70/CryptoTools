@@ -6,12 +6,14 @@
 // ----------------------------------------------------------------------------
 
 using System.Text;
+using Azure.Core;
+using Azure.Identity;
 using CommandLine;
 
 namespace CertTools.AzureCreateSslServerCert;
 
 /// <summary>
-/// Class holding teh application entry point.
+/// Class holding the application entry point.
 /// </summary>
 internal static class Program
 {
@@ -19,35 +21,66 @@ internal static class Program
    /// Application entry point.
    /// </summary>
    /// <param name="args">The args</param>
-   static void Main(string[] args)
+   static async Task<int> Main(string[] args)
    {
-      Console.WriteLine("Crypto Tools - Azure Key Vault create root certificate");
+      Console.WriteLine("Crypto Tools - Azure Key Vault create SSL Server certificate");
+
+      int result = 1;
 
       // Parse the command line options, get at least SubjectName and Name
       var options = Parser.Default.ParseArguments<Options>(args).Value;
       if (options == null)
       {
-         return;
+         return result;
       }
 
-      // Check if the signing cert PFX password is given, if not, ask for it 
-      string? signingPassword = options.Password ?? ReadPassword("PFX");
-
-      if (signingPassword == null)
+      if (options.Local)
       {
-         Console.WriteLine("No signing cert password given, aborting");
-         return;
+         Console.WriteLine("Creating certificate locally");
+
+         // Check if the signing cert PFX password is given, if not, ask for it 
+         string? signingPassword = options.Password ?? ReadPassword("PFX");
+
+         if (signingPassword == null)
+         {
+            Console.WriteLine("No signing cert password given, aborting");
+            return result;
+         }
+      }
+      else
+      {
+         Console.WriteLine("Creating certificate in Azure Key Vault");
       }
 
       try
       {
+         // Create the token provider
+         TokenCredential credentials = options switch
+         {
+            { Interactive: true } => new InteractiveBrowserCredential(new InteractiveBrowserCredentialOptions
+            {
+               TenantId = options.TenantId,
+               ClientId = options.ClientId,
+               RedirectUri = new Uri("http://localhost")
+            }),
+            { WorkloadIdentity: true } => new WorkloadIdentityCredential(),
+            _ => new ClientSecretCredential(options.TenantId, options.ClientId, options.ClientSecret)
+         };
 
-         Console.WriteLine($"Certificate created: filename={options.FileName}.pfx");
+         Uri keyVaultUri = new(options.KeyVaultUri);
+
+         var resultName = await CertificateWorker.CreateSslServerCertificateAsync(options.CertificateName, options.FQDN, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonth, options.Local, options.Password);
+         Console.WriteLine($"Certificate created: {resultName}");
+
+         result = 0;
       }
       catch (Exception ex)
       {
          Console.WriteLine($"Error creating certificate: {ex.Message}");
+         result = 1;
       }
+
+      return result;
    }
 
    /// <summary>

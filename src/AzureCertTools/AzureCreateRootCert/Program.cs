@@ -20,7 +20,7 @@ internal static class Program
    /// Application entry point.
    /// </summary>
    /// <param name="args">The args</param>
-   static void Main(string[] args)
+   static async Task Main(string[] args)
    {
       Console.WriteLine("Crypto Tools - Azure Key Vault create root certificate");
 
@@ -46,8 +46,8 @@ internal static class Program
 
       Uri keyVaultUri = new(options.KeyVaultUri);
 
-      var cert = CertificateWorker.CreateRootCertAsync(options.CertificateName, options.Subject, options.ExpireMonth, keyVaultUri, credentials).Result;
+      var cert = await CertificateWorker.CreateRootCertAsync(options.CertificateName, options.Subject, options.ExpireMonth, keyVaultUri, credentials);
 
-      Console.WriteLine($"Certificate {cert} created in Key Vault {keyVaultUri}");
+      Console.WriteLine($"Certificate created: name={cert}, Key Vault={keyVaultUri}");
    }
 }

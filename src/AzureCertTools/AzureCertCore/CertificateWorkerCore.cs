@@ -28,8 +28,8 @@ public static class CertificateWorkerCore
    /// <param name="client">The client representing the Azure Key Vault instance to hold the certificate.</param>
    /// <param name="tokenCredential">The authentication token provider.</param>
    /// <param name="expireMonth">The expiry date in month from now.</param>
-   /// <returns>The signanture generator based on the created certificate.</returns>
-   public static async Task<X509SignatureGenerator> KeyVaultCreateSelfSignedCertAsync(string certificateName, string subjectNameValue, CertificateClient client, TokenCredential tokenCredential, bool reuseKey, int expireMonth)
+   /// <returns>The <see cref="X509SignatureGenerator"/> based on the created certificate.</returns>
+   public static async Task<X509SignatureGenerator> KeyVaultCreateSelfSignedSignatureGeneratorAsync(string certificateName, string subjectNameValue, CertificateClient client, TokenCredential tokenCredential, bool reuseKey, int expireMonth)
    {
       ArgumentNullException.ThrowIfNull(certificateName);
       ArgumentNullException.ThrowIfNull(subjectNameValue);
@@ -92,7 +92,7 @@ public static class CertificateWorkerCore
       ArgumentNullException.ThrowIfNull(signerName);
       ArgumentNullException.ThrowIfNull(signerSignature);
 
-      // Create the Cert serial numbert
+      // Create the Cert serial number
       byte[] serialNumber = new byte[9];
       using (RandomNumberGenerator randomNumberGenerator = RandomNumberGenerator.Create())
       {
