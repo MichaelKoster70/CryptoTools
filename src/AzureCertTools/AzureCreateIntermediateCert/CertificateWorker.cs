@@ -72,9 +72,11 @@ internal static class CertificateWorker
       certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(true, true, 0, true));
       certSigningRequest.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.KeyCertSign | X509KeyUsageFlags.CrlSign | X509KeyUsageFlags.DigitalSignature, false));
       certSigningRequest.CertificateExtensions.Add(new X509SubjectKeyIdentifierExtension(certSigningRequest.PublicKey, false));
-      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(Constants.ServerAuthenticationEnhancedKeyUsageOid, Constants.ServerAuthenticationEnhancedKeyUsageOidFriendlyName)], false));
-      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(Constants.ClientAuthenticationEnhancedKeyUsageOid, Constants.ClientAuthenticationEnhancedKeyUsageOidFriendlyName)], false));
-      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(Constants.CodeSigningEnhancedKeyUsageOid, Constants.CodeSigningEnhancedKeyUsageOidFriendlyName)], true));
+      certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([
+         new Oid(Constants.ServerAuthenticationEnhancedKeyUsageOid, Constants.ServerAuthenticationEnhancedKeyUsageOidFriendlyName),
+         new Oid(Constants.ClientAuthenticationEnhancedKeyUsageOid, Constants.ClientAuthenticationEnhancedKeyUsageOidFriendlyName),
+         new Oid(Constants.CodeSigningEnhancedKeyUsageOid, Constants.CodeSigningEnhancedKeyUsageOidFriendlyName)
+      ], true));
 
       return certSigningRequest;
    }
