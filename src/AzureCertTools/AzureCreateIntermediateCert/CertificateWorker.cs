@@ -11,10 +11,10 @@ using Azure.Core;
 using Azure.Security.KeyVault.Certificates;
 using CertTools.AzureCertCore;
 
-namespace CertTools.AzureCreateRootCert;
+namespace CertTools.AzureCreateIntermediateCert;
 
 /// <summary>
-/// Class providing the functionality to create a self signed root CA certificate and upload it to Azure Key Vault.
+/// Class providing the functionality to create a intermediate CA certificate and upload it to Azure Key Vault.
 /// </summary>
 internal static class CertificateWorker
 {
@@ -23,28 +23,29 @@ internal static class CertificateWorker
    /// </summary>
    /// <param name="certificateName">The Azure Key Vault certificate name.</param>
    /// <param name="subjectNameValue">The subject name for the certificate.</param>
-   /// <param name="expireMonth">The number of month until the certificate expires.</param>
+   /// <param name="expireMonths">The number of month until the certificate expires.</param>
    /// <param name="vaultUri">The URI to the Azure Key Vault.</param>
    /// <param name="tokenCredential">The Azure Key Vault token credential.</param>
-   public static async Task<string> CreateRootCertAsync(string certificateName, string subjectNameValue, int expireMonth, Uri vaultUri, TokenCredential tokenCredential)
+   public static async Task<string> CreateIntermediateCertAsync(string certificateName, string subjectNameValue, string signerCertificateName, int expireMonths, Uri vaultUri, TokenCredential tokenCredential)
    {
       var client = new CertificateClient(vaultUri, tokenCredential);
 
-      // create a temporary self signed cert in Azure Key Vault, only used to sign a single CSR
-      var signatureGenerator = await CertificateWorkerCore.KeyVaultCreateSelfSignedSignatureGeneratorAsync(certificateName, subjectNameValue, client, tokenCredential, false, 1);
-      var signerName = new X500DistinguishedName(subjectNameValue);
-      
-      // create a CSR and sign it with the temporary cert
-      var csr = await KeyVaultCreateRootCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonth);
-      using var certificate = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signatureGenerator, expireMonth);
+      // Get the signer certificate and its associated keys
+      (var signerName, var signerSignaturGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
 
-      // Merge with the pending certificate operation
-      await CertificateWorkerCore.KeyVaultMergeCertificateAsync(certificateName, certificate, client);
+      // create a CSR
+      var csr = await KeyVaultCreateCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonths);
+
+      // Sign the CSR
+      var cert = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signerSignaturGenerator, expireMonths);
+
+      // and upload it to Key Vault
+      await CertificateWorkerCore.KeyVaultMergeCertificateAsync(certificateName, cert, client);
 
       return certificateName;
    }
 
-   private static async Task<CertificateRequest> KeyVaultCreateRootCertificateRequestAsync(string certificateName, string subjectNameValue, CertificateClient client, int expireMonth)
+   private static async Task<CertificateRequest> KeyVaultCreateCertificateRequestAsync(string certificateName, string subjectNameValue, CertificateClient client, int expireMonth)
    {
       var certificatePolicy = new CertificatePolicy(WellKnownIssuerNames.Unknown, subjectNameValue)
       {
@@ -66,8 +67,8 @@ internal static class CertificateWorker
       // Stage 4: Get the .NET CSR object
       var certSigningRequest = CertificateRequest.LoadSigningRequest(pkcs10: certOperationCertSigningRequest,
          signerHashAlgorithm: HashAlgorithmName.SHA384, signerSignaturePadding: RSASignaturePadding.Pkcs1);
-      
-      // Stage 5: Add the required extensions for a root CA
+
+      // Stage 5: Add required extensions for a CA certificate
       certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(true, true, 0, true));
       certSigningRequest.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.KeyCertSign | X509KeyUsageFlags.CrlSign | X509KeyUsageFlags.DigitalSignature, false));
       certSigningRequest.CertificateExtensions.Add(new X509SubjectKeyIdentifierExtension(certSigningRequest.PublicKey, false));

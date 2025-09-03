@@ -55,9 +55,10 @@ AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --K
 or
 ```
 AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
+```
 or
 ```
-AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --KeyVaultUri <uri> --WorkloadIdentity
+AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --TenantId <tenantId> --ClientId <clientId> --KeyVaultUri <uri> --WorkloadIdentity
 ```
 
 Where:
@@ -86,7 +87,7 @@ AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCert
 ```
 or
 ```
-AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --WorkloadIdentity
+AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --WorkloadIdentity
 ```
 
 Where:

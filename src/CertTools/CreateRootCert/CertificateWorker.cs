@@ -7,23 +7,21 @@
 
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using CertTools.CertCore;
+using Windows.Devices.PointOfService;
 
 namespace CertTools.CreateRootCert;
 
 /// <summary>
-/// Class providing the functionality to create a self signed root certificate.
+/// Class providing the functionality to create a self signed root certificate for the following purposes:
+/// - Code Signing
+/// - Client Authentication
+/// - Server Authentication
 /// </summary>
 internal static class CertificateWorker
 {
    /// <summary>RSA key size</summary>
    private const int RsaKeySize = 4096;
-
-   /// <summary>Extended Key Usage OID for Code Signing</summary>
-   private const string CodeSigningEnhancedKeyUsageOid = "1.3.6.1.5.5.7.3.3";
-
-   /// <summary>Extended Key Usage OID for Code Signing friendly name</summary>
-   private const string CodeSigningEnhancedKeyUsageOidFriendlyName = " Code Signing";
-
 
    /// <summary>
    /// Create a self signed root certificate with the given subject name and export it as PFX and CER.
@@ -68,7 +66,9 @@ internal static class CertificateWorker
       csr.CertificateExtensions.Add(new X509BasicConstraintsExtension(true, true, 0, true));
       csr.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.KeyCertSign | X509KeyUsageFlags.CrlSign | X509KeyUsageFlags.DigitalSignature, false));
       csr.CertificateExtensions.Add(new X509SubjectKeyIdentifierExtension(csr.PublicKey, false));
-      csr.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(CodeSigningEnhancedKeyUsageOid, CodeSigningEnhancedKeyUsageOidFriendlyName)], false));
+      csr.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(X509Constants.ServerAuthEnhancedKeyUsageOid, X509Constants.ServerAuthEnhancedKeyUsageOidFriendlyName)], false));
+      csr.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(X509Constants.ClientAuthEnhancedKeyUsageOid, X509Constants.ClientAuthEnhancedKeyUsageOidFriendlyName)], false));
+      csr.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(X509Constants.CodeSigningEnhancedKeyUsageOid, X509Constants.CodeSigningEnhancedKeyUsageOidFriendlyName)], false));
 
       // create a self signed cert
       var cert = csr.CreateSelfSigned(DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddMonths(expireMonth));

@@ -5,6 +5,7 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
+using System.Runtime.ConstrainedExecution;
 using Azure.Core;
 using Azure.Identity;
 using CommandLine;
@@ -41,6 +42,6 @@ internal static class Program
 
       CertificateWorker.CreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonth).Wait();
 
-      Console.WriteLine($"Certificate {options.CertificateName} created in Key Vault {keyVaultUri}");
+      Console.WriteLine($"Certificate created: name={options.CertificateName}, Key Vault={keyVaultUri}");
    }
 }

@@ -15,7 +15,7 @@ namespace CertTools.AzureCertCore;
 /// <summary>
 /// The X509 signature generator to sign a digest with a KeyVault key.
 /// </summary>
-/// <param name="credential">The credetials to use to authenticate against KeyVault.</param>
+/// <param name="credential">The credentials to use to authenticate against KeyVault.</param>
 /// <param name="signingKey">The KeyVault signing key</param>
 /// <param name="issuerCertificate">The issuer certificate used for signing</param>
 public class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri signingKey, PublicKey signingPublicKey) : X509SignatureGenerator

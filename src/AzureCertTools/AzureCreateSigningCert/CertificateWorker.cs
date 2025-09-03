@@ -32,30 +32,22 @@ internal static class CertificateWorker
    /// <param name="signerCertificateName">The name of the signing certificate in Key Vault.</param>
    /// <param name="vaultUri">The URI of the Key Vault holding the certificates</param>
    /// <param name="tokenCredential">The authentication token provider.</param>
-   /// <param name="expireDays">The number of days until the certificate expires.</param>
-   public static async Task CreateSigningCertificateAsync(string certificateName, string subjectNameValue, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonth)
+   /// <param name="expireMonths">The number of months until the certificate expires.</param>
+   public static async Task CreateSigningCertificateAsync(string certificateName, string subjectNameValue, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths)
    {
       var client = new CertificateClient(vaultUri, tokenCredential);
 
       // Get the signer certificate and its associated keys
-      (var signerName, var signerSignaturGenerator) = await KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
+      (var signerName, var signerSignaturGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
 
-      var csr = await KeyVaultCreateSigningCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonth);
+      // create a CSR
+      var csr = await KeyVaultCreateSigningCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonths);
 
       // Sign the CSR
-      var cert = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signerSignaturGenerator, expireMonth);
+      var cert = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signerSignaturGenerator, expireMonths);
 
       // and upload it to Key Vault
       await CertificateWorkerCore.KeyVaultMergeCertificateAsync(certificateName, cert, client);
-   }
-
-   private static async Task<(X500DistinguishedName, X509SignatureGenerator)> KeyVaultGetSignerCertificateAsync(string certificateName, CertificateClient client, TokenCredential tokenCredential)
-   {
-      var cert = await client.GetCertificateAsync(certificateName);
-
-      using var x509Cert = new X509Certificate2(cert.Value.Cer);
-      var privateKeyId = cert.Value.KeyId;
-      return (x509Cert.SubjectName, new KeyVaultX509SignatureGenerator(tokenCredential, privateKeyId, x509Cert.PublicKey));
    }
 
    private static async Task<CertificateRequest> KeyVaultCreateSigningCertificateRequestAsync(string certificateName, string subjectNameValue, CertificateClient client, int expireMonth)

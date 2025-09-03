@@ -5,7 +5,7 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-using System.Text;
+using CertTools.CertCore;
 using CommandLine;
 
 namespace CertTools.CreateSigningCert;
@@ -31,7 +31,7 @@ internal static class Program
       }
 
       // Check if the signing cert PFX password is given, if not, ask for it 
-      string? signingPassword = options.Password ?? ReadPassword("signing cert");
+      string? signingPassword = options.Password ?? ConsoleHelper.ReadPassword("signing cert");
 
       if (signingPassword == null)
       {
@@ -47,7 +47,7 @@ internal static class Program
          else
          {
             // Check if the root cert PFX password is given, if not, ask for it 
-            string? rootPassword = options.Password ?? ReadPassword("root cert");
+            string? rootPassword = options.Password ?? ConsoleHelper.ReadPassword("root cert");
 
             if (rootPassword == null)
             {
@@ -65,40 +65,4 @@ internal static class Program
          Console.WriteLine($"Error creating certificate: {ex.Message}");
       }
    }
-
-   /// <summary>
-   /// Read a password from the console.
-   /// </summary>
-   /// <param name="kind">The kind of password</param>
-   /// <returns>The password string, null if user abort</returns>
-   private static string? ReadPassword(string kind)
-   {
-      Console.Write($"Enter {kind} password: ");
-      var password = new StringBuilder();
-      while (true)
-      {
-         var key = Console.ReadKey(true);
-         switch (key.Key)
-         {
-            case ConsoleKey.Escape:
-               Console.WriteLine();
-               return null;
-            case ConsoleKey.Enter:
-               Console.WriteLine();
-               return password.ToString();
-            case ConsoleKey.Backspace:
-               if (password.Length > 0)
-               {
-                  password = password.Remove(password.Length - 1, 1);
-                  Console.Write("\b \b");
-               }
-               break;
-            default:
-               _ = password.Append(key.KeyChar);
-               Console.Write("*");
-               break;
-         }
-      }
-   }
-
 }

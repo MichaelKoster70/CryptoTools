@@ -7,19 +7,19 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <RootNamespace>CertTools.AzureCreateRootCert</RootNamespace>
+    <RootNamespace>CertTools.AzureCreateIntermediateCert</RootNamespace>
     <SupportedOSPlatformVersion>10.0.26100.0</SupportedOSPlatformVersion>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
-    <Title>Self Signed Root CA Certificate Creation Tool for Azure KeyVault</Title>
+    <Title>Intermediate CA Certificate Creation Tool for Azure KeyVault</Title>
     <AssemblyTitle>$(Title)</AssemblyTitle>
     <TrimMode>partial</TrimMode>
-    <ApplicationIcon>AzureCreateRootCert.ico</ApplicationIcon>
+    <ApplicationIcon>AzureCreateIntermediateCert.ico</ApplicationIcon>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="AzureCreateRootCert.ico" />
+    <Content Include="AzureCreateIntermediateCert.ico" />
   </ItemGroup>
 
   <ItemGroup>

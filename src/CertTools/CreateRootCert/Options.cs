@@ -12,7 +12,6 @@ namespace CertTools.CreateRootCert;
 /// <summary>
 /// Container class for the command line options.
 /// </summary>
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes
 internal class Options
 {
    /// <summary>
@@ -39,4 +38,3 @@ internal class Options
    [Option("Password", Required = false, HelpText = "The password to use for the PFX file")]
    public string? Password { get; set; }
 }
-#pragma warning restore CA1812 // Avoid uninstantiated internal classes

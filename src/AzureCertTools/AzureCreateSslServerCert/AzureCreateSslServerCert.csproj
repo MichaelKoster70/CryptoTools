@@ -7,19 +7,19 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <RootNamespace>CertTools.AzureCreateRootCert</RootNamespace>
+    <RootNamespace>CertTools.AzureCreateSslServerCert</RootNamespace>
     <SupportedOSPlatformVersion>10.0.26100.0</SupportedOSPlatformVersion>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
-    <Title>Self Signed Root CA Certificate Creation Tool for Azure KeyVault</Title>
+    <Title>SSL Server Certificate Creation Tool for Azure KeyVault</Title>
     <AssemblyTitle>$(Title)</AssemblyTitle>
     <TrimMode>partial</TrimMode>
-    <ApplicationIcon>AzureCreateRootCert.ico</ApplicationIcon>
+    <ApplicationIcon>AzureCreateSslServerCert.ico</ApplicationIcon>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-  </PropertyGroup>
+  </PropertyGroup>    
 
   <ItemGroup>
-    <Content Include="AzureCreateRootCert.ico" />
+    <Content Include="AzureCreateSslServerCert.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,5 +31,5 @@
   <ItemGroup>
     <ProjectReference Include="..\AzureCertCore\AzureCertCore.csproj" />
   </ItemGroup>
-
+  
 </Project>

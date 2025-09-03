@@ -12,7 +12,6 @@ namespace CertTools.AzureCreateSigningCert;
 /// <summary>
 /// Container class for the command line options.
 /// </summary>
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes
 internal class Options
 {
    /// <summary>
@@ -27,7 +26,9 @@ internal class Options
    [Option("CertificateName", Required = true, HelpText = "The name of the certificate to create in Key Vault")]
    public required string CertificateName { get; set; }
 
-
+   /// <summary>
+   /// Gets or sets the name of the signer certificate stored in Key Vault.
+   /// </summary>
    [Option("SignerCertificateName", Required = true, HelpText = "The name of the signer certificate in Key Vault")]
    public required string SignerCertificateName { get; set; }
 
@@ -73,4 +74,3 @@ internal class Options
    [Option("WorkloadIdentity", Required = true, SetName= "WorkloadIdentity", HelpText = "Use Workload Identity to access Key Vault")]
    public required bool WorkloadIdentity { get; set; }
 }
-#pragma warning restore CA1812 // Avoid uninstantiated internal classes
