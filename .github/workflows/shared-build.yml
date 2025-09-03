@@ -135,6 +135,12 @@ jobs:
       run: |
         dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/AzureCreateSigningCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
       shell: pwsh
+
+    - name: 'Build: Publish AzureCertTools/AzureCreateSslServerCert'
+      if: ${{ inputs.store-artifacts }}
+      run: |
+        dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSslServerCert/AzureCreateSslServerCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
+      shell: pwsh
     
     - name: 'Build: Sign published binaries'
       if: ${{ inputs.store-artifacts && inputs.sign-binaries }}
