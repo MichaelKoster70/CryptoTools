@@ -61,7 +61,7 @@ jobs:
     - name: 'Build: Apply Version DEV'
       if: ${{ github.ref_type == 'branch' && github.ref != 'refs/heads/main' }}
       run: |
-        echo "BUILD_VERSIONPREFIX=${{ steps.git-version.outputs.versionPrefix }}" >> $GITHUB_ENV
+        echo "BUILD_VERSIONPREFIX=${{ steps.git-version.outputs.versionPrefix }}" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
         echo "BUILD_VERSIONSUFFIX=${{ steps.git-version.outputs.versionSuffix }}" >> $GITHUB_ENV
         echo "BUILD_VERSIONREVISION=${{ steps.git-version.outputs.versionRevision }}" >> $GITHUB_ENV
         echo "BUILD_ASSEMBLYVERSION=${{ steps.git-version.outputs.assemblyVersion }}" >> $GITHUB_ENV
@@ -95,7 +95,9 @@ jobs:
       shell: pwsh
 
     - name: 'Build: Build CertTools'
-      run: dotnet build ${{ env.CertToolsSolutionPath }} --configuration ${{ inputs.configuration }} --no-restore
+      run: | 
+        Get-ChildItem Env:
+        dotnet build ${{ env.CertToolsSolutionPath }} --configuration ${{ inputs.configuration }} --no-restore
       shell: pwsh
 
     - name: 'Build: Publish CertTools/CreateRootCert'
