@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
-	<ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <InvariantGlobalization>true</InvariantGlobalization>
     <RootNamespace>CertTools.AzureCreateSigningCert</RootNamespace>
@@ -12,10 +12,10 @@
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
     <Title>Code Signing Certificate Creation Tool for Azure Key Vault</Title>
-	<AssemblyTitle>$(Title)</AssemblyTitle>
+    <AssemblyTitle>$(Title)</AssemblyTitle>
     <TrimMode>partial</TrimMode>
     <ApplicationIcon>AzureCreateSigningCert.ico</ApplicationIcon>
-	<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
