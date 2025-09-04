@@ -6,7 +6,7 @@
     <Copyright>(c) 2025 Michael Koster</Copyright>
     <Company>Michael Koster</Company>
     <Product>Crypto Tools</Product>
-    <SourceRevisionId Condition="'$(SourceRevisionId)' == ''">$(BUILD_SOURCEVERSION)</SourceRevisionId>
+    <SourceRevisionId Condition="'$(SourceRevisionId)' == ''">$(GITHUB_SHA)</SourceRevisionId>
   </PropertyGroup>
 
   <Choose>
@@ -27,7 +27,7 @@
         <VersionPrefix>0.1.0</VersionPrefix>
         <VersionSuffix>local</VersionSuffix>
         <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
-         <FileVersion>$(VersionPrefix).0</FileVersion>
+        <FileVersion>$(VersionPrefix).0</FileVersion>
       </PropertyGroup>
     </Otherwise>
   </Choose>

@@ -23,7 +23,7 @@ on:
         description: The Base64 encoded PFX file
         required: false
       SIGNING_CERT_PASSWORD: 
-        description: The password for the PFX file
+        description: The password for the PXF file
         required: false
       SIGNING_CERT_THUMBPRINT:
         description: The cert footprint
@@ -61,25 +61,25 @@ jobs:
     - name: 'Build: Apply Version DEV'
       if: ${{ github.ref_type == 'branch' && github.ref != 'refs/heads/main' }}
       run: |
-        echo "BUILD_VERSIONPREFIX=${{ steps.git-version.outputs.versionPrefix }}" >> $GITHUB_ENV
-        echo "BUILD_VERSIONSUFFIX=${{ steps.git-version.outputs.versionSuffix }}" >> $GITHUB_ENV
-        echo "BUILD_VERSIONREVISION=${{ steps.git-version.outputs.versionRevision }}" >> $GITHUB_ENV
-        echo "BUILD_ASSEMBLYVERSION=${{ steps.git-version.outputs.assemblyVersion }}" >> $GITHUB_ENV
-        echo "BUILD_FILEVERSION=${{ steps.git-version.outputs.fileVersion }}" >> $GITHUB_ENV
-        echo "BUILD_PRODUCTVERSION=${{ steps.git-version.outputs.productVersion }}" >> $GITHUB_ENV
-        echo "BUILD_INFORMATIONALVERSION=${{ steps.git-version.outputs.informationalVersion }}" >> $GITHUB_ENV
+        $env:BUILD_VERSIONPREFIX = "${{ steps.git-version.outputs.versionPrefix }}"
+        $env:BUILD_VERSIONSUFFIX = "${{ steps.git-version.outputs.versionSuffix }}"
+        $env:BUILD_VERSIONREVISION = "${{ steps.git-version.outputs.versionRevision }}"
+        $env:BUILD_ASSEMBLYVERSION = "${{ steps.git-version.outputs.assemblyVersion }}"
+        $env:BUILD_FILEVERSION = "${{ steps.git-version.outputs.fileVersion }}"
+        $env:BUILD_PRODUCTVERSION = "${{ steps.git-version.outputs.productVersion }}"
+        $env:BUILD_INFORMATIONALVERSION = "${{ steps.git-version.outputs.informationalVersion }}"
       shell: pwsh
 
     - name: 'Build: Apply Version PROD'
       if: ${{ (github.ref_type == 'branch' && github.ref == 'refs/heads/main') || github.ref_type == 'tag' }}
       run: |
-        echo "BUILD_VERSIONPREFIX=${{ steps.git-version.outputs.versionPrefix }}" >> $GITHUB_ENV
-        echo "BUILD_VERSIONSUFFIX=${{ steps.git-version.outputs.versionSuffix }}" >> $GITHUB_ENV
-        echo "BUILD_VERSIONREVISION=${{ steps.git-version.outputs.versionRevision }}" >> $GITHUB_ENV
-        echo "BUILD_ASSEMBLYVERSION=${{ steps.git-version.outputs.assemblyVersion }}" >> $GITHUB_ENV
-        echo "BUILD_FILEVERSION=${{ steps.git-version.outputs.fileVersion }}" >> $GITHUB_ENV
-        echo "BUILD_PRODUCTVERSION=${{ steps.git-version.outputs.productVersion }}" >> $GITHUB_ENV
-        echo "BUILD_INFORMATIONALVERSION=${{ steps.git-version.outputs.informationalVersion }}" >> $GITHUB_ENV
+        $env:BUILD_VERSIONPREFIX = "${{ steps.git-version.outputs.versionPrefix }}"
+        $env:BUILD_VERSIONSUFFIX = "${{ steps.git-version.outputs.versionSuffix }}"
+        $env:BUILD_VERSIONREVISION = "${{ steps.git-version.outputs.versionRevision }}"
+        $env:BUILD_ASSEMBLYVERSION = "${{ steps.git-version.outputs.assemblyVersion }}"
+        $env:BUILD_FILEVERSION = "${{ steps.git-version.outputs.fileVersion }}"
+        $env:BUILD_PRODUCTVERSION = "${{ steps.git-version.outputs.productVersion }}"
+        $env:BUILD_INFORMATIONALVERSION = "${{ steps.git-version.outputs.informationalVersion }}"
       shell: pwsh
 
     # Build Solution: creates PFX file from BASe64 secret if signing is enabled
