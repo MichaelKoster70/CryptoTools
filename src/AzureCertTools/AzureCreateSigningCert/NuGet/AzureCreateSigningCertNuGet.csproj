@@ -10,7 +10,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageId>AzureCreateSigningCert</PackageId>
     <PackageOutputPath>..\..\..\..\bin</PackageOutputPath>
-    <Description>A console application to create a x.509 code signing certificate to sign binary files(EXE, DLL) and installation packages (MSIX, MSI)
+    <Description>A console application to create a x.509 code signing certificate to sign binary files (EXE, DLL) and installation packages (MSIX, MSI)
 The tool will create the certificate in the designated Azure Key Vault.</Description>
   </PropertyGroup>
 

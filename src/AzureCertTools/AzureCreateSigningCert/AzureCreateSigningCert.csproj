@@ -19,6 +19,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NuGet\**" />
+    <EmbeddedResource Remove="NuGet\**" />
+    <None Remove="NuGet\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="AzureCreateSigningCert.ico" />
   </ItemGroup>
 
