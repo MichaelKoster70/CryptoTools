@@ -25,7 +25,6 @@ indent_size = 2
 [*.{cs,vb}]
 tab_width = 3
 indent_size = 3
-indent_style = space
 end_of_line = crlf
 insert_final_newline = false
 
@@ -83,20 +82,21 @@ dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
 dotnet_style_prefer_inferred_tuple_names = true:suggestion
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
 dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
-dotnet_style_prefer_simplified_interpolation = true
+dotnet_style_prefer_simplified_interpolation = true:suggestion
 
 # Field preferences
 dotnet_style_readonly_field = true:suggestion
 
 # Parameter preferences
-dotnet_code_quality_unused_parameters = all
+dotnet_code_quality_unused_parameters = all:suggestion
 
 # Suppression preferences
 dotnet_remove_unnecessary_suppression_exclusions = none
 
 # New line preferences
-dotnet_style_allow_multiple_blank_lines_experimental = true
+dotnet_style_allow_multiple_blank_lines_experimental = false
 dotnet_style_allow_statement_immediately_after_block_experimental = true
+
 
 #### C# Coding Conventions ####
 
@@ -118,10 +118,10 @@ csharp_style_expression_bodied_properties = when_on_single_line:suggestion
 # Pattern matching preferences
 csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
 csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
-csharp_style_prefer_extended_property_pattern = true
-csharp_style_prefer_not_pattern = true
+csharp_style_prefer_extended_property_pattern = true:suggestion
+csharp_style_prefer_not_pattern = true:suggestion
 csharp_style_prefer_pattern_matching = true:suggestion
-csharp_style_prefer_switch_expression = true
+csharp_style_prefer_switch_expression = true:suggestion
 
 # Null-checking preferences
 csharp_style_conditional_delegate_call = true:suggestion
@@ -156,18 +156,19 @@ csharp_style_prefer_tuple_swap = true:suggestion
 csharp_style_prefer_unbound_generic_type_in_nameof = true:suggestion
 csharp_style_prefer_utf8_string_literals = true:suggestion
 csharp_style_throw_expression = true:suggestion
-csharp_style_unused_value_assignment_preference = discard_variable
-csharp_style_unused_value_expression_statement_preference = discard_variable
+csharp_style_unused_value_assignment_preference = discard_variable:suggestion
+csharp_style_unused_value_expression_statement_preference = discard_variable:suggestion
 
 # 'using' directive preferences
 csharp_using_directive_placement = outside_namespace:error
 
 # New line preferences
 csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = true
+csharp_style_allow_blank_lines_between_consecutive_braces_experimental = false
 csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = true
 csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental = true
-csharp_style_allow_blank_lines_between_consecutive_braces_experimental = true
-csharp_style_allow_embedded_statements_on_same_line_experimental = true
+csharp_style_allow_embedded_statements_on_same_line_experimental = false
+
 
 #### C# Formatting Rules ####
 
@@ -298,9 +299,9 @@ dotnet_naming_style.camel_case.capitalization = camel_case
 dotnet_diagnostic.IDE0003.severity = suggestion
 dotnet_diagnostic.IDE0009.severity = none
 dotnet_diagnostic.IDE0049.severity = suggestion
+dotnet_diagnostic.IDE0073.severity = error
 dotnet_diagnostic.IDE0160.severity = warning
 dotnet_diagnostic.IDE0161.severity = none
-dotnet_diagnostic.IDE0073.severity = error
 
 #### Diagnostic configuration ####
 
@@ -428,16 +429,6 @@ dotnet_diagnostic.CA1822.severity = suggestion
 dotnet_diagnostic.CA1823.severity = warning
 dotnet_diagnostic.CA1824.severity = suggestion
 dotnet_diagnostic.CA1825.severity = suggestion
-dotnet_diagnostic.CA1841.severity = suggestion
-dotnet_diagnostic.CA1845.severity = suggestion
-dotnet_diagnostic.CA1851.severity = warning
-dotnet_diagnostic.CA1855.severity = suggestion
-dotnet_diagnostic.CA1856.severity = error
-dotnet_diagnostic.CA1857.severity = warning
-dotnet_diagnostic.CA1865.severity = suggestion
-dotnet_diagnostic.CA1866.severity = suggestion
-dotnet_diagnostic.CA1867.severity = warning
-dotnet_diagnostic.CA1870.severity = suggestion
 dotnet_diagnostic.CA1826.severity = suggestion
 dotnet_diagnostic.CA1827.severity = suggestion
 dotnet_diagnostic.CA1828.severity = suggestion
@@ -468,6 +459,8 @@ dotnet_diagnostic.CA1852.severity = silent
 dotnet_diagnostic.CA1853.severity = suggestion
 dotnet_diagnostic.CA1854.severity = suggestion
 dotnet_diagnostic.CA1855.severity = suggestion
+dotnet_diagnostic.CA1856.severity = error
+dotnet_diagnostic.CA1857.severity = warning
 dotnet_diagnostic.CA1858.severity = suggestion
 dotnet_diagnostic.CA1859.severity = suggestion
 dotnet_diagnostic.CA1860.severity = suggestion
@@ -475,8 +468,12 @@ dotnet_diagnostic.CA1861.severity = suggestion
 dotnet_diagnostic.CA1862.severity = suggestion
 dotnet_diagnostic.CA1863.severity = silent
 dotnet_diagnostic.CA1864.severity = suggestion
+dotnet_diagnostic.CA1865.severity = suggestion
+dotnet_diagnostic.CA1866.severity = suggestion
+dotnet_diagnostic.CA1867.severity = warning
 dotnet_diagnostic.CA1868.severity = suggestion
 dotnet_diagnostic.CA1869.severity = suggestion
+dotnet_diagnostic.CA1870.severity = suggestion
 dotnet_diagnostic.CA1871.severity = suggestion
 dotnet_diagnostic.CA1872.severity = suggestion
 
@@ -493,14 +490,15 @@ dotnet_diagnostic.CA2014.severity = warning
 dotnet_diagnostic.CA2015.severity = warning
 dotnet_diagnostic.CA2016.severity = suggestion
 dotnet_diagnostic.CA2017.severity = warning
-dotnet_diagnostic.CA2020.severity = suggestion
 dotnet_diagnostic.CA2018.severity = warning
 dotnet_diagnostic.CA2019.severity = suggestion
+dotnet_diagnostic.CA2020.severity = suggestion
 dotnet_diagnostic.CA2021.severity = warning
 dotnet_diagnostic.CA2022.severity = warning
 
 # Security
 dotnet_diagnostic.CA2100.severity = warning
+dotnet_diagnostic.CA2109.severity = warning
 dotnet_diagnostic.CA2119.severity = warning
 dotnet_diagnostic.CA2153.severity = warning
 dotnet_diagnostic.CA2300.severity = warning
@@ -596,6 +594,7 @@ dotnet_diagnostic.CA5404.severity = warning
 dotnet_diagnostic.CA5405.severity = warning
 
 # Usage
+dotnet_diagnostic.CA1801.severity = suggestion
 dotnet_diagnostic.CA1816.severity = suggestion
 dotnet_diagnostic.CA2200.severity = warning
 dotnet_diagnostic.CA2201.severity = silent
@@ -607,10 +606,13 @@ dotnet_diagnostic.CA2214.severity = warning
 dotnet_diagnostic.CA2215.severity = silent
 dotnet_diagnostic.CA2216.severity = warning
 dotnet_diagnostic.CA2217.severity = warning
+dotnet_diagnostic.CA2218.severity = suggestion
 dotnet_diagnostic.CA2219.severity = suggestion
+dotnet_diagnostic.CA2224.severity = suggestion
 dotnet_diagnostic.CA2225.severity = warning
 dotnet_diagnostic.CA2226.severity = warning
 dotnet_diagnostic.CA2227.severity = warning
+dotnet_diagnostic.CA2229.severity = silent
 dotnet_diagnostic.CA2231.severity = suggestion
 dotnet_diagnostic.CA2234.severity = warning
 dotnet_diagnostic.CA2235.severity = warning
