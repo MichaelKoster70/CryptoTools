@@ -1,9 +1,12 @@
 # `src` Directory
 Root folder holding the source code all crypto tools.
 
-### Notable files
+## Notable files
 - [ReleaseNotes.md](ReleaseNotes.md): Release notes for the current release.
 
 ## Directory Structure
 ### `CertTools`
-- Source code for the x.509 certificate tools to create self-signe certificate for code signing purposes.
+- Source code for the x.509 certificate tools to create local self-signed certificate for code signing purposes.
+
+### `AzureCertTools`
+- Source code for the x.509 certificate tools to create Azrue KeyVauld backed self-signed certificate for code signing purposes.
