@@ -33,7 +33,7 @@ internal class Options
    public string? Password { get; set; }
 
    /// <summary>
-   /// Gets the cerificate thumbprint of the certificate to use for signing.
+   /// Gets the certificate thumbprint of the certificate to use for signing.
    /// </summary>
    [Option("SignerThumbprint", SetName = "certStore", Required = true, HelpText = "The thumbprint of the signing certificate looked up in CurrentUser\\My store")]
    public required string SignerThumbprint { get; set; }
