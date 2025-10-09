@@ -51,7 +51,7 @@ internal static class CertificateWorker
    }
 
    /// <summary>
-   /// Create a code signing certificate signed with by the supplied signer certificate in KeyVault.
+   /// Create a code signing certificate signed by the supplied signer certificate in KeyVault.
    /// </summary>
    /// <param name="fileName">The name of the PFX file.</param>
    /// <param name="password">The password (optional) to protect the private key</param>
