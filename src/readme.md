@@ -9,4 +9,4 @@ Root folder holding the source code all crypto tools.
 - Source code for the x.509 certificate tools to create local self-signed certificate for code signing purposes.
 
 ### `AzureCertTools`
-- Source code for the x.509 certificate tools to create Azrue KeyVauld backed self-signed certificate for code signing purposes.
+- Source code for the x.509 certificate tools to create Azure KeyVault backed self-signed certificate for code signing purposes.
