@@ -23,8 +23,20 @@ internal class Options
    /// <summary>
    /// Gets or sets the name of the certificate to create in Key Vault.
    /// </summary>
-   [Option("CertificateName", Required = true, HelpText = "The name of the certificate to create in Key Vault")]
-   public required string CertificateName { get; set; }
+   [Option("CertificateName", Required = true, Group = "CertificateNameOrFile", HelpText = "The name of the certificate to create in Key Vault")]
+   public required string? CertificateName { get; set; }
+
+   /// <summary>
+   /// Gets or sets the name of the certificate PFX file to create.
+   /// </summary>
+   [Option("FileName", Required = true, Group = "CertificateNameOrFile", HelpText = "The absolute path for the PFX file to create.")]
+   public required string? FileName { get; set; }
+
+   /// <summary>
+   /// Gets or sets the path to the PFX file to export the certificate to.
+   /// </summary>
+   [Option("Password", Required = false, HelpText = "The password to use for the PFX file")]
+   public string? Password { get; set; }
 
    /// <summary>
    /// Gets or sets the name of the signer certificate stored in Key Vault.
@@ -35,7 +47,7 @@ internal class Options
    /// <summary>
    /// Gets or sets the number of month until the certificate expires.
    /// </summary>
-   [Option("ExpireMonth", Required = false, HelpText = "The number of month until the certificate expires, default if not specifed is 1 month.")]
+   [Option("ExpireMonth", Required = false, HelpText = "The number of month until the certificate expires, default if not specified is 1 month.")]
    public int ExpireMonth { get; set; } = 1;
 
    /// <summary>

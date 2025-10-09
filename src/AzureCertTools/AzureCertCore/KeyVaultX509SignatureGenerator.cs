@@ -76,17 +76,17 @@ public class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri sign
 
       if (hashAlgorithm == HashAlgorithmName.SHA256)
       {
-         //const string RsaPkcs1Sha256 = "1.2.840.113549.1.1.11";
+         // RsaPkcs1Sha256 = "1.2.840.113549.1.1.11";
          oidSequence = [48, 13, 6, 9, 42, 134, 72, 134, 247, 13, 1, 1, 11, 5, 0];
       }
       else if (hashAlgorithm == HashAlgorithmName.SHA384)
       {
-         //const string RsaPkcs1Sha384 = "1.2.840.113549.1.1.12";
+         // RsaPkcs1Sha384 = "1.2.840.113549.1.1.12";
          oidSequence = [48, 13, 6, 9, 42, 134, 72, 134, 247, 13, 1, 1, 12, 5, 0];
       }
       else if (hashAlgorithm == HashAlgorithmName.SHA512)
       {
-         //const string RsaPkcs1Sha512 = "1.2.840.113549.1.1.13";
+         // RsaPkcs1Sha512 = "1.2.840.113549.1.1.13";
          oidSequence = [48, 13, 6, 9, 42, 134, 72, 134, 247, 13, 1, 1, 13, 5, 0];
       }
       else

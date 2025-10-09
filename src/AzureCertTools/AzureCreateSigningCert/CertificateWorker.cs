@@ -85,7 +85,7 @@ internal static class CertificateWorker
       // Export the certificate and private key to a PFX file
       cert = cert.CopyWithPrivateKey(keyPair);
       var certBytes = cert.Export(X509ContentType.Pfx, password);
-      await File.WriteAllBytesAsync($"{fileName}.pfx", certBytes);
+      await File.WriteAllBytesAsync(fileName, certBytes);
    }
 
    private static async Task<CertificateRequest> KeyVaultCreateSigningCertificateRequestAsync(string certificateName, string subjectNameValue, CertificateClient client, int expireMonth)
@@ -114,19 +114,6 @@ internal static class CertificateWorker
       AddKeyUsageExtensions(certSigningRequest);
 
       return certSigningRequest;
-   }
-
-   private static CertificateRequest LocalCreateSigningCertificateRequest(string subjectNameValue)
-   {
-
-
-      return certSigningRequest;
-   }
-
-   private static void WriteCertificateToFile(X509Certificate2 cert, RSACryptoServiceProvider keyPair, string fileName)
-   {
-      var certBytes = cert.Export(X509ContentType.Cert);
-      File.WriteAllBytes(fileName, certBytes);
    }
 
    private static void AddKeyUsageExtensions(CertificateRequest certSigningRequest)
