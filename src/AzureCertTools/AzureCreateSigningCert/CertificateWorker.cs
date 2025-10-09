@@ -27,27 +27,65 @@ internal static class CertificateWorker
    /// <summary>
    /// Create a code signing certificate in Azure Key Vault.
    /// </summary>
-   /// <param name="certificateName">The name of the certificate in Key Vault.</param>
-   /// <param name="subjectNameValue">The certificate subject name<</param>
+   /// <param name="certificateName">The name of the certificate in Key Vault</param>
+   /// <param name="subjectNameValue">The certificate subject name</param>
    /// <param name="signerCertificateName">The name of the signing certificate in Key Vault.</param>
    /// <param name="vaultUri">The URI of the Key Vault holding the certificates</param>
    /// <param name="tokenCredential">The authentication token provider.</param>
    /// <param name="expireMonths">The number of months until the certificate expires.</param>
-   public static async Task CreateSigningCertificateAsync(string certificateName, string subjectNameValue, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths)
+   public static async Task KeyVaultCreateSigningCertificateAsync(string certificateName, string subjectNameValue, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths)
    {
       var client = new CertificateClient(vaultUri, tokenCredential);
 
       // Get the signer certificate and its associated keys
-      (var signerName, var signerSignaturGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
+      (var signerName, var signerSignatureGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
 
       // create a CSR
       var csr = await KeyVaultCreateSigningCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonths);
 
       // Sign the CSR
-      var cert = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signerSignaturGenerator, expireMonths);
+      var cert = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signerSignatureGenerator, expireMonths);
 
       // and upload it to Key Vault
       await CertificateWorkerCore.KeyVaultMergeCertificateAsync(certificateName, cert, client);
+   }
+
+   /// <summary>
+   /// Create a code signing certificate signed by the supplied signer certificate in KeyVault.
+   /// </summary>
+   /// <param name="fileName">The name of the PFX file.</param>
+   /// <param name="password">The password (optional) to protect the private key</param>
+   /// <param name="subjectNameValue">The certificate subject name</param>
+   /// <param name="signerCertificateName">The name of the signing certificate in Key Vault.</param>
+   /// <param name="vaultUri">The URI of the Key Vault holding the certificates</param>
+   /// <param name="tokenCredential">The authentication token provider.</param>
+   /// <param name="expireMonths">The number of months until the certificate expires.</param>
+   public static async Task LocalCreateSigningCertificateAsync(string fileName, string? password, string subjectNameValue, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths)
+   {
+      var client = new CertificateClient(vaultUri, tokenCredential);
+
+      // Get the signer certificate and its associated keys
+      (var signerName, var signerSignatureGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
+
+      // Create a new RSA key pair
+      var cspParameter = new CspParameters();
+      cspParameter = new CspParameters(cspParameter.ProviderType, cspParameter.ProviderName, Guid.NewGuid().ToString());
+
+      using var keyPair = new RSACryptoServiceProvider(CertificateWorkerCore.RsaKeySize, cspParameter);
+
+      // create a CSR
+      var subject = new X500DistinguishedName(subjectNameValue);
+      var certSigningRequest = new CertificateRequest(subject, keyPair, HashAlgorithmName.SHA384, RSASignaturePadding.Pkcs1);
+
+      AddKeyUsageExtensions(certSigningRequest);
+
+      // Sign the CSR
+      var cert = CertificateWorkerCore.SignCertificateRequest(certSigningRequest, signerName, signerSignatureGenerator, expireMonths);
+
+      // Export the certificate and private key to a PFX file
+      cert = cert.CopyWithPrivateKey(keyPair);
+      var certBytes = cert.Export(X509ContentType.Pfx, password);
+      await File.WriteAllBytesAsync(fileName, certBytes);
    }
 
    private static async Task<CertificateRequest> KeyVaultCreateSigningCertificateRequestAsync(string certificateName, string subjectNameValue, CertificateClient client, int expireMonth)
@@ -73,10 +111,15 @@ internal static class CertificateWorker
       var certSigningRequest = CertificateRequest.LoadSigningRequest(pkcs10: certOperationCertSigningRequest, 
          signerHashAlgorithm: HashAlgorithmName.SHA384, signerSignaturePadding: RSASignaturePadding.Pkcs1);
 
+      AddKeyUsageExtensions(certSigningRequest);
+
+      return certSigningRequest;
+   }
+
+   private static void AddKeyUsageExtensions(CertificateRequest certSigningRequest)
+   {
       certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(false, false, 0, true));
       certSigningRequest.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature, true));
       certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(CodeSigningEnhancedKeyUsageOid, CodeSigningEnhancedKeyUsageOidFriendlyName)], true));
-
-      return certSigningRequest;
    }
 }

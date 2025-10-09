@@ -44,3 +44,12 @@ Minor release extending CA certificate support
 
 ## Bug Fixes
 - None
+
+# 1.5.0
+Minor release extending signing certificate support
+
+## Features
+- Extended the AzureCreateSigningCert tool to support creating signing certificates locally signed by a KeyVault based CA certificate.
+
+## Bug Fixes
+- None

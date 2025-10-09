@@ -5,7 +5,6 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-using System.Runtime.ConstrainedExecution;
 using Azure.Core;
 using Azure.Identity;
 using CommandLine;
@@ -40,8 +39,19 @@ internal static class Program
 
       Uri keyVaultUri = new(options.KeyVaultUri);
 
-      CertificateWorker.CreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonth).Wait();
-
-      Console.WriteLine($"Certificate created: name={options.CertificateName}, Key Vault={keyVaultUri}");
+      if (!string.IsNullOrEmpty(options.CertificateName))
+      {
+         CertificateWorker.KeyVaultCreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonth).Wait();
+         Console.WriteLine($"Certificate created: name={options.CertificateName}, Key Vault={keyVaultUri}");
+      }
+      else if (!string.IsNullOrEmpty(options.FileName))
+      {
+         CertificateWorker.LocalCreateSigningCertificateAsync(options.FileName, options.Password, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonth).Wait();
+         Console.WriteLine($"PFX file created: {options.FileName}");
+      }
+      else
+      {
+         Console.WriteLine("Either CertificateName or FileName must be specified");
+      }
    }
 }

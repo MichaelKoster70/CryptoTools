@@ -33,7 +33,7 @@ internal class Options
    public string? Password { get; set; }
 
    /// <summary>
-   /// Gets the cerificate thumbprint of the certificate to use for signing.
+   /// Gets the certificate thumbprint of the certificate to use for signing.
    /// </summary>
    [Option("SignerThumbprint", SetName = "certStore", Required = true, HelpText = "The thumbprint of the signing certificate looked up in CurrentUser\\My store")]
    public required string SignerThumbprint { get; set; }
@@ -53,6 +53,6 @@ internal class Options
    /// <summary>
    /// Gets or sets the number of days until the certificate expires.
    /// </summary>
-   [Option("ExpireDays", Required = false, HelpText = "The number of days until the certificate expires, default if not specifed is 365 days.")]
+   [Option("ExpireDays", Required = false, HelpText = "The number of days until the certificate expires, default if not specified is 365 days.")]
    public int ExpireDays { get; set; } = 365;
 }

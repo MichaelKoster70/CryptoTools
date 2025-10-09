@@ -54,10 +54,10 @@ internal static class CertificateWorker
    /// </summary>
    /// <param name="subjectNameValue">The value (CN=<value>) to be used as Subject.</param>
    /// <paramref name="expireMonth"/>The number of months the certificate is valid.</param>
-   /// <returns>The certtifc</returns>
+   /// <returns>The certificate</returns>
    private static X509Certificate2 CreateSelfSignedRootCertificate(string subjectNameValue, int expireMonth)
    {
-      // Create a RSA keypair
+      // Create a RSA key pair
       using var keyPair = RSA.Create(RsaKeySize);
 
       // create a CSR
@@ -66,8 +66,8 @@ internal static class CertificateWorker
       csr.CertificateExtensions.Add(new X509BasicConstraintsExtension(true, true, 0, true));
       csr.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.KeyCertSign | X509KeyUsageFlags.CrlSign | X509KeyUsageFlags.DigitalSignature, false));
       csr.CertificateExtensions.Add(new X509SubjectKeyIdentifierExtension(csr.PublicKey, false));
-      csr.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(X509Constants.ServerAuthEnhancedKeyUsageOid, X509Constants.ServerAuthEnhancedKeyUsageOidFriendlyName)], false));
-      csr.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(X509Constants.ClientAuthEnhancedKeyUsageOid, X509Constants.ClientAuthEnhancedKeyUsageOidFriendlyName)], false));
+      csr.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(X509Constants.ServerAuthenticationEnhancedKeyUsageOid, X509Constants.ServerAuthenticationEnhancedKeyUsageOidFriendlyName)], false));
+      csr.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(X509Constants.ClientAuthenticationEnhancedKeyUsageOid, X509Constants.ClientAuthenticationEnhancedKeyUsageOidFriendlyName)], false));
       csr.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(X509Constants.CodeSigningEnhancedKeyUsageOid, X509Constants.CodeSigningEnhancedKeyUsageOidFriendlyName)], false));
 
       // create a self signed cert

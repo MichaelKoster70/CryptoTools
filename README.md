@@ -2,7 +2,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 .NET 8 based crypto tools for
-* Creating x.509 based code signing certificates for develoopment and testing purposes
+* Creating x.509 based code signing certificates for development and testing purposes
 
 ## Overview
 
@@ -41,7 +41,7 @@ CreateSigningCert --Subject <subject> --Name <name> --Password <password> --Expi
 
 Where:
 * Subject: The subject of the certificate in form CN=\<subject\>.
-* Name: The name of the certificate file (ithout extension).
+* Name: The name of the certificate file (without extension).
 * Password: The password to protect the private key contained in the certificate.
 * SignerThumbprint: the certificate thumbprint of the root CA certificate used to sign the code signing certificate. The thumbprint can be obtained from the certificate store.
 * SignerPfx: the PFX file holding the root CA certificate used to sign the code signing certificate.
@@ -50,15 +50,7 @@ Where:
 
 ### AzureCreateRootCert
 ```
-AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --ClientSecret <clientSecret>
-```
-or
-```
-AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
-```
-or
-```
-AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --TenantId <tenantId> --ClientId <clientId> --KeyVaultUri <uri> --WorkloadIdentity
+AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
 ```
 
 Where:
@@ -79,21 +71,18 @@ Required permissions on Azure KeyVault:
 
 ### AzureCreateSigningCert
 ```
-AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --ClientSecret <clientSecret>
+AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
 ```
 or
 ```
-AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --Interactive
-```
-or
-```
-AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> --WorkloadIdentity
+AzureCreateSigningCert --Subject <subject> --FileName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
 ```
 
 Where:
 * Subject: The subject of the certificate in form CN=\<subject\>.
 * CertificateName: The name of the certificate in Azure Key Vault.
-* SignerCertificateName: The name of the root CA certficate int Azure Key Vault used for signing the leaf certificate.
+* FileName: Absolute path to PFX file holding the certificate (<drive>:\<folder>\<name>.pfx)
+* SignerCertificateName: The name of the root CA certificate in Azure Key Vault used for signing the leaf certificate.
 * KeyVaultUri: The URI of the Azure Key Vault to store the certificate (like https://some-name.vault.azure.net/).
 * TenantId: The Entra ID tenant ID.
 * ClientId: The client ID of the service principal used to access the Key Vault.

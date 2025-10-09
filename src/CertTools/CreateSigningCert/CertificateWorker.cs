@@ -20,7 +20,7 @@ internal static class CertificateWorker
    private const int RsaKeySize = 4096;
 
    /// <summary>
-   /// Create a code signing certificate signed with the root loaded from CurrentUser\My stire
+   /// Create a code signing certificate signed with the root loaded from CurrentUser\My store
    /// </summary>
    /// <param name="subjectName">The certificate subject name</param>
    /// <param name="fileName">The name of the PFX file.</param>
@@ -29,7 +29,7 @@ internal static class CertificateWorker
    /// <param name="expireDays">The number of days until the certificate expires.</param>
    public static void CreateSigningCertificate(string subjectName, string fileName, string password, string signerThumbprint, int expireDays)
    {
-      using var rootCert = LoadeSelfSignedRootCertificateFromStore(signerThumbprint);
+      using var rootCert = LoadSelfSignedRootCertificateFromStore(signerThumbprint);
       using var cert = CreateSigningCertificate(subjectName, rootCert, expireDays);
 
       // Export the certificate
@@ -44,11 +44,11 @@ internal static class CertificateWorker
    /// <param name="fileName">The name of the PFX file.</param>
    /// <param name="password">The password to protect the private key.</param>
    /// <param name="signerPfx">The PFX file holding the root cert.</param>
-   /// <param name="signerPassword">The passwordprotec ting the root cert private key</param>
+   /// <param name="signerPassword">The password protecting the root cert private key</param>
    /// <param name="expireDays">The number of days until the certificate expires.</param>
    public static void CreateSigningCertificate(string subjectName, string fileName, string password, string signerPfx, string signerPassword, int expireDays)
    {
-      using var rootCert = LoadeSelfSignedRootCertificateFromFile(signerPfx, signerPassword);
+      using var rootCert = LoadSelfSignedRootCertificateFromFile(signerPfx, signerPassword);
       using var cert = CreateSigningCertificate(subjectName, rootCert, expireDays);
 
       // Export the certificate
@@ -70,7 +70,7 @@ internal static class CertificateWorker
       csr.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature, true));
       csr.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(X509Constants.CodeSigningEnhancedKeyUsageOid, X509Constants.CodeSigningEnhancedKeyUsageOidFriendlyName)], true));
 
-      // Create the Cert serial numbert
+      // Create the Cert serial number
       byte[] serialNumber = new byte[9];
       using (RandomNumberGenerator randomNumberGenerator = RandomNumberGenerator.Create())
       {
@@ -84,7 +84,7 @@ internal static class CertificateWorker
       return cert.CopyWithPrivateKey(keyPair);
    }
 
-   private static X509Certificate2 LoadeSelfSignedRootCertificateFromStore(string certificateThumbprint)
+   private static X509Certificate2 LoadSelfSignedRootCertificateFromStore(string certificateThumbprint)
    {
       X509Certificate2? root = null;
 
@@ -117,7 +117,7 @@ internal static class CertificateWorker
       }
       catch (CryptographicException)
       {
-         // trown when the find type is invalid -> treat this as cert not present.
+         // thrown when the find type is invalid -> treat this as cert not present.
          root = null;
       }
 
@@ -129,10 +129,7 @@ internal static class CertificateWorker
       return root;
    }
 
-   private static X509Certificate2 LoadeSelfSignedRootCertificateFromFile(string fileName, string password)
-   {
-      return new X509Certificate2(fileName, password);
-   }
+   private static X509Certificate2 LoadSelfSignedRootCertificateFromFile(string fileName, string password) => new(fileName, password);
 
    private static void DisposeCertificates(X509Certificate2Collection disposables)
    {
