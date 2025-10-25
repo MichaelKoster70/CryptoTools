@@ -125,7 +125,7 @@ steps:
 
 ### Desktop PC prerequisites
 You need a Windows based PC with:
-- Window 11 x64 24H2 or newer
+- Windows 11 x64 24H2 or newer
 - Visual Studio 2022 17.8 or newer with 
   - .NET 8 SDK installed
   - .NET 8 Runtime installed
