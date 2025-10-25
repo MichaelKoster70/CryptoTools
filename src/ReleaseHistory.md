@@ -27,39 +27,39 @@ Minor release extending CA certificate support
 ## Bug Fixes
 - None
 
-## 1.3.0
+# 1.3.0
 Minor release
 
-### Features
+## Features
 - Added support for Entra ID Managed Identity authentication
 
-### Bug Fixes
+## Bug Fixes
 - None
 
-## 1.2.0
+# 1.2.0
 Minor release
 
-### Features
+## Features
 - Retargeting to support Windows 11 24H2 and newer only
 
-### Bug Fixes
+## Bug Fixes
 - Fixed options mismatch in the command line interface
 
-## 1.1.0
+# 1.1.0
 Minor release
 
-### Features
+## Features
 - Added option to specify the expiration date of the certificate
 - Added Azure Key Vault support
 
-### Bug Fixes
+## Bug Fixes
 - none
 
-## 1.0.0
+# 1.0.0
 Initial release
 
-### Features
+## Features
 - Added Code Signing Certificate Tools
 
-### Bug Fixes
+## Bug Fixes
 - none
