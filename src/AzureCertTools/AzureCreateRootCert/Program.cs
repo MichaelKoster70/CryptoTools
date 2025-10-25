@@ -9,7 +9,6 @@ using Azure.Core;
 using Azure.Identity;
 using CertTools.AzureCertCore;
 using CommandLine;
-using CommandLine.Text;
 
 namespace CertTools.AzureCreateRootCert;
 
@@ -24,12 +23,15 @@ internal static class Program
    /// <param name="args">The args</param>
    static async Task Main(string[] args)
    {
-      // Parse the command line options, get at least SubjectName and Name
+      // Parse the command line options
       var options = Parser.Default.ParseArguments<Options>(args).Value.Validate();
       if (options == null)
       {
          return;
       }
+
+      // Write header
+      OptionsExtensions.PrintToolInfo();
 
       // Create the token provider
       TokenCredential credentials = options switch
