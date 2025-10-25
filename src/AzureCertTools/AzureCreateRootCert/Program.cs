@@ -7,7 +7,9 @@
 
 using Azure.Core;
 using Azure.Identity;
+using CertTools.AzureCertCore;
 using CommandLine;
+using CommandLine.Text;
 
 namespace CertTools.AzureCreateRootCert;
 
@@ -22,10 +24,8 @@ internal static class Program
    /// <param name="args">The args</param>
    static async Task Main(string[] args)
    {
-      Console.WriteLine("Crypto Tools - Azure Key Vault create root certificate");
-
       // Parse the command line options, get at least SubjectName and Name
-      var options = Parser.Default.ParseArguments<Options>(args).Value;
+      var options = Parser.Default.ParseArguments<Options>(args).Value.Validate();
       if (options == null)
       {
          return;

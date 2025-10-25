@@ -50,12 +50,12 @@ Where:
 
 ### AzureCreateRootCert
 ```
-AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
+AzureCreateRootCert --Subject <subject> --CertificateName <name> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
 ```
 
 Where:
 * Subject: The subject of the certificate in form CN=\<subject\>.
-* Name: The name of the certificate in Azure Key Vault.
+* CertificateName: The name of the certificate in Azure Key Vault.
 * KeyVaultUri: The URI of the Azure Key Vault to store the certificate (like https://some-name.vault.azure.net/).
 * TenantId: The Entra ID tenant ID.
 * ClientId: The client ID of the service principal used to access the Key Vault.
@@ -124,7 +124,7 @@ steps:
 
 ### Desktop PC prerequisites
 You need a Windows based PC with:
-- Window 10 x64 1809 or newer
+- Window 11 x64 24H2 or newer
 - Visual Studio 2022 17.8 or newer with 
   - .NET 8 SDK installed
   - .NET 8 Runtime installed
