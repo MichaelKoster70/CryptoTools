@@ -5,6 +5,7 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
+using CertTools.CertCore;
 using CommandLine;
 
 namespace CertTools.CreateSigningCert;
@@ -12,26 +13,8 @@ namespace CertTools.CreateSigningCert;
 /// <summary>
 /// Container class for the command line options.
 /// </summary>
-internal class Options
+internal class Options : OptionsBase
 {
-   /// <summary>
-   /// Gets or set the x.509 Subject Name for the certificate.
-   /// </summary>
-   [Option("Subject", Required = true, HelpText = "The subject name for the certificate in the form \"CN=<subject name>\"")]
-   public required string Subject { get; set; }
-
-   /// <summary>
-   /// Gets or sets the path to the filename to export the certificate to.
-   /// </summary>
-   [Option("Name", Required = true, HelpText = "The name of the file to export the certificate to (PFX and CER)")]
-   public required string Name { get; set; }
-
-   /// <summary>
-   /// Gets or sets the path to the PFX file to export the certificate to.
-   /// </summary>
-   [Option("Password", Required = false, HelpText = "The password to use for the PFX file")]
-   public string? Password { get; set; }
-
    /// <summary>
    /// Gets the certificate thumbprint of the certificate to use for signing.
    /// </summary>
@@ -53,6 +36,6 @@ internal class Options
    /// <summary>
    /// Gets or sets the number of days until the certificate expires.
    /// </summary>
-   [Option("ExpireDays", Required = false, HelpText = "The number of days until the certificate expires, default if not specified is 365 days.")]
-   public int ExpireDays { get; set; } = 365;
+   [Option("ExpireMonths", Required = false, HelpText = "The number of months until the certificate expires, default if not specified is 12 months.")]
+   public int ExpireMonths { get; set; } = 12;
 }

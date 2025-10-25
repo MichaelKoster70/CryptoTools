@@ -10,6 +10,7 @@ The current release supports the following features:
 * CreateRootCert: Tool to create an X.509 root CA certificate
 * CreateSigningCert: Tool to create an X.509 code signing certificate signed by the root CA certificate created withe the above tools
 * AzureCreateRootCert: Tool to create an X.509 root CA certificate in Azure Key Vault
+* AzureCreateIntermediateCert: Tool to create an X.509 intermediate CA certificate in Azure Key Vault
 * AzureCreateSigningCert: Tool to create an X.509 code signing certificate signed by the root CA certificate in Azure Key Vault
 
 ## Usage
@@ -32,11 +33,11 @@ The generated certificate is self-signed using 4096 Bit RSA and SHA384.
 ### CreateSigningCert
 
 ```
-CreateSigningCert --Subject <subject> --Name <name> --Password <password> --ExpireDays <days> --SignerThumbprint <thumbprint> 
+CreateSigningCert --Subject <subject> --Name <name> --Password <password> --ExpireMonths <months> --SignerThumbprint <thumbprint> 
 ```
 or
 ```
-CreateSigningCert --Subject <subject> --Name <name> --Password <password> --ExpireDays <days> --SignerPfx <pfxFile> --SignerPassword <store>
+CreateSigningCert --Subject <subject> --Name <name> --Password <password> --ExpireMonths <months> --SignerPfx <pfxFile> --SignerPassword <store>
 ```
 
 Where:
@@ -46,7 +47,7 @@ Where:
 * SignerThumbprint: the certificate thumbprint of the root CA certificate used to sign the code signing certificate. The thumbprint can be obtained from the certificate store.
 * SignerPfx: the PFX file holding the root CA certificate used to sign the code signing certificate.
 * SignerPassword: the password to open the PFX file holding the root CA certificate used to sign the code signing certificate.
-* ExpireDays: The number of days the certificate is valid, default is 365.
+* ExpireMonths: The number of months the certificate is valid, default is 12.
 
 ### AzureCreateRootCert
 ```

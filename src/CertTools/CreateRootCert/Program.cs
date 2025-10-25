@@ -21,14 +21,15 @@ internal static class Program
    /// <param name="args">The args</param>
    static void Main(string[] args)
    {
-      Console.WriteLine($"Crypto Tools - create root certificate");
-
-      // Parse the command line options, get at least SubjectName and Name
+      // Parse the command line options
       var options = Parser.Default.ParseArguments<Options>(args).Value;
       if (options == null)
       {
          return;
       }
+
+      // Write header
+      OptionsExtensions.PrintToolInfo();
 
       // Check if the password is given, if not, ask for it 
       string? password = options.Password ?? ConsoleHelper.ReadPassword("root cert");
@@ -41,7 +42,7 @@ internal static class Program
 
       try
       {
-        var thumbPrint = CertificateWorker.CreateRootCert(options.Subject, options.Name, password, options.ExpireMonth);
+        var thumbPrint = CertificateWorker.CreateRootCert(options.Subject, options.Name, password, options.ExpireMonths);
         Console.WriteLine($"Certificate created: Thumbprint=\"{thumbPrint}\", filename={options.Name}.pfx");
       }
       catch (Exception ex)
