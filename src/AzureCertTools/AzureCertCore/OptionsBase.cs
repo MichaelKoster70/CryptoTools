@@ -36,7 +36,7 @@ public class OptionsBase
    /// Gets or sets the Entra ID Tenant ID.
    /// </summary>
    [Option("TenantId", HelpText = "The Azure Entra ID Tenant ID to authenticate access to Key Vault")]
-   public required string TenantId { get; set; }
+   public string? TenantId { get; set; }
 
    /// <summary>
    /// Gets or sets the Entra ID Application (Client) ID.
