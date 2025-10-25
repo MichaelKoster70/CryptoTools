@@ -41,8 +41,6 @@ public static class OptionsExtensions
          return null;
       }
 
-      PrintToolInfo();
-
       if (options.Interactive && (string.IsNullOrEmpty(options.TenantId) || string.IsNullOrEmpty(options.ClientId)))
       {
          PrintError("TenantId and ClientId are required when using 'Interactive'");
@@ -59,6 +57,7 @@ public static class OptionsExtensions
 
    private static void PrintError(string message)
    {
+      PrintToolInfo();
       Console.WriteLine($"ERROR: {message}");
       Console.WriteLine("  use --help for more information");
    }
