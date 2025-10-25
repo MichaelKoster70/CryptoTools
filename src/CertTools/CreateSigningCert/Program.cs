@@ -21,14 +21,15 @@ internal static class Program
    /// <param name="args">The args</param>
    static void Main(string[] args)
    {
-      Console.WriteLine($"Crypto Tools - create signing certificate");
-
       // Parse the command line options
       var options = Parser.Default.ParseArguments<Options>(args).Value;
       if (options == null)
       {
          return;
       }
+
+      // Write header
+      OptionsExtensions.PrintToolInfo();
 
       // Check if the signing cert PFX password is given, if not, ask for it 
       string? signingPassword = options.Password ?? ConsoleHelper.ReadPassword("signing cert");
@@ -42,7 +43,7 @@ internal static class Program
       {
          if (options.SignerThumbprint != null)
          {
-            CertificateWorker.CreateSigningCertificate(options.Subject, options.Name, signingPassword, options.SignerThumbprint, options.ExpireDays);
+            CertificateWorker.CreateSigningCertificate(options.Subject, options.Name, signingPassword, options.SignerThumbprint, options.ExpireMonths);
          }
          else
          {
@@ -55,7 +56,7 @@ internal static class Program
                return;
             }
 
-            CertificateWorker.CreateSigningCertificate(options.Subject, options.Name, signingPassword, options.SignerPfx, rootPassword, options.ExpireDays);
+            CertificateWorker.CreateSigningCertificate(options.Subject, options.Name, signingPassword, options.SignerPfx, rootPassword, options.ExpireMonths);
          }
 
          Console.WriteLine($"Certificate created: filename={options.Name}.pfx");

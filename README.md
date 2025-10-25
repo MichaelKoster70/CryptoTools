@@ -10,6 +10,7 @@ The current release supports the following features:
 * CreateRootCert: Tool to create an X.509 root CA certificate
 * CreateSigningCert: Tool to create an X.509 code signing certificate signed by the root CA certificate created withe the above tools
 * AzureCreateRootCert: Tool to create an X.509 root CA certificate in Azure Key Vault
+* AzureCreateIntermediateCert: Tool to create an X.509 intermediate CA certificate in Azure Key Vault
 * AzureCreateSigningCert: Tool to create an X.509 code signing certificate signed by the root CA certificate in Azure Key Vault
 
 ## Usage
@@ -32,11 +33,11 @@ The generated certificate is self-signed using 4096 Bit RSA and SHA384.
 ### CreateSigningCert
 
 ```
-CreateSigningCert --Subject <subject> --Name <name> --Password <password> --ExpireDays <days> --SignerThumbprint <thumbprint> 
+CreateSigningCert --Subject <subject> --Name <name> --Password <password> --ExpireMonths <months> --SignerThumbprint <thumbprint> 
 ```
 or
 ```
-CreateSigningCert --Subject <subject> --Name <name> --Password <password> --ExpireDays <days> --SignerPfx <pfxFile> --SignerPassword <store>
+CreateSigningCert --Subject <subject> --Name <name> --Password <password> --ExpireMonths <months> --SignerPfx <pfxFile> --SignerPassword <store>
 ```
 
 Where:
@@ -46,16 +47,16 @@ Where:
 * SignerThumbprint: the certificate thumbprint of the root CA certificate used to sign the code signing certificate. The thumbprint can be obtained from the certificate store.
 * SignerPfx: the PFX file holding the root CA certificate used to sign the code signing certificate.
 * SignerPassword: the password to open the PFX file holding the root CA certificate used to sign the code signing certificate.
-* ExpireDays: The number of days the certificate is valid, default is 365.
+* ExpireMonths: The number of months the certificate is valid, default is 12.
 
 ### AzureCreateRootCert
 ```
-AzureCreateRootCert --Subject <subject> --Name <name> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
+AzureCreateRootCert --Subject <subject> --CertificateName <name> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
 ```
 
 Where:
 * Subject: The subject of the certificate in form CN=\<subject\>.
-* Name: The name of the certificate in Azure Key Vault.
+* CertificateName: The name of the certificate in Azure Key Vault.
 * KeyVaultUri: The URI of the Azure Key Vault to store the certificate (like https://some-name.vault.azure.net/).
 * TenantId: The Entra ID tenant ID.
 * ClientId: The client ID of the service principal used to access the Key Vault.
@@ -124,7 +125,7 @@ steps:
 
 ### Desktop PC prerequisites
 You need a Windows based PC with:
-- Window 10 x64 1809 or newer
+- Windows 11 x64 24H2 or newer
 - Visual Studio 2022 17.8 or newer with 
   - .NET 8 SDK installed
   - .NET 8 Runtime installed

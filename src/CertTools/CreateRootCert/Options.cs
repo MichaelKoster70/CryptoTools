@@ -5,6 +5,7 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
+using CertTools.CertCore;
 using CommandLine;
 
 namespace CertTools.CreateRootCert;
@@ -12,29 +13,11 @@ namespace CertTools.CreateRootCert;
 /// <summary>
 /// Container class for the command line options.
 /// </summary>
-internal class Options
+internal class Options : OptionsBase  
 {
-   /// <summary>
-   /// Gets or set the x.509 Subject Name for the certificate.
-   /// </summary>
-   [Option("Subject", Required = true, HelpText = "The subject name for the certificate in the form \"CN=<subject name>\"")]
-   public required string Subject { get; set; }
-
-   /// <summary>
-   /// Gets or sets the path to the filename to export the certificate to.
-   /// </summary>
-   [Option("Name", Required = true, HelpText = "The name of the file to export the certificate to (PFX and CER)")]
-   public required string Name { get; set; }
-
    /// <summary>
    /// Gets or sets the number of months until the certificate expires.
    /// </summary>
-   [Option("ExpireMonth", Required = false, HelpText = "The number of months until the certificate expires, default if not specifed is 240 months (20 Years).")]
-   public int ExpireMonth { get; set; } = 240;
-
-   /// <summary>
-   /// Gets or sets the path to the PFX file to export the certificate to.
-   /// </summary>
-   [Option("Password", Required = false, HelpText = "The password to use for the PFX file")]
-   public string? Password { get; set; }
+   [Option("ExpireMonths", Required = false, HelpText = "The number of months until the certificate expires, default if not specifed is 240 months (20 Years).")]
+   public int ExpireMonths { get; set; } = 240;
 }

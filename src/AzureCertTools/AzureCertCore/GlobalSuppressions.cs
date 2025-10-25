@@ -10,4 +10,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Major Code Smell", "S125:Sections of code should not be commented out", Justification = "<Pending>", Scope = "member", Target = "~M:CertTools.AzureCertCore.KeyVaultX509SignatureGenerator.GetSignatureAlgorithmIdentifier(System.Security.Cryptography.HashAlgorithmName)~System.Byte[]")]
+[assembly: SuppressMessage("Major Code Smell", "S125:Sections of code should not be commented out", Justification = "Is a comment", Scope = "member", Target = "~M:CertTools.AzureCertCore.KeyVaultX509SignatureGenerator.GetSignatureAlgorithmIdentifier(System.Security.Cryptography.HashAlgorithmName)~System.Byte[]")]
+[assembly: SuppressMessage("Design", "CA1056:URI-like properties should not be strings", Justification = "<Pending>", Scope = "member", Target = "~P:CertTools.AzureCertCore.OptionsBase.KeyVaultUri")]
+[assembly: SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>", Scope = "member", Target = "~M:CertTools.AzureCertCore.OptionsExtensions.PrintError(System.String)")]
