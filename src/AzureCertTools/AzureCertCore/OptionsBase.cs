@@ -42,7 +42,7 @@ public class OptionsBase
    /// Gets or sets the Entra ID Application (Client) ID.
    /// </summary>
    [Option("ClientId", HelpText = "The Azure Entra ID Application (Client) ID of the application accessing Key Vault")]
-   public required string ClientId { get; set; }
+   public string? ClientId { get; set; }
 
    /// <summary>
    /// Gets or sets the interactive login flag.
