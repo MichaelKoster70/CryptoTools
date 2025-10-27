@@ -15,16 +15,6 @@ namespace CertTools.AzureCertCore;
 public static class OptionsExtensions
 {
    /// <summary>
-   /// Prints the tool heading information (same as Parser)
-   /// </summary>
-   public static void PrintToolInfo()
-   {
-      Console.WriteLine(HeadingInfo.Default);
-      Console.WriteLine(CopyrightInfo.Default);
-      Console.WriteLine();
-   }
-
-   /// <summary>
    /// Validates the options provided.
    /// - Interactive requires TenantId and ClientId
    /// - ClientSecret requires TenantId, ClientId
@@ -57,7 +47,7 @@ public static class OptionsExtensions
 
    private static void PrintError(string message)
    {
-      PrintToolInfo();
+      ConsoleHelper.PrintToolInfo();
       Console.WriteLine($"ERROR: {message}");
       Console.WriteLine("  use --help for more information");
    }

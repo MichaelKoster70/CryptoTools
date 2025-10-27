@@ -23,7 +23,7 @@ public class OptionsBase
    /// <summary>
    /// Gets or sets the name of the certificate to create in Key Vault.
    /// </summary>
-   [Option("CertificateName", Required = true, HelpText = "The name of the certificate to create in Key Vault")]
+   [Option("CertificateName", Required = true, Group = "CertificateNameOrFile", HelpText = "The name of the certificate to create in Key Vault")]
    public required string CertificateName { get; set; }
 
    /// <summary>
