@@ -29,7 +29,7 @@ internal static class Program
       // Check that we have a password if a PFX file is created
       if (!string.IsNullOrEmpty(options.FileName))
       {
-         // in Workload Identity access node, we cannot prompt for password. terminate with error.
+         // In Workload Identity mode, we cannot prompt for password. Terminate with error.
          if (options.WorkloadIdentity && string.IsNullOrEmpty(options.Password))
          {
             Console.WriteLine("ERROR: Password is required when creating a PFX file");
