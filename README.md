@@ -1,4 +1,4 @@
-# CryptoTools
+ # CryptoTools
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 .NET 8 based crypto tools for
@@ -83,6 +83,7 @@ Where:
 * Subject: The subject of the certificate in form CN=\<subject\>.
 * CertificateName: The name of the certificate in Azure Key Vault.
 * FileName: Absolute path to PFX file holding the certificate (<drive>:\<folder>\<name>.pfx)
+* Password: The password to protect the private key contained in the PFX file, required with FileName option.
 * SignerCertificateName: The name of the root CA certificate in Azure Key Vault used for signing the leaf certificate.
 * KeyVaultUri: The URI of the Azure Key Vault to store the certificate (like https://some-name.vault.azure.net/).
 * TenantId: The Entra ID tenant ID.
@@ -118,7 +119,7 @@ steps:
       Write-Host "Client ID: $env:AZURE_CLIENT_ID"
       Write-Host "Tenant ID: $env:AZURE_TENANT_ID"
 
-      .\AzureCreateRootCert --Subject "My Root CA" --Name "MyRootCA" --ExpireMonth 240 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
+      .\AzureCreateRootCert --Subject "My Root CA" --CertificateName "MyRootCA" --ExpireMonth 240 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
 ```
 
 ## Getting Started

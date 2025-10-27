@@ -31,7 +31,7 @@ internal static class Program
       }
 
       // Write header
-      OptionsExtensions.PrintToolInfo();
+      ConsoleHelper.PrintToolInfo();
 
       // Create the token provider
       TokenCredential credentials = options switch

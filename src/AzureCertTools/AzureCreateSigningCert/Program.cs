@@ -14,17 +14,39 @@ namespace CertTools.AzureCreateSigningCert;
 
 internal static class Program
 {
-   static void Main(string[] args)
+   static int Main(string[] args)
    {
       // Parse the command line options
       var options = Parser.Default.ParseArguments<Options>(args).Value.Validate();
       if (options == null)
       {
-         return;
+         return 1;
       }
 
       // Write header
-      OptionsExtensions.PrintToolInfo();
+      ConsoleHelper.PrintToolInfo();
+
+      // Check that we have a password if a PFX file is created
+      if (!string.IsNullOrEmpty(options.FileName))
+      {
+         // in Workload Identity access node, we cannot prompt for password. terminate with error.
+         if (options.WorkloadIdentity && string.IsNullOrEmpty(options.Password))
+         {
+            Console.WriteLine("ERROR: Password is required when creating a PFX file");
+            return 1;
+         }
+         else
+         {
+            // For other authentication methods, we prompt for password if not given on command line
+            options.Password ??= ConsoleHelper.ReadPassword("signing cert");
+
+            if (string.IsNullOrEmpty(options.Password))
+            {
+               Console.WriteLine("No password given, aborting");
+               return 1;
+            }
+         }
+      }
 
       // Create the token provider
       TokenCredential credentials = options switch
@@ -55,5 +77,7 @@ internal static class Program
       {
          Console.WriteLine("Either CertificateName or FileName must be specified");
       }
+
+      return 0;
    }
 }
