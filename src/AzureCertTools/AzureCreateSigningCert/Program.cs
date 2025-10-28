@@ -65,12 +65,12 @@ internal static class Program
 
       if (!string.IsNullOrEmpty(options.CertificateName))
       {
-         CertificateWorker.KeyVaultCreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonth).Wait();
+         CertificateWorker.KeyVaultCreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths).Wait();
          Console.WriteLine($"Certificate created: name={options.CertificateName}, Key Vault={keyVaultUri}");
       }
       else if (!string.IsNullOrEmpty(options.FileName))
       {
-         CertificateWorker.LocalCreateSigningCertificateAsync(options.FileName, options.Password, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonth).Wait();
+         CertificateWorker.LocalCreateSigningCertificateAsync(options.FileName, options.Password, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths).Wait();
          Console.WriteLine($"PFX file created: {options.FileName}");
       }
       else
