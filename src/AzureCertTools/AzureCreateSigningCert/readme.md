@@ -4,7 +4,7 @@ AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCert
 ```
 
 Where:
-* Subject: The subject of the certificate in form CN=\<subject\>.
+* Subject: The subject of the certificate in form "CN=\<subject\>".
 * CertificateName: The name of the certificate in Azure Key Vault.
 * FileName: Absolute path to PFX file holding the certificate (<drive>:\<folder>\<name>.pfx)
 * Password: The password protecting the PFX file.

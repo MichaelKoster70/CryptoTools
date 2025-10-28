@@ -1,9 +1,8 @@
 # Release Notes
-Streamlined option naming and improved usability
+Package as dotnet tool
 
 ## Features
-- Made ClientID and TenantID optional when using 'WorkloadIdentity'.
-- Unified Certificate name option to 'CertificateName' across all Azure tools for consistency.
+- packaged some of the Azure certificate creation tools as dotnet global tools for easier usage.
 
 ## Bug Fixes
-- None
+- Fixed a problem with ExpiryMonths option

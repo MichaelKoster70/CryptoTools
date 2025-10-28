@@ -1,11 +1,11 @@
-# 1.6.2
-Bugfix release
+# R1.7.0
+Package as dotnet tool
 
 ## Features
-- None
+- packaged some of the Azure certificate creation tools as dotnet global tools for easier usage.
 
 ## Bug Fixes
-- Fixed .NET Tool NuGet package for AzureCreateSigningCert
+- Fixed a problem with ExpiryMonths option
 
 # 1.6.0
 Streamlined option naming and improved usability

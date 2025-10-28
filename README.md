@@ -21,7 +21,7 @@ The current release supports the following features:
 CreateRootCert --Subject <subject> --Name <name> --Password <password> --ExpiryMonths <months>
 ```
 Where:
-* Subject: The subject of the certificate in form CN=\<subject\>.
+* Subject: The subject of the certificate in form "CN=\<subject\>".
 * Name: The name of the certificate file (without extension).
 * Password: The password to protect the private key contained in the certificate.
 * ExpiryMonths: The number of months the certificate is valid, default is 240.
@@ -41,7 +41,7 @@ CreateSigningCert --Subject <subject> --Name <name> --Password <password> --Expi
 ```
 
 Where:
-* Subject: The subject of the certificate in form CN=\<subject\>.
+* Subject: The subject of the certificate in form "CN=\<subject\>".
 * Name: The name of the certificate file (without extension).
 * Password: The password to protect the private key contained in the certificate.
 * SignerThumbprint: the certificate thumbprint of the root CA certificate used to sign the code signing certificate. The thumbprint can be obtained from the certificate store.
@@ -55,7 +55,7 @@ AzureCreateRootCert --Subject <subject> --CertificateName <name> --ExpireMonth <
 ```
 
 Where:
-* Subject: The subject of the certificate in form CN=\<subject\>.
+* Subject: The subject of the certificate in form "CN=\<subject\>".
 * CertificateName: The name of the certificate in Azure Key Vault.
 * KeyVaultUri: The URI of the Azure Key Vault to store the certificate (like https://some-name.vault.azure.net/).
 * TenantId: The Entra ID tenant ID.
@@ -80,7 +80,7 @@ AzureCreateSigningCert --Subject <subject> --FileName <name> --SignerCertificate
 ```
 
 Where:
-* Subject: The subject of the certificate in form CN=\<subject\>.
+* Subject: The subject of the certificate in form "CN=\<subject\>".
 * CertificateName: The name of the certificate in Azure Key Vault.
 * FileName: Absolute path to PFX file holding the certificate (<drive>:\<folder>\<name>.pfx)
 * Password: The password to protect the private key contained in the PFX file, required with FileName option.
