@@ -112,12 +112,18 @@ steps:
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'My-WIF-Service-Connection'  # Must be WIF-enabled
+    addSpnToEnvironment: true
     scriptType: 'pscore'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      Write-Host "Using federated token from: $env:AZURE_FEDERATED_TOKEN_FILE"
-      Write-Host "Client ID: $env:AZURE_CLIENT_ID"
-      Write-Host "Tenant ID: $env:AZURE_TENANT_ID"
+      # write the OIDC JWT into a temp file
+      $tokenPath = "$(Agent.TempDirectory)\federated-token.jwt"
+      Set-Content -Path $tokenPath -Value $env:idToken
+
+      # export the values the SDK needs
+      $env:AZURE_CLIENT_ID            = $env:servicePrincipalId
+      $env:AZURE_TENANT_ID            = $env:tenantId
+      $env:AZURE_FEDERATED_TOKEN_FILE = $tokenPath
 
       .\AzureCreateRootCert --Subject "My Root CA" --CertificateName "MyRootCA" --ExpireMonth 240 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
 ```

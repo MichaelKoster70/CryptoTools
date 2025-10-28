@@ -26,3 +26,25 @@ The WorkloadIdentity parameter relies on the [Azure Identity SDK for .NET](https
 - AZURE_CLIENT_ID: The client ID of the Entra ID application representing the workload identity.
 - AZURE_TENANT_ID: The tenant ID of the Entra ID tenant.
 - AZURE_FEDERATED_TOKEN_FILE: The path to the file containing the OIDC token issued by the workload identity provider.
+
+The following example shows how to use the tools in an Azure Pipeline.
+```yaml
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'My-WIF-Service-Connection'  # Must be WIF-enabled
+    addSpnToEnvironment: true
+    scriptType: 'pscore'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      # write the OIDC JWT into a temp file
+      $tokenPath = "$(Agent.TempDirectory)\federated-token.jwt"
+      Set-Content -Path $tokenPath -Value $env:idToken
+
+      # export the values the SDK needs
+      $env:AZURE_CLIENT_ID            = $env:servicePrincipalId
+      $env:AZURE_TENANT_ID            = $env:tenantId
+      $env:AZURE_FEDERATED_TOKEN_FILE = $tokenPath
+
+      .\AzureCreateSigningCert --Subject "CN=My Organization" --CertificateName "MySigningCA" --SignerCertificateName="MyRootCA" --ExpireMonth 2 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
+```
