@@ -14,6 +14,7 @@
 The tool will create the certificate in the designated Azure Key Vault.</Description>
     <PackageProjectUrl>https://github.com/MichaelKoster70/CryptoTools</PackageProjectUrl>
     <PackageIcon>verified_128.png</PackageIcon>
+    <AssemblyName>AzureCreateSigningCert</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
