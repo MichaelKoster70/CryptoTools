@@ -1,0 +1,33 @@
+name: Sign NuGet Package
+description: Digitally sign a .nupkg file using nuget sign
+inputs:
+  nupkg-path:
+    description: Path to the NuGet package file to sign
+    required: true
+  signing-cert-file: 
+    description: The path to the PFX file
+    required: true
+  signing-cert-password: 
+    description: The password for the PFX file
+    required: true
+  signing-cert-thumbprint:
+    description: The cert footprint
+    required: true
+  signing-timestamp-server:
+    description: The timestamp server URL
+    required: false
+    default: 'http://timestamp.sectigo.com'
+runs:
+  using: "composite"
+
+  steps:
+  - name: Sign .nupkg files
+    run: |
+      $nupkgPath = '${{ inputs.nupkg-path }}'
+      Get-ChildItem -Path $nupkgPath -Recurse -Include *.nupkg | ForEach-Object {
+        nuget sign "$($_.FullName)" `
+          -CertificatePath "${{ inputs.signing-cert-file }}" `
+          -CertificatePassword "${{ inputs.signing-cert-password }}" `
+          -Timestamper "${{ inputs.signing-timestamp-server }}"
+      }
+    shell: pwsh

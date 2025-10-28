@@ -7,7 +7,7 @@ outputs:
     value: ${{ steps.gitversion-execute.outputs.majorMinorPatch }}
   versionSuffix:
     description: The version suffix (pre release label)
-    value: ${{ steps.gitversion-execute.outputs.preReleaseLabel }}
+    value: ${{ steps.gitversion-execute.outputs.preReleaseTag }}
   assemblyVersion:
     description: The assembly version in major.minor.patch.revision notation
     value: ${{ steps.gitversion-execute.outputs.assemblySemVer }}

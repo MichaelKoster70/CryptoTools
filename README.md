@@ -21,7 +21,7 @@ The current release supports the following features:
 CreateRootCert --Subject <subject> --Name <name> --Password <password> --ExpiryMonths <months>
 ```
 Where:
-* Subject: The subject of the certificate in form CN=\<subject\>.
+* Subject: The subject of the certificate in form "CN=\<subject\>".
 * Name: The name of the certificate file (without extension).
 * Password: The password to protect the private key contained in the certificate.
 * ExpiryMonths: The number of months the certificate is valid, default is 240.
@@ -41,7 +41,7 @@ CreateSigningCert --Subject <subject> --Name <name> --Password <password> --Expi
 ```
 
 Where:
-* Subject: The subject of the certificate in form CN=\<subject\>.
+* Subject: The subject of the certificate in form "CN=\<subject\>".
 * Name: The name of the certificate file (without extension).
 * Password: The password to protect the private key contained in the certificate.
 * SignerThumbprint: the certificate thumbprint of the root CA certificate used to sign the code signing certificate. The thumbprint can be obtained from the certificate store.
@@ -55,7 +55,7 @@ AzureCreateRootCert --Subject <subject> --CertificateName <name> --ExpireMonth <
 ```
 
 Where:
-* Subject: The subject of the certificate in form CN=\<subject\>.
+* Subject: The subject of the certificate in form "CN=\<subject\>".
 * CertificateName: The name of the certificate in Azure Key Vault.
 * KeyVaultUri: The URI of the Azure Key Vault to store the certificate (like https://some-name.vault.azure.net/).
 * TenantId: The Entra ID tenant ID.
@@ -80,7 +80,7 @@ AzureCreateSigningCert --Subject <subject> --FileName <name> --SignerCertificate
 ```
 
 Where:
-* Subject: The subject of the certificate in form CN=\<subject\>.
+* Subject: The subject of the certificate in form "CN=\<subject\>".
 * CertificateName: The name of the certificate in Azure Key Vault.
 * FileName: Absolute path to PFX file holding the certificate (<drive>:\<folder>\<name>.pfx)
 * Password: The password to protect the private key contained in the PFX file, required with FileName option.
@@ -112,14 +112,20 @@ steps:
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'My-WIF-Service-Connection'  # Must be WIF-enabled
+    addSpnToEnvironment: true
     scriptType: 'pscore'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      Write-Host "Using federated token from: $env:AZURE_FEDERATED_TOKEN_FILE"
-      Write-Host "Client ID: $env:AZURE_CLIENT_ID"
-      Write-Host "Tenant ID: $env:AZURE_TENANT_ID"
+      # write the OIDC JWT into a temp file
+      $tokenPath = "$(Agent.TempDirectory)\federated-token.jwt"
+      Set-Content -Path $tokenPath -Value $env:idToken
 
-      .\AzureCreateRootCert --Subject "My Root CA" --CertificateName "MyRootCA" --ExpireMonth 240 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
+      # export the values the SDK needs
+      $env:AZURE_CLIENT_ID            = $env:servicePrincipalId
+      $env:AZURE_TENANT_ID            = $env:tenantId
+      $env:AZURE_FEDERATED_TOKEN_FILE = $tokenPath
+
+      .\AzureCreateRootCert --Subject "My Root CA" --CertificateName "MyRootCA" --ExpireMonths 240 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
 ```
 
 ## Getting Started

@@ -32,7 +32,7 @@ on:
 jobs:
   shared_build:
     name: Build Tools
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     env:
       CertToolsPath: ${{ github.workspace }}\src\CertTools
@@ -133,8 +133,8 @@ jobs:
     - name: 'Build: Publish AzureCertTools/AzureCreateSigningCert'
       if: ${{ inputs.store-artifacts }}
       run: |
-        dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/AzureCreateSigningCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
-        dotnet pack ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/NuGet/AzureCreateSigningCertNuGet.csproj --configuration ${{ inputs.configuration }}
+        dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/AzureCreateSigningCert.csproj --configuration ${{ inputs.configuration }} -p:PublishProfile=FolderProfile
+        dotnet pack ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/AzureCreateSigningCert.csproj --configuration ${{ inputs.configuration }}
       shell: pwsh
 
     - name: 'Build: Publish AzureCertTools/AzureCreateSslServerCert'
@@ -148,6 +148,16 @@ jobs:
       uses: ./eng/actions/sign-binaries
       with:
         binaries-path: ${{ env.BinaryOutputPath }}
+        signing-cert-file: ${{ runner.temp }}\cert.pfx
+        signing-cert-password: ${{ secrets.SIGNING_CERT_PASSWORD }}
+        signing-cert-thumbprint: ${{ secrets.SIGNING_CERT_THUMBPRINT }}
+        signing-timestamp-server: 'http://timestamp.sectigo.com'
+
+    - name: 'Build: Sign NuGet packages'
+      if: ${{ inputs.store-artifacts && inputs.sign-binaries }}
+      uses: ./eng/actions/sign-nupkg
+      with:
+        nupkg-path: ${{ env.BinaryOutputPath }}
         signing-cert-file: ${{ runner.temp }}\cert.pfx
         signing-cert-password: ${{ secrets.SIGNING_CERT_PASSWORD }}
         signing-cert-thumbprint: ${{ secrets.SIGNING_CERT_THUMBPRINT }}

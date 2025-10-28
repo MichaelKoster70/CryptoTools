@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -11,21 +11,36 @@
     <SupportedOSPlatformVersion>10.0.26100.0</SupportedOSPlatformVersion>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
+    <TrimMode>partial</TrimMode>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Title>Code Signing Certificate Creation Tool for Azure Key Vault</Title>
     <AssemblyTitle>$(Title)</AssemblyTitle>
-    <TrimMode>partial</TrimMode>
+    <Description>A console application to create a x.509 code signing certificate to sign binary files (EXE, DLL) and installation packages (MSIX, MSI)
+The tool will create the certificate in the designated Azure Key Vault.
+    </Description>
     <ApplicationIcon>AzureCreateSigningCert.ico</ApplicationIcon>
-    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <PackAsTool>True</PackAsTool>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageId>AzureCreateSigningCert</PackageId>
+    <PackageOutputPath>..\..\..\bin</PackageOutputPath>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageIcon>verified_128.png</PackageIcon>
+    <PackageProjectUrl>https://github.com/MichaelKoster70/CryptoTools</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="NuGet\**" />
-    <EmbeddedResource Remove="NuGet\**" />
-    <None Remove="NuGet\**" />
+    <Content Include="AzureCreateSigningCert.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="AzureCreateSigningCert.ico" />
+    <None Include="..\..\..\ArtWork\verified_128.png">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
+    <None Update="readme.md">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -38,5 +53,4 @@
   <ItemGroup>
     <ProjectReference Include="..\AzureCertCore\AzureCertCore.csproj" />
   </ItemGroup>
-
 </Project>
