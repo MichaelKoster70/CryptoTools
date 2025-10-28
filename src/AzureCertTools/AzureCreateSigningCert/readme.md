@@ -46,5 +46,5 @@ steps:
       $env:AZURE_TENANT_ID            = $env:tenantId
       $env:AZURE_FEDERATED_TOKEN_FILE = $tokenPath
 
-      .\AzureCreateSigningCert --Subject "CN=My Organization" --CertificateName "MySigningCA" --SignerCertificateName="MyRootCA" --ExpireMonth 2 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
+      .\AzureCreateSigningCert --Subject "CN=My Organization" --CertificateName "MySigningCA" --SignerCertificateName="MyRootCA" --ExpireMonths 2 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
 ```

@@ -125,7 +125,7 @@ steps:
       $env:AZURE_TENANT_ID            = $env:tenantId
       $env:AZURE_FEDERATED_TOKEN_FILE = $tokenPath
 
-      .\AzureCreateRootCert --Subject "My Root CA" --CertificateName "MyRootCA" --ExpireMonth 240 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
+      .\AzureCreateRootCert --Subject "My Root CA" --CertificateName "MyRootCA" --ExpireMonths 240 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
 ```
 
 ## Getting Started
