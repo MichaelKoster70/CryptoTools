@@ -1,5 +1,5 @@
-name: Sign Binaries
-description: Signs binaries using a PFX certificate
+name: Sign NuGet Package
+description: Digitally sign a .nupkg file using nuget sign
 inputs:
   nupkg-path:
     description: Path to the NuGet package file to sign
@@ -17,26 +17,23 @@ inputs:
     description: The timestamp server URL
     required: false
     default: 'http://timestamp.sectigo.com'
-  windows-sdk-version:
-    description: The version of the Windows SDK to use for signing
-    required: false
-    default: '10.0.26100.0'
 runs:
   using: "composite"
 
   steps:
-  - run: echo "C:\Program Files (x86)\Windows Kits\10\bin\${{ inputs.windows-sdk-version }}\x64" >> $env:GITHUB_PATH
+  - name: Install NuGet CLI
     shell: pwsh
-  - run: |
+    run: |
+      dotnet tool install --global NuGet.CommandLine
+      echo "$env:USERPROFILE\.dotnet\tools" >> $env:GITHUB_PATH
+
+  - name: Sign .nupkg files
+    run: |
       $nupkgPath = '${{ inputs.nupkg-path }}'
       Get-ChildItem -Path $nupkgPath -Recurse -Include *.nupkg | ForEach-Object {
-          if (& signtool verify /pa "$($_.FullName)" 2>$null) {
-            Write-Host "Signing file: $_"
-            & signtool sign /f "${{ inputs.signing-cert-file }}" /p "${{ inputs.signing-cert-password }}" /tr ${{ inputs.signing-timestamp-server }} /td sha256 /fd sha256 "$($_.FullName)"
-          } else {
-            Write-Host "Skipping already signed file: $_"
-          }
+        nuget sign "$($_.FullName)" `
+          -CertificatePath cert.pfx `
+          -CertificatePassword "${{ inputs.cert-password }}" `
+          -Timestamper "${{ inputs.timestamp-url }}"
       }
-    env:
-      PATH: ${{ runner.tool_cache }}\signtool
     shell: pwsh
