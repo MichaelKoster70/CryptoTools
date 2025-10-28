@@ -32,7 +32,7 @@ on:
 jobs:
   shared_build:
     name: Build Tools
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     env:
       CertToolsPath: ${{ github.workspace }}\src\CertTools
@@ -152,7 +152,8 @@ jobs:
         signing-cert-password: ${{ secrets.SIGNING_CERT_PASSWORD }}
         signing-cert-thumbprint: ${{ secrets.SIGNING_CERT_THUMBPRINT }}
         signing-timestamp-server: 'http://timestamp.sectigo.com'
-    - name: 'Build: Sign published binaries'
+
+    - name: 'Build: Sign NuGet packages'
       if: ${{ inputs.store-artifacts && inputs.sign-binaries }}
       uses: ./eng/actions/sign-nupkg
       with:

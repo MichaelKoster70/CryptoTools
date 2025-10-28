@@ -1,3 +1,12 @@
+# 1.6.2
+Bugfix release
+
+## Features
+- None
+
+## Bug Fixes
+- Fixed .NET Tool NuGet package for AzureCreateSigningCert
+
 # 1.6.0
 Streamlined option naming and improved usability
 

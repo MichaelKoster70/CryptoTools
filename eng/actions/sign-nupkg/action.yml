@@ -21,19 +21,13 @@ runs:
   using: "composite"
 
   steps:
-  - name: Install NuGet CLI
-    shell: pwsh
-    run: |
-      dotnet tool install --global NuGet.CommandLine
-      echo "$env:USERPROFILE\.dotnet\tools" >> $env:GITHUB_PATH
-
   - name: Sign .nupkg files
     run: |
       $nupkgPath = '${{ inputs.nupkg-path }}'
       Get-ChildItem -Path $nupkgPath -Recurse -Include *.nupkg | ForEach-Object {
         nuget sign "$($_.FullName)" `
-          -CertificatePath cert.pfx `
-          -CertificatePassword "${{ inputs.cert-password }}" `
-          -Timestamper "${{ inputs.timestamp-url }}"
+          -CertificatePath "${{ inputs.signing-cert-file }}" `
+          -CertificatePassword "${{ inputs.signing-cert-password }}" `
+          -Timestamper "${{ inputs.signing-timestamp-server }}"
       }
     shell: pwsh
