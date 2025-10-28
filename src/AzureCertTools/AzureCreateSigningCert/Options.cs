@@ -36,6 +36,6 @@ internal class Options : OptionsBase
    /// <summary>
    /// Gets or sets the number of month until the certificate expires.
    /// </summary>
-   [Option("ExpireMonth", Required = false, HelpText = "The number of month until the certificate expires, default if not specified is 1 month.")]
-   public int ExpireMonth { get; set; } = 1;
+   [Option("ExpireMonths", Required = false, HelpText = "The number of months until the certificate expires, default if not specified is 1 month.")]
+   public int ExpireMonths { get; set; } = 1;
 }
