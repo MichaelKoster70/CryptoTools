@@ -1,7 +1,7 @@
- # CryptoTools
+# CryptoTools
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-.NET 8 based crypto tools for
+.NET 10 based crypto tools for
 * Creating x.509 based code signing certificates for development and testing purposes
 
 ## Overview
@@ -134,8 +134,8 @@ steps:
 You need a Windows based PC with:
 - Windows 11 x64 24H2 or newer
 - Visual Studio 2022 17.8 or newer with 
-  - .NET 8 SDK installed
-  - .NET 8 Runtime installed
+  - .NET 10 SDK installed
+  - .NET 10 Runtime installed
 
 ### Build
 
