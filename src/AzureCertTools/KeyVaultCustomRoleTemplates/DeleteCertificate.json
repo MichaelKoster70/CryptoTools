@@ -1,0 +1,15 @@
+{
+  "Name": "Key Vault Delete Certificate",
+  "IsCustom": true,
+  "Description": "Perform Key Vault x.509 certificate delete operations",
+  "AssignableScopes": [
+      "/subscriptions/{subscription}"
+  ],
+  "Actions": [],
+  "NotActions": [],
+  "DataActions": [
+    "Microsoft.KeyVault/vaults/certificates/read",
+    "Microsoft.KeyVault/vaults/certificates/delete/action"
+  ],
+   "NotDataActions": []
+}

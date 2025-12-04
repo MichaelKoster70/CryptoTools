@@ -1,7 +1,8 @@
 <Solution>
-  <Project Path="AzureCertCore/AzureCertCore.csproj" />
-  <Project Path="AzureCreateIntermediateCert/AzureCreateIntermediateCert.csproj" />
-  <Project Path="AzureCreateRootCert/AzureCreateRootCert.csproj" />
-  <Project Path="AzureCreateSigningCert/AzureCreateSigningCert.csproj" />
-  <Project Path="AzureCreateSslServerCert/AzureCreateSslServerCert.csproj" />
+  <Project Path="AzureDeleteCert/AzureDeleteCert.csproj" />
+  <Project Path="D:/ProjectsPersonal/CryptoTools/src/AzureCertTools/AzureCertCore/AzureCertCore.csproj" />
+  <Project Path="D:/ProjectsPersonal/CryptoTools/src/AzureCertTools/AzureCreateIntermediateCert/AzureCreateIntermediateCert.csproj" />
+  <Project Path="D:/ProjectsPersonal/CryptoTools/src/AzureCertTools/AzureCreateRootCert/AzureCreateRootCert.csproj" />
+  <Project Path="D:/ProjectsPersonal/CryptoTools/src/AzureCertTools/AzureCreateSigningCert/AzureCreateSigningCert.csproj" />
+  <Project Path="D:/ProjectsPersonal/CryptoTools/src/AzureCertTools/AzureCreateSslServerCert/AzureCreateSslServerCert.csproj" />
 </Solution>

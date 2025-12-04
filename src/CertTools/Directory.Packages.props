@@ -1,0 +1,13 @@
+<Project>
+  
+  <!-- Enable Central Package Management -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!-- Package versions for CertTools solution -->
+  <ItemGroup>
+    <PackageVersion Include="CommandLineParser" Version="2.9.1" />
+  </ItemGroup>
+
+</Project>
