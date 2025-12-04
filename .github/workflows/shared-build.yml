@@ -36,9 +36,9 @@ jobs:
 
     env:
       CertToolsPath: ${{ github.workspace }}\src\CertTools
-      CertToolsSolutionPath: ${{ github.workspace }}\src\CertTools\CertTools.sln
+      CertToolsSolutionPath: ${{ github.workspace }}\src\CertTools\CertTools.slnx
       AzureCertToolsPath: ${{ github.workspace }}\src\AzureCertTools
-      AzureCertToolsSolutionPath: ${{ github.workspace }}\src\AzureCertTools\AzureCertTools.sln
+      AzureCertToolsSolutionPath: ${{ github.workspace }}\src\AzureCertTools\AzureCertTools.slnx
       BinaryOutputPath: ${{ github.workspace }}\bin
 
     steps:
@@ -51,7 +51,7 @@ jobs:
     - name: Set up .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.x' # Use the latest .NET 8 SDK
+        dotnet-version: '10.x' # Use the latest .NET 10 SDK
 
     # Build Solution: determine and apply the version for the assemblies
     - name: 'Build: Determine Version'
