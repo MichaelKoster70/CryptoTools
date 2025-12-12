@@ -1,8 +1,10 @@
 # Release Notes
-Package as dotnet tool
+New Tools and infrastructure updates.
 
 ## Features
-- packaged some of the Azure certificate creation tools as dotnet global tools for easier usage.
+- Added too to delete Azure Key Vault certificates.
+- Upgraded to .NET 10.
+- Changed NuGet packages to use a proper prefix
 
 ## Bug Fixes
-- Fixed a problem with ExpiryMonths option
+- none

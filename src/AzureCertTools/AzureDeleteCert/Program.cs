@@ -11,10 +11,17 @@ using Azure.Security.KeyVault.Certificates;
 using CertTools.AzureCertCore;
 using CommandLine;
 
-namespace CertTools.AzureDeleteSigningCert;
+namespace CertTools.AzureDeleteCert;
 
+/// <summary>
+/// Class holding the application entry point.
+/// </summary>
 internal static class Program
 {
+   /// <summary>
+   /// Application entry point.
+   /// </summary>
+   /// <param name="args">The args</param>
    static int Main(string[] args)
    {
       // Parse the command line options

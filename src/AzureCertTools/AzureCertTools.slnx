@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
   <Project Path="AzureDeleteCert/AzureDeleteCert.csproj" />
   <Project Path="D:/ProjectsPersonal/CryptoTools/src/AzureCertTools/AzureCertCore/AzureCertCore.csproj" />
   <Project Path="D:/ProjectsPersonal/CryptoTools/src/AzureCertTools/AzureCreateIntermediateCert/AzureCreateIntermediateCert.csproj" />

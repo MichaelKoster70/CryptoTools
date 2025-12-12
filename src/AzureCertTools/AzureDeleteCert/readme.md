@@ -13,7 +13,6 @@ Where:
 * Interactive: If set, the tool will use interactive login to Entra ID to access the Key Vault.
  
 Required permissions on Azure KeyVault:
-- Sign with Key (Microsoft.KeyVault/vaults/keys/sign/action)
 - Read Certificate Properties  (Microsoft.KeyVault/vaults/certificates/read)
 - Delete Certificate (Microsoft.KeyVault/vaults/certificates/delete)
 
