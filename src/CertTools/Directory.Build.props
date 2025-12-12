@@ -1,5 +1,14 @@
 <Project>
-
+  <!-- Common Properties -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+  </PropertyGroup>
+  
   <!-- Assembly Information to be applied to all assemblies -->
   <PropertyGroup>
     <Authors>Michael Koster</Authors>
