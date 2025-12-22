@@ -40,5 +40,5 @@ steps:
       $env:AZURE_TENANT_ID            = $env:tenantId
       $env:AZURE_FEDERATED_TOKEN_FILE = $tokenPath
 
-      .\AzureDeleteSigningCert --CertificateName "MySigningCA" --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
+      .\AzureDeleteCert --CertificateName "MySigningCA" --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
 ```
