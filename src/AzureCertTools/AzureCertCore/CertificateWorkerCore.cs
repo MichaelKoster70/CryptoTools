@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // <copyright company="Michael Koster">
 //   Copyright (c) Michael Koster. All rights reserved.
 //   Licensed under the MIT License.
@@ -51,7 +51,7 @@ public static class CertificateWorkerCore
       // Wait for the certificate to be created, get the public and signing key.
       _= await operation.WaitForCompletionAsync();
 
-      using var x509Cert = new X509Certificate2(operation.Value.Cer);
+      using var x509Cert = X509CertificateLoader.LoadCertificate(operation.Value.Cer);
       var privateKeyId = operation.Value.KeyId;
 
       return new KeyVaultX509SignatureGenerator(tokenCredential, privateKeyId, x509Cert.PublicKey);
@@ -72,7 +72,7 @@ public static class CertificateWorkerCore
 
       var cert = await client.GetCertificateAsync(certificateName);
 
-      using var x509Cert = new X509Certificate2(cert.Value.Cer);
+      using var x509Cert = X509CertificateLoader.LoadCertificate(cert.Value.Cer);
       var privateKeyId = cert.Value.KeyId;
       return (x509Cert.SubjectName, new KeyVaultX509SignatureGenerator(tokenCredential, privateKeyId, x509Cert.PublicKey));
    }
