@@ -1,14 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>CertTools.AzureCreateSigningCert</RootNamespace>
-    <Title>Code Signing Certificate Creation Tool for Azure Key Vault</Title>
+    <RootNamespace>CertTools.AzureDeleteCert</RootNamespace>
+    <Title>Certificate Deletion Tool for Azure Key Vault</Title>
     <AssemblyTitle>$(Title)</AssemblyTitle>
+    <ApplicationIcon>AzureDeleteCert.ico</ApplicationIcon>
     <Description>
-      A console application to create a x.509 code signing certificate to sign binary files (EXE, DLL) and installation packages (MSIX, MSI)
-      The tool will create the certificate in the designated Azure Key Vault.
+      A console application to delete a x.509 certificate from the designated Azure Key Vault.
     </Description>
-    <ApplicationIcon>AzureCreateSigningCert.ico</ApplicationIcon>
     <OutputType>Exe</OutputType>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <SupportedOSPlatformVersion>10.0.26100.0</SupportedOSPlatformVersion>
@@ -16,7 +15,7 @@
     <TrimMode>partial</TrimMode>
     <PackAsTool>True</PackAsTool>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageId>MK.CertTools.AzureCreateSigningCert</PackageId>
+    <PackageId>MK.CertTools.AzureDeleteCert</PackageId>
     <PackageOutputPath>..\..\..\bin</PackageOutputPath>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageIcon>verified_128.png</PackageIcon>
@@ -24,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="AzureCreateSigningCert.ico" />
+    <Content Include="AzureDeleteCert.ico" />
   </ItemGroup>
 
   <ItemGroup>

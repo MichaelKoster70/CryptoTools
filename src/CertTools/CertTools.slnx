@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
   <Project Path="CertCore/CertCore.csproj" />
   <Project Path="CreateRootCert/CreateRootCert.csproj" />
   <Project Path="CreateSigningCert/CreateSigningCert.csproj" />
