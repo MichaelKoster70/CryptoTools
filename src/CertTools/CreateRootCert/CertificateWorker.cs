@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // <copyright company="Michael Koster">
 //   Copyright (c) Michael Koster. All rights reserved.
 //   Licensed under the MIT License.
@@ -87,10 +87,8 @@ internal static class CertificateWorker
       var export = certificate.Export(X509ContentType.Pkcs12, "");
       var friendlyName = certificate.FriendlyName;
       certificate.Dispose();
-      certificate = new X509Certificate2(export, string.Empty, X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable)
-      {
-         FriendlyName = friendlyName
-      };
+      certificate = X509CertificateLoader.LoadPkcs12(export, string.Empty, X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
+      certificate.FriendlyName = friendlyName;
 
       Array.Clear(export, 0, export.Length);
 

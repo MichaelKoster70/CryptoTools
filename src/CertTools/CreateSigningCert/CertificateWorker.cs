@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // <copyright company="Michael Koster">
 //   Copyright (c) Michael Koster. All rights reserved.
 //   Licensed under the MIT License.
@@ -129,7 +129,7 @@ internal static class CertificateWorker
       return root;
    }
 
-   private static X509Certificate2 LoadSelfSignedRootCertificateFromFile(string fileName, string password) => new(fileName, password);
+   private static X509Certificate2 LoadSelfSignedRootCertificateFromFile(string fileName, string password) => X509CertificateLoader.LoadPkcs12FromFile(fileName, password);
 
    private static void DisposeCertificates(X509Certificate2Collection disposables)
    {
