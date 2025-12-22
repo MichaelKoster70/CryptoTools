@@ -8,7 +8,6 @@ New Tools and infrastructure updates.
 
 ## Bug Fixes
 - None
-- 
 # 1.7.0
 Package as dotnet tool
 
