@@ -142,6 +142,12 @@ jobs:
       run: |
         dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSslServerCert/AzureCreateSslServerCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
       shell: pwsh
+
+    - name: 'Build: Publish AzureCertTools/AzureDeleteCert'
+      if: ${{ inputs.store-artifacts }}
+      run: |
+        dotnet publish ${{ env.AzureCertToolsPath }}/AzureDeleteCert/AzureDeleteCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
+      shell: pwsh
     
     - name: 'Build: Publish AzureCertTools/AzureDeleteCert'
       if: ${{ inputs.store-artifacts }}
