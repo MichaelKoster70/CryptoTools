@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // <copyright company="Michael Koster">
 //   Copyright (c) Michael Koster. All rights reserved.
 //   Licensed under the MIT License.
@@ -14,12 +14,6 @@ namespace CertTools.AzureCertCore;
 /// </summary>
 public class OptionsBase
 {
-   /// <summary>
-   /// Gets or set the x.509 Subject Name for the certificate.
-   /// </summary>
-   [Option("Subject", Required = true, HelpText = "The subject name for the certificate in the form \"CN=<subject name>\"")]
-   public required string Subject { get; set; }
-
    /// <summary>
    /// Gets or sets the name of the certificate to create in Key Vault.
    /// </summary>

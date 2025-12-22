@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // <copyright company="Michael Koster">
 //   Copyright (c) Michael Koster. All rights reserved.
 //   Licensed under the MIT License.
@@ -13,7 +13,7 @@ namespace CertTools.AzureCreateIntermediateCert;
 /// <summary>
 /// Container class for the command line options.
 /// </summary>
-internal class Options : OptionsBase
+internal class Options : OptionsCreateBase
 {
    /// <summary>
    /// Gets or sets the name of the signer certificate stored in Key Vault.
