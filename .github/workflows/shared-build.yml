@@ -177,7 +177,7 @@ jobs:
     - name: 'Build: Sign published binaries'
       shell: pwsh
       run: >
-        ./sign code azure-key-vault
+        sign code azure-key-vault
         **/*.exe
         --base-directory ${{ env.BinaryOutputPath }}
         --azure-credential-type "azure-cli"
@@ -188,7 +188,7 @@ jobs:
     - name: 'Build: Sign published binaries'
       shell: pwsh
       run: >
-        ./sign code azure-key-vault
+        sign code azure-key-vault
         **/*.nupkg
         --base-directory ${{ env.BinaryOutputPath }}
         --azure-credential-type "azure-cli"
