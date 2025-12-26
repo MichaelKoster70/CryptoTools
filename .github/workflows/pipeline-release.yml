@@ -12,6 +12,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+
 jobs:
   build:
     name: Release Build
@@ -22,6 +23,7 @@ jobs:
     with:
       store-artifacts: true
       sign-binaries: true
+      azure-timestamp-url: ${{ vars.AZURE_TIMESTAMP_URL }}
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}

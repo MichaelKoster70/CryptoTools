@@ -22,6 +22,11 @@ on:
         type: string
         required: false
         default: 'Release'
+      azure-timestamp-url:
+        description: 'The Timestamp URL for code signing'
+        type: string
+        required: false
+        default: ''
     secrets:
       AZURE_CLIENT_ID:
         description: 'The Azure Client ID for authentication'
@@ -183,7 +188,7 @@ jobs:
         --azure-credential-type "azure-cli"
         --azure-key-vault-url "${{ secrets.AZURE_KEYVAULT_URL }}"
         --azure-key-vault-certificate "${{ secrets.AZURE_KEYVAULT_CERT_NAME }}"
-        --timestamp-url "${{ secrets.AZURE_TIMESTAMP_URL }}"
+        --timestamp-url "${{ inputs.azure-timestamp-url }}"
 
     - name: 'Build: Sign published binaries'
       shell: pwsh
@@ -194,7 +199,7 @@ jobs:
         --azure-credential-type "azure-cli"
         --azure-key-vault-url "${{ secrets.AZURE_KEYVAULT_URL }}"
         --azure-key-vault-certificate "${{ secrets.AZURE_KEYVAULT_CERT_NAME }}"
-        --timestamp-url "${{ secrets.AZURE_TIMESTAMP_URL }}"
+        --timestamp-url "${{ inputs.azure-timestamp-url }}"
 
     - name: 'Build: signing cleanup'
       if:  ${{ inputs.store-artifacts && inputs.sign-binaries }}
