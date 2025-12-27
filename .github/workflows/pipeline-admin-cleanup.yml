@@ -37,8 +37,12 @@ on:
           - skipped
           - success
       dry_run:
-        description: 'Only log actions, do not perform any delete operations.'
-        required: false
+        description: "Simulate deletions"
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
   schedule:
     - cron: '0 0 1 * *'
 # Run monthly, at 00:00 on the 1st day of month.
