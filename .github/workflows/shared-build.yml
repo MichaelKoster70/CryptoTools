@@ -1,5 +1,9 @@
 name: Shared Build
 
+permissions:
+  contents: read
+  id-token: write
+
 on:
   workflow_call:
     inputs:
@@ -18,15 +22,26 @@ on:
         type: string
         required: false
         default: 'Release'
+      azure-timestamp-url:
+        description: 'The Timestamp URL for code signing'
+        type: string
+        required: false
+        default: ''
     secrets:
-      SIGNING_CERT_PFX: 
-        description: The Base64 encoded PFX file
+      AZURE_CLIENT_ID:
+        description: 'The Azure Client ID for authentication'
         required: false
-      SIGNING_CERT_PASSWORD: 
-        description: The password for the PFX file
+      AZURE_TENANT_ID:
+        description: 'The Azure Tenant ID for authentication'
         required: false
-      SIGNING_CERT_THUMBPRINT:
-        description: The cert footprint
+      AZURE_SUBSCRIPTION_ID:
+        description: 'The Azure Subscription ID for authentication'
+        required: false
+      AZURE_KEYVAULT_URL:
+        description: 'The Azure Key Vault URL for authentication'
+        required: false
+      AZURE_KEYVAULT_CERT_NAME:
+        description: 'The Azure Key Vault Certificate Name for authentication'
         required: false
 
 jobs:
@@ -52,6 +67,12 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.x' # Use the latest .NET 10 SDK
+
+    # Install AzureSignTool from NuGet
+    - name: 'Setup: Install AzureSignTool'
+      if:  ${{ inputs.store-artifacts && inputs.sign-binaries }}
+      run: dotnet tool install --global --prerelease sign
+      shell: pwsh
 
     # Build Solution: determine and apply the version for the assemblies
     - name: 'Build: Determine Version'
@@ -81,14 +102,6 @@ jobs:
         echo "BUILD_PRODUCTVERSION=${{ steps.git-version.outputs.productVersion }}" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
         echo "BUILD_INFORMATIONALVERSION=${{ steps.git-version.outputs.informationalVersion }}" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
       shell: pwsh
-
-    # Build Solution: creates PFX file from BASe64 secret if signing is enabled
-    - name: 'Build Solution: prepare signing'
-      if:  ${{ inputs.store-artifacts && inputs.sign-binaries }}
-      run: |
-        $encodedBytes = "${{ secrets.SIGNING_CERT_PFX }}"
-        [convert]::FromBase64String($encodedBytes) | Set-Content -Path ${{ runner.temp }}\cert.pfx -Encoding Byte
-      shell: powershell
 
     - name: 'Build: Restore CertTools'
       run: dotnet restore ${{ env.CertToolsSolutionPath }}
@@ -142,38 +155,45 @@ jobs:
       run: |
         dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSslServerCert/AzureCreateSslServerCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
       shell: pwsh
-    
+
     - name: 'Build: Publish AzureCertTools/AzureDeleteCert'
       if: ${{ inputs.store-artifacts }}
       run: |
         dotnet publish ${{ env.AzureCertToolsPath }}/AzureDeleteCert/AzureDeleteCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
       shell: pwsh
 
+      # Login to Azure using a ServicePrincipal configured to authenticate against a GitHub Action
+    - name: 'Build: Azure CLI login'
+      if: ${{ inputs.store-artifacts && inputs.sign-binaries }}
+      uses: azure/login@v1
+      with:
+        allow-no-subscriptions: true
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+
     - name: 'Build: Sign published binaries'
       if: ${{ inputs.store-artifacts && inputs.sign-binaries }}
-      uses: ./eng/actions/sign-binaries
-      with:
-        binaries-path: ${{ env.BinaryOutputPath }}
-        signing-cert-file: ${{ runner.temp }}\cert.pfx
-        signing-cert-password: ${{ secrets.SIGNING_CERT_PASSWORD }}
-        signing-cert-thumbprint: ${{ secrets.SIGNING_CERT_THUMBPRINT }}
-        signing-timestamp-server: 'http://timestamp.sectigo.com'
+      shell: pwsh
+      run: >
+        sign code azure-key-vault
+        **/*.exe
+        --base-directory ${{ env.BinaryOutputPath }}
+        --azure-credential-type "azure-cli"
+        --azure-key-vault-url "${{ secrets.AZURE_KEYVAULT_URL }}"
+        --azure-key-vault-certificate "${{ secrets.AZURE_KEYVAULT_CERT_NAME }}"
+        --timestamp-url "${{ inputs.azure-timestamp-url }}"
 
     - name: 'Build: Sign NuGet packages'
       if: ${{ inputs.store-artifacts && inputs.sign-binaries }}
-      uses: ./eng/actions/sign-nupkg
-      with:
-        nupkg-path: ${{ env.BinaryOutputPath }}
-        signing-cert-file: ${{ runner.temp }}\cert.pfx
-        signing-cert-password: ${{ secrets.SIGNING_CERT_PASSWORD }}
-        signing-cert-thumbprint: ${{ secrets.SIGNING_CERT_THUMBPRINT }}
-        signing-timestamp-server: 'http://timestamp.sectigo.com'
-
-    - name: 'Build: signing cleanup'
-      if:  ${{ inputs.store-artifacts && inputs.sign-binaries }}
-      run: |
-        Remove-Item -Path ${{ runner.temp }}\cert.pfx -ErrorAction Continue
       shell: pwsh
+      run: >
+        sign code azure-key-vault
+        **/*.nupkg
+        --base-directory ${{ env.BinaryOutputPath }}
+        --azure-credential-type "azure-cli"
+        --azure-key-vault-url "${{ secrets.AZURE_KEYVAULT_URL }}"
+        --azure-key-vault-certificate "${{ secrets.AZURE_KEYVAULT_CERT_NAME }}"
+        --timestamp-url "${{ inputs.azure-timestamp-url }}"
 
     - name: 'Store Artifacts: Binaries'
       uses: actions/upload-artifact@v4
