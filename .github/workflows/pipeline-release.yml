@@ -12,7 +12,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-
 jobs:
   build:
     name: Release Build
@@ -23,14 +22,13 @@ jobs:
     with:
       store-artifacts: true
       sign-binaries: true
+      environment: Release
       azure-timestamp-url: ${{ vars.AZURE_TIMESTAMP_URL }}
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_KEYVAULT_URL: ${{ secrets.AZURE_KEYVAULT_URL }}
       AZURE_KEYVAULT_CERT_NAME: ${{ secrets.AZURE_KEYVAULT_CERT_NAME }}
-
   github-release:
     name: GitHub Release
     runs-on: ubuntu-latest

@@ -22,6 +22,10 @@ on:
         type: string
         required: false
         default: 'Release'
+      environment:
+        description: 'The GitHub Environment to use'
+        type: string
+        required: true
       azure-timestamp-url:
         description: 'The Timestamp URL for code signing'
         type: string
@@ -34,20 +38,18 @@ on:
       AZURE_TENANT_ID:
         description: 'The Azure Tenant ID for authentication'
         required: false
-      AZURE_SUBSCRIPTION_ID:
-        description: 'The Azure Subscription ID for authentication'
-        required: false
       AZURE_KEYVAULT_URL:
-        description: 'The Azure Key Vault URL for authentication'
+        description: 'The Azure Key Vault URL for code signing'
         required: false
       AZURE_KEYVAULT_CERT_NAME:
-        description: 'The Azure Key Vault Certificate Name for authentication'
+        description: 'The Azure Key Vault Certificate Name for code signing'
         required: false
 
 jobs:
   shared_build:
     name: Build Tools
     runs-on: windows-2025
+    environment: ${{ inputs.environment }}
 
     env:
       CertToolsPath: ${{ github.workspace }}\src\CertTools
@@ -68,8 +70,8 @@ jobs:
       with:
         dotnet-version: '10.x' # Use the latest .NET 10 SDK
 
-    # Install AzureSignTool from NuGet
-    - name: 'Setup: Install AzureSignTool'
+    # Install .NET Sign Tool from NuGet
+    - name: 'Setup: Install .NET Sign Tool'
       if:  ${{ inputs.store-artifacts && inputs.sign-binaries }}
       run: dotnet tool install --global --prerelease sign
       shell: pwsh
@@ -162,10 +164,10 @@ jobs:
         dotnet publish ${{ env.AzureCertToolsPath }}/AzureDeleteCert/AzureDeleteCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
       shell: pwsh
 
-      # Login to Azure using a ServicePrincipal configured to authenticate against a GitHub Action
+    # Login to Azure using a ServicePrincipal configured to authenticate against a GitHub Action
     - name: 'Build: Azure CLI login'
       if: ${{ inputs.store-artifacts && inputs.sign-binaries }}
-      uses: azure/login@v1
+      uses: azure/login@v2
       with:
         allow-no-subscriptions: true
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
