@@ -17,3 +17,4 @@ jobs:
     uses: ./.github/workflows/shared-build.yml
     with:
       store-artifacts: false
+      environment: CI

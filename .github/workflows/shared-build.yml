@@ -22,6 +22,10 @@ on:
         type: string
         required: false
         default: 'Release'
+      environment:
+        description: 'The GitHub Environment to use'
+        type: string
+        required: true
       azure-timestamp-url:
         description: 'The Timestamp URL for code signing'
         type: string
@@ -45,6 +49,7 @@ jobs:
   shared_build:
     name: Build Tools
     runs-on: windows-2025
+    environment: ${{ inputs.environment }}
 
     env:
       CertToolsPath: ${{ github.workspace }}\src\CertTools
