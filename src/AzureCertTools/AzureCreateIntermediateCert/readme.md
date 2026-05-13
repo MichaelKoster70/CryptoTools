@@ -1,6 +1,6 @@
 # Usage
 ```
-AzureCreateIntermediateCert --Subject <subject> --CertificateName <name> --ExpireMonths <months> [--PathLengthConstraint <length> ]--KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
+AzureCreateIntermediateCert --Subject <subject> --CertificateName <name> --SignerCertificateName <signerCertificateName> --ExpireMonths <months> [--PathLengthConstraint <length> ] --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
 ```
 
 Where:
