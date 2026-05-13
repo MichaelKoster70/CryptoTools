@@ -4,23 +4,17 @@
     <RootNamespace>CertTools.AzureCreateSigningCert</RootNamespace>
     <Title>Code Signing Certificate Creation Tool for Azure Key Vault</Title>
     <AssemblyTitle>$(Title)</AssemblyTitle>
-    <Description>
-      A console application to create a x.509 code signing certificate to sign binary files (EXE, DLL) and installation packages (MSIX, MSI)
-      The tool will create the certificate in the designated Azure Key Vault.
-    </Description>
+    <Description>A console application to create a x.509 code signing certificate to sign binary files (EXE, DLL) and installation packages (MSIX, MSI)
+The tool will create the certificate in the designated Azure Key Vault.</Description>
     <ApplicationIcon>AzureCreateSigningCert.ico</ApplicationIcon>
     <OutputType>Exe</OutputType>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <SupportedOSPlatformVersion>10.0.26100.0</SupportedOSPlatformVersion>
     <InvariantGlobalization>true</InvariantGlobalization>
     <TrimMode>partial</TrimMode>
-    <PackAsTool>True</PackAsTool>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageId>MK.CertTools.AzureCreateSigningCert</PackageId>
-    <PackageOutputPath>..\..\..\bin</PackageOutputPath>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
-    <PackageIcon>verified_128.png</PackageIcon>
-    <PackageProjectUrl>https://github.com/MichaelKoster70/CryptoTools</PackageProjectUrl>
+    <PackageIcon>PackageLogo.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,13 +22,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\..\ArtWork\verified_128.png">
-      <PackagePath>\</PackagePath>
+    <None Include="..\PackageLogo.png">
       <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
     </None>
     <None Update="readme.md">
-      <PackagePath>\</PackagePath>
       <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 
