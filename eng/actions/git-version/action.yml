@@ -30,11 +30,11 @@ runs:
 
   steps:
   - id: gitversion-install
-    uses: gittools/actions/gitversion/setup@v4.0.1
+    uses: gittools/actions/gitversion/setup@v4.5
     with:
       versionSpec: '6.x'
 
   - id: gitversion-execute
-    uses: gittools/actions/gitversion/execute@v4.0.1
+    uses: gittools/actions/gitversion/execute@v4.5
     with:
       configFilePath: GitVersion.yml
