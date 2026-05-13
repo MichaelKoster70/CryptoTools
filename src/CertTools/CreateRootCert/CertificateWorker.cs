@@ -8,7 +8,6 @@
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using CertTools.CertCore;
-using Windows.Devices.PointOfService;
 
 namespace CertTools.CreateRootCert;
 

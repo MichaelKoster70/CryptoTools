@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // <copyright company="Michael Koster">
 //   Copyright (c) Michael Koster. All rights reserved.
 //   Licensed under the MIT License.
@@ -48,7 +48,7 @@ internal static class Program
 
       Uri keyVaultUri = new(options.KeyVaultUri);
 
-      var cert = await CertificateWorker.CreateRootCertAsync(options.CertificateName, options.Subject, options.ExpireMonths, keyVaultUri, credentials);
+      var cert = await CertificateWorker.CreateRootCertAsync(options.CertificateName, options.Subject, options.ExpireMonths, options.PathLengthConstraint, keyVaultUri, credentials);
 
       Console.WriteLine($"Certificate created: name={cert}, Key Vault={keyVaultUri}");
    }

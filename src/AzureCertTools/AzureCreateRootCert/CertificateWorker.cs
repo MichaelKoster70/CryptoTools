@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // <copyright company="Michael Koster">
 //   Copyright (c) Michael Koster. All rights reserved.
 //   Licensed under the MIT License.
@@ -24,9 +24,10 @@ internal static class CertificateWorker
    /// <param name="certificateName">The Azure Key Vault certificate name.</param>
    /// <param name="subjectNameValue">The subject name for the certificate.</param>
    /// <param name="expireMonth">The number of month until the certificate expires.</param>
+   /// <param name="pathLengthConstraint">The path length constraint for the certificate, if null, there will be no path length constraint.</param>
    /// <param name="vaultUri">The URI to the Azure Key Vault.</param>
    /// <param name="tokenCredential">The Azure Key Vault token credential.</param>
-   public static async Task<string> CreateRootCertAsync(string certificateName, string subjectNameValue, int expireMonth, Uri vaultUri, TokenCredential tokenCredential)
+   public static async Task<string> CreateRootCertAsync(string certificateName, string subjectNameValue, int expireMonth, int? pathLengthConstraint, Uri vaultUri, TokenCredential tokenCredential)
    {
       var client = new CertificateClient(vaultUri, tokenCredential);
 
@@ -35,7 +36,7 @@ internal static class CertificateWorker
       var signerName = new X500DistinguishedName(subjectNameValue);
       
       // create a CSR and sign it with the temporary cert
-      var csr = await KeyVaultCreateRootCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonth);
+      var csr = await KeyVaultCreateRootCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonth, pathLengthConstraint);
       using var certificate = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signatureGenerator, expireMonth);
 
       // Merge with the pending certificate operation
@@ -44,7 +45,7 @@ internal static class CertificateWorker
       return certificateName;
    }
 
-   private static async Task<CertificateRequest> KeyVaultCreateRootCertificateRequestAsync(string certificateName, string subjectNameValue, CertificateClient client, int expireMonth)
+   private static async Task<CertificateRequest> KeyVaultCreateRootCertificateRequestAsync(string certificateName, string subjectNameValue, CertificateClient client, int expireMonth, int? pathLengthConstraint)
    {
       var certificatePolicy = new CertificatePolicy(WellKnownIssuerNames.Unknown, subjectNameValue)
       {
@@ -65,10 +66,10 @@ internal static class CertificateWorker
 
       // Stage 4: Get the .NET CSR object
       var certSigningRequest = CertificateRequest.LoadSigningRequest(pkcs10: certOperationCertSigningRequest,
-         signerHashAlgorithm: HashAlgorithmName.SHA384, signerSignaturePadding: RSASignaturePadding.Pkcs1);
+         signerHashAlgorithm: HashAlgorithmName.SHA384, signerSignaturePadding: RSASignaturePadding.Pkcs1); 
       
       // Stage 5: Add the required extensions for a root CA
-      certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(true, true, 0, true));
+      certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(true, pathLengthConstraint.HasValue, pathLengthConstraint ?? 0, true));
       certSigningRequest.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.KeyCertSign | X509KeyUsageFlags.CrlSign | X509KeyUsageFlags.DigitalSignature, false));
       certSigningRequest.CertificateExtensions.Add(new X509SubjectKeyIdentifierExtension(certSigningRequest.PublicKey, false));
       certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([
