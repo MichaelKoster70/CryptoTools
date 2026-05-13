@@ -60,13 +60,13 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
     # Setup .NET SDK
     - name: Set up .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '10.x' # Use the latest .NET 10 SDK
 
@@ -137,19 +137,21 @@ jobs:
       if: ${{ inputs.store-artifacts }}
       run: |
         dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateRootCert/AzureCreateRootCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
+        dotnet pack ${{ env.AzureCertToolsPath }}/AzureCreateRootCert/AzureCreateRootCert.csproj --configuration ${{ inputs.configuration }} --no-build --no-restore
       shell: pwsh
 
     - name: 'Build: Publish AzureCertTools/AzureCreateIntermediateCert'
       if: ${{ inputs.store-artifacts }}
       run: |
-        dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateRootCert/AzureCreateRootCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
+        dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateIntermediateCert/AzureCreateIntermediateCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
+        dotnet pack ${{ env.AzureCertToolsPath }}/AzureCreateIntermediateCert/AzureCreateIntermediateCert.csproj --configuration ${{ inputs.configuration }} --no-build --no-restore
       shell: pwsh
 
     - name: 'Build: Publish AzureCertTools/AzureCreateSigningCert'
       if: ${{ inputs.store-artifacts }}
       run: |
         dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/AzureCreateSigningCert.csproj --configuration ${{ inputs.configuration }} -p:PublishProfile=FolderProfile
-        dotnet pack ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/AzureCreateSigningCert.csproj --configuration ${{ inputs.configuration }}
+        dotnet pack ${{ env.AzureCertToolsPath }}/AzureCreateSigningCert/AzureCreateSigningCert.csproj --configuration ${{ inputs.configuration }} --no-build --no-restore
       shell: pwsh
 
     - name: 'Build: Publish AzureCertTools/AzureCreateSslServerCert'
@@ -162,6 +164,7 @@ jobs:
       if: ${{ inputs.store-artifacts }}
       run: |
         dotnet publish ${{ env.AzureCertToolsPath }}/AzureDeleteCert/AzureDeleteCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
+        dotnet pack ${{ env.AzureCertToolsPath }}/AzureDeleteCert/AzureDeleteCert.csproj --configuration ${{ inputs.configuration }} --no-build --no-restore
       shell: pwsh
 
     # Login to Azure using a ServicePrincipal configured to authenticate against a GitHub Action
@@ -188,14 +191,16 @@ jobs:
     - name: 'Build: Sign NuGet packages'
       if: ${{ inputs.store-artifacts && inputs.sign-binaries }}
       shell: pwsh
-      run: >
-        sign code azure-key-vault
-        **/*.nupkg
-        --base-directory ${{ env.BinaryOutputPath }}
-        --azure-credential-type "azure-cli"
-        --azure-key-vault-url "${{ secrets.AZURE_KEYVAULT_URL }}"
-        --azure-key-vault-certificate "${{ secrets.AZURE_KEYVAULT_CERT_NAME }}"
-        --timestamp-url "${{ inputs.azure-timestamp-url }}"
+      run: |
+        $packages = Get-ChildItem -Path "${{ env.BinaryOutputPath }}" -Recurse -Filter *.nupkg -File
+
+        foreach ($package in $packages) {
+          sign code azure-key-vault $package.FullName `
+            --azure-credential-type "azure-cli" `
+            --azure-key-vault-url "${{ secrets.AZURE_KEYVAULT_URL }}" `
+            --azure-key-vault-certificate "${{ secrets.AZURE_KEYVAULT_CERT_NAME }}" `
+            --timestamp-url "${{ inputs.azure-timestamp-url }}"
+        }
 
     - name: 'Store Artifacts: Binaries'
       uses: actions/upload-artifact@v4

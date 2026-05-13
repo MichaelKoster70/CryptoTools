@@ -1,6 +1,6 @@
 # Usage
 ```
-AzureDeleteSigningCert --CertificateName <name> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
+AzureDeleteCert --CertificateName <name> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
 ```
 
 Where:

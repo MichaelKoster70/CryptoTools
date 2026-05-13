@@ -1,19 +1,14 @@
-﻿// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // <copyright company="Michael Koster">
 //   Copyright (c) Michael Koster. All rights reserved.
 //   Licensed under the MIT License.
 // </copyright>
 // ----------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Runtime.ConstrainedExecution;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using Azure.Core;
 using Azure.Security.KeyVault.Certificates;
 using CertTools.AzureCertCore;
@@ -111,6 +106,7 @@ internal static class CertificateWorker
       return certSigningRequest;
    }
 
+   [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Tools are Windows only")]
    private static async Task<CertificateRequest> LocalCreateCertificateRequestAsync(string fullQualifiedDomainName)
    {
       var distinguishedName = "CN=" + fullQualifiedDomainName;

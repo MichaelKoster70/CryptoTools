@@ -13,9 +13,13 @@
   <!-- Assembly Information to be applied to all assemblies -->
   <PropertyGroup>
     <Authors>Michael Koster</Authors>
-    <Copyright>(c) 2025 Michael Koster</Copyright>
+    <Copyright>(c) 2026 Michael Koster</Copyright>
     <Company>Michael Koster</Company>
     <Product>Crypto Tools</Product>
+    <PackAsTool>True</PackAsTool>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageOutputPath>..\..\..\bin</PackageOutputPath>
+    <PackageProjectUrl>https://github.com/MichaelKoster70/CryptoTools</PackageProjectUrl>
     <SourceRevisionId Condition="'$(SourceRevisionId)' == ''">$(GITHUB_SHA)</SourceRevisionId>
   </PropertyGroup>
 

@@ -1,27 +1,20 @@
 # Usage
 ```
-AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
-```
-or
-```
-AzureCreateSigningCert --Subject <subject> --FileName <name> --SignerCertificateName <rootName> --ExpireMonths <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
+AzureCreateRootCert --Subject <subject> --CertificateName <name> --ExpireMonths <months> [--PathLengthConstraint <length> ] --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
 ```
 
 Where:
-* Subject: The subject of the certificate in form "CN=\<subject\>".
 * CertificateName: The name of the certificate in Azure Key Vault.
-* FileName: Absolute path to PFX file holding the certificate (<drive>:\<folder>\<name>.pfx)
-* Password: The password to protect the private key contained in the PFX file, required with FileName option.
-* SignerCertificateName: The name of the CA certificate in Azure Key Vault used for signing the leaf certificate.
 * KeyVaultUri: The URI of the Azure Key Vault to store the certificate (like https://some-name.vault.azure.net/).
+* PathLengthConstraint: If specified, the generated CA certificate will have a path length constraint extension with the provided length. This limits the maximum number of intermediate CA certificates that can be created under this root CA certificate. If not specified, no path length constraint will be set.
 * TenantId: The Entra ID tenant ID.
 * ClientId: The client ID of the service principal used to access the Key Vault.
 * ClientSecret: The client secret of the service principal used to access the Key Vault.
-* WorkloadIdentity: If set, the tool will a Entra ID Managed Identity [Workload identity federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation) to access the Key Vault. Use this option when running the tool in an Azure Pipeline or an GitHub Action with workload identity federation configured.
+* WorkloadIdentity: If set, the tool will use an Entra ID Managed Identity [Workload identity federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation) to access the Key Vault. Use this option when running the tool in an Azure Pipeline or a GitHub Action with workload identity federation configured.
 * Interactive: If set, the tool will use interactive login to Entra ID to access the Key Vault.
-* ExpiryMonths: The number of months the certificate is valid, default is 1.
+* ExpiryMonths: The number of months the certificate is valid, default is 240.
 
-The tool will create the certificate in the supplied Azure Key Vault under the <CertificateName> name, signed by the <SignerCertificateName> certificate. The certificate will be created using:
+The tool will create a the certificate in the supplied Azure Key Vault under the <CertificateName> name. The certificate will be created using:
 * Private key marked as non exportable
 * Cipher Mode: RSA, 4096 Bit
 * Signing: SHA384
@@ -55,5 +48,5 @@ steps:
       $env:AZURE_TENANT_ID            = $env:tenantId
       $env:AZURE_FEDERATED_TOKEN_FILE = $tokenPath
 
-      .\AzureCreateSigningCert --Subject "CN=My Organization" --CertificateName "MySigningCA" --SignerCertificateName="MyRootCA" --ExpireMonths 2 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
+      .\AzureCreateRootCert --Subject "CN=My Signing Root CA" --CertificateName "MySigningCA" --ExpireMonths 240 --KeyVaultUri "https://my-key-vault.vault.azure.net/" --WorkloadIdentity
 ```

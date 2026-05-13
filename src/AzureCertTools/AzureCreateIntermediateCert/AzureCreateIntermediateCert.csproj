@@ -4,17 +4,32 @@
     <RootNamespace>CertTools.AzureCreateIntermediateCert</RootNamespace>
     <Title>Intermediate CA Certificate Creation Tool for Azure KeyVault</Title>
     <AssemblyTitle>$(Title)</AssemblyTitle>
+    <Description>A console application to create a x.509 intermediate CA certificate to issue code signing certificates.
+The tool will create the certificate in the designated Azure Key Vault.</Description>
     <ApplicationIcon>AzureCreateIntermediateCert.ico</ApplicationIcon>
     <OutputType>Exe</OutputType>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <SupportedOSPlatformVersion>10.0.26100.0</SupportedOSPlatformVersion>
-    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
     <InvariantGlobalization>true</InvariantGlobalization>
     <TrimMode>partial</TrimMode>
+    <PackageIcon>PackageLogo.png</PackageIcon>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageId>MK.CertTools.AzureCreateIntermediateCert</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Include="AzureCreateIntermediateCert.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="readme.md">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
+    <None Include="..\PackageLogo.png">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
