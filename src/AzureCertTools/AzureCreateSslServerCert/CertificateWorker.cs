@@ -5,6 +5,7 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -105,6 +106,7 @@ internal static class CertificateWorker
       return certSigningRequest;
    }
 
+   [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Tools are Windows only")]
    private static async Task<CertificateRequest> LocalCreateCertificateRequestAsync(string fullQualifiedDomainName)
    {
       var distinguishedName = "CN=" + fullQualifiedDomainName;
