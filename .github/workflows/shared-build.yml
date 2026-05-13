@@ -191,14 +191,16 @@ jobs:
     - name: 'Build: Sign NuGet packages'
       if: ${{ inputs.store-artifacts && inputs.sign-binaries }}
       shell: pwsh
-      run: >
-        sign code azure-key-vault
-        **/*.nupkg
-        --base-directory ${{ env.BinaryOutputPath }}
-        --azure-credential-type "azure-cli"
-        --azure-key-vault-url "${{ secrets.AZURE_KEYVAULT_URL }}"
-        --azure-key-vault-certificate "${{ secrets.AZURE_KEYVAULT_CERT_NAME }}"
-        --timestamp-url "${{ inputs.azure-timestamp-url }}"
+      run: |
+        $packages = Get-ChildItem -Path "${{ env.BinaryOutputPath }}" -Recurse -Filter *.nupkg -File
+
+        foreach ($package in $packages) {
+          sign code azure-key-vault $package.FullName `
+            --azure-credential-type "azure-cli" `
+            --azure-key-vault-url "${{ secrets.AZURE_KEYVAULT_URL }}" `
+            --azure-key-vault-certificate "${{ secrets.AZURE_KEYVAULT_CERT_NAME }}" `
+            --timestamp-url "${{ inputs.azure-timestamp-url }}"
+        }
 
     - name: 'Store Artifacts: Binaries'
       uses: actions/upload-artifact@v4
