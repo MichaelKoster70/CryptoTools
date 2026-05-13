@@ -52,7 +52,7 @@ Where:
 
 ### AzureCreateRootCert
 ```
-AzureCreateRootCert --Subject <subject> --CertificateName <name> --ExpireMonths <months> [--PathLengthConstraint <length> ]--KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
+AzureCreateRootCert --Subject <subject> --CertificateName <name> --ExpireMonths <months> [--PathLengthConstraint <length> ] --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity]
 ```
 
 Where:
