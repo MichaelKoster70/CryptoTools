@@ -170,7 +170,7 @@ jobs:
     # Login to Azure using a ServicePrincipal configured to authenticate against a GitHub Action
     - name: 'Build: Azure CLI login'
       if: ${{ inputs.store-artifacts && inputs.sign-binaries }}
-      uses: azure/login@v2
+      uses: azure/login@v3
       with:
         allow-no-subscriptions: true
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -203,7 +203,7 @@ jobs:
         }
 
     - name: 'Store Artifacts: Binaries'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       if: ${{ inputs.store-artifacts }}
       with:
         name: binaries
