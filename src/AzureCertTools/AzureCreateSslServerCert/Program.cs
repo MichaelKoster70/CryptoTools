@@ -69,7 +69,13 @@ internal static class Program
 
          Uri keyVaultUri = new(options.KeyVaultUri);
 
-         var resultName = await CertificateWorker.CreateSslServerCertificateAsync(options.CertificateName, options.FQDN, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonth, options.Local, options.Password);
+         var resultName = await CertificateWorker.CreateSslServerCertificateAsync(options.CertificateName, options.FQDN, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonth, options.Local, options.Password, new CertTools.AzureCertCore.KeyCreationOptions
+         {
+            KeyType = options.KeyType,
+            Exportable = options.Exportable,
+            KeyCurveName = options.KeyCurveName,
+            KeySize = options.KeySize
+         });
          Console.WriteLine($"Certificate created: {resultName}");
 
          result = 0;

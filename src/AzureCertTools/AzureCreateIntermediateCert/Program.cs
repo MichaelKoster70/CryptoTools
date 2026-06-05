@@ -48,7 +48,13 @@ internal static class Program
 
       Uri keyVaultUri = new(options.KeyVaultUri);
 
-      var cert = CertificateWorker.CreateIntermediateCertAsync(options.CertificateName, options.Subject, options.SignerCertificateName, options.ExpireMonths, options.PathLengthConstraint, keyVaultUri, credentials).Result;
+      var cert = CertificateWorker.CreateIntermediateCertAsync(options.CertificateName, options.Subject, options.SignerCertificateName, options.ExpireMonths, options.PathLengthConstraint, keyVaultUri, credentials, new KeyCreationOptions
+      {
+         KeyType = options.KeyType,
+         Exportable = options.Exportable,
+         KeyCurveName = options.KeyCurveName,
+         KeySize = options.KeySize
+      }).Result;
 
       Console.WriteLine($"Certificate created: name={cert}, Key Vault={keyVaultUri}");
    }

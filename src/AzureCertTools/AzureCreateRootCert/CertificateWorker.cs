@@ -27,16 +27,17 @@ internal static class CertificateWorker
    /// <param name="pathLengthConstraint">The path length constraint for the certificate, if null, there will be no path length constraint.</param>
    /// <param name="vaultUri">The URI to the Azure Key Vault.</param>
    /// <param name="tokenCredential">The Azure Key Vault token credential.</param>
-   public static async Task<string> CreateRootCertAsync(string certificateName, string subjectNameValue, int expireMonth, int? pathLengthConstraint, Uri vaultUri, TokenCredential tokenCredential)
+   /// <param name="keyOptions">The key creation options controlling the key type, size and exportability.</param>
+   public static async Task<string> CreateRootCertAsync(string certificateName, string subjectNameValue, int expireMonth, int? pathLengthConstraint, Uri vaultUri, TokenCredential tokenCredential, KeyCreationOptions keyOptions)
    {
       var client = new CertificateClient(vaultUri, tokenCredential);
 
       // create a temporary self signed cert in Azure Key Vault, only used to sign a single CSR
-      var signatureGenerator = await CertificateWorkerCore.KeyVaultCreateSelfSignedSignatureGeneratorAsync(certificateName, subjectNameValue, client, tokenCredential, false, 1);
+      var signatureGenerator = await CertificateWorkerCore.KeyVaultCreateSelfSignedSignatureGeneratorAsync(certificateName, subjectNameValue, client, tokenCredential, false, 1, keyOptions);
       var signerName = new X500DistinguishedName(subjectNameValue);
       
       // create a CSR and sign it with the temporary cert
-      var csr = await KeyVaultCreateRootCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonth, pathLengthConstraint);
+      var csr = await KeyVaultCreateRootCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonth, pathLengthConstraint, keyOptions);
       using var certificate = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signatureGenerator, expireMonth);
 
       // Merge with the pending certificate operation
@@ -45,16 +46,9 @@ internal static class CertificateWorker
       return certificateName;
    }
 
-   private static async Task<CertificateRequest> KeyVaultCreateRootCertificateRequestAsync(string certificateName, string subjectNameValue, CertificateClient client, int expireMonth, int? pathLengthConstraint)
+   private static async Task<CertificateRequest> KeyVaultCreateRootCertificateRequestAsync(string certificateName, string subjectNameValue, CertificateClient client, int expireMonth, int? pathLengthConstraint, KeyCreationOptions keyOptions)
    {
-      var certificatePolicy = new CertificatePolicy(WellKnownIssuerNames.Unknown, subjectNameValue)
-      {
-         KeyType = CertificateKeyType.Rsa,
-         KeySize = CertificateWorkerCore.RsaKeySize,
-         ReuseKey = true,
-         Exportable = false,
-         ValidityInMonths = expireMonth,
-      };
+      var certificatePolicy = CertificateWorkerCore.CreateCertificatePolicy(WellKnownIssuerNames.Unknown, subjectNameValue, expireMonth, keyOptions);
 
       // Stage 1: Create the certificate, the operation will not be completed yet
       _ = await client.StartCreateCertificateAsync(certificateName, certificatePolicy);

@@ -27,23 +27,20 @@ public static class CertificateWorkerCore
    /// <param name="subjectNameValue">The certificate subject name</param>
    /// <param name="client">The client representing the Azure Key Vault instance to hold the certificate.</param>
    /// <param name="tokenCredential">The authentication token provider.</param>
+   /// <param name="reuseKey">Whether to reuse the key when renewing the certificate.</param>
    /// <param name="expireMonth">The expiry date in month from now.</param>
+   /// <param name="keyOptions">The key creation options controlling the key type, size and exportability.</param>
    /// <returns>The <see cref="X509SignatureGenerator"/> based on the created certificate.</returns>
-   public static async Task<X509SignatureGenerator> KeyVaultCreateSelfSignedSignatureGeneratorAsync(string certificateName, string subjectNameValue, CertificateClient client, TokenCredential tokenCredential, bool reuseKey, int expireMonth)
+   public static async Task<X509SignatureGenerator> KeyVaultCreateSelfSignedSignatureGeneratorAsync(string certificateName, string subjectNameValue, CertificateClient client, TokenCredential tokenCredential, bool reuseKey, int expireMonth, KeyCreationOptions? keyOptions = null)
    {
       ArgumentNullException.ThrowIfNull(certificateName);
       ArgumentNullException.ThrowIfNull(subjectNameValue);
       ArgumentNullException.ThrowIfNull(client);
       ArgumentNullException.ThrowIfNull(tokenCredential);
 
-      var certificatePolicy = new CertificatePolicy(WellKnownIssuerNames.Self, subjectNameValue)
-      {
-         KeyType = CertificateKeyType.Rsa,
-         KeySize = RsaKeySize,
-         ReuseKey = reuseKey,
-         Exportable = false,
-         ValidityInMonths = expireMonth
-      };
+      keyOptions ??= new KeyCreationOptions();
+
+      var certificatePolicy = CreateCertificatePolicy(WellKnownIssuerNames.Self, subjectNameValue, expireMonth, keyOptions, reuseKey);
 
       // Create the certificate, the operation will complete with the certificate
       var operation = await client.StartCreateCertificateAsync(certificateName, certificatePolicy);
@@ -119,5 +116,56 @@ public static class CertificateWorkerCore
       var x509Certificate = certificate.Export(X509ContentType.Cert);
       var operation = new MergeCertificateOptions(certificateName, [x509Certificate]);
       _ = await client.MergeCertificateAsync(operation);
+   }
+
+   /// <summary>
+   /// Creates an Azure Key Vault <see cref="CertificatePolicy"/> from the given options.
+   /// </summary>
+   /// <param name="issuerName">The issuer name (e.g. <see cref="WellKnownIssuerNames.Self"/> or <see cref="WellKnownIssuerNames.Unknown"/>).</param>
+   /// <param name="subjectNameValue">The certificate subject name.</param>
+   /// <param name="expireMonths">The validity period in months.</param>
+   /// <param name="keyOptions">The key creation options.</param>
+   /// <param name="reuseKey">Whether to reuse the existing key when renewing the certificate.</param>
+   /// <returns>A configured <see cref="CertificatePolicy"/>.</returns>
+   public static CertificatePolicy CreateCertificatePolicy(string issuerName, string subjectNameValue, int expireMonths, KeyCreationOptions keyOptions, bool reuseKey = true)
+   {
+      ArgumentNullException.ThrowIfNull(issuerName);
+      ArgumentNullException.ThrowIfNull(subjectNameValue);
+      ArgumentNullException.ThrowIfNull(keyOptions);
+
+      var keyType = keyOptions.KeyType.ToUpperInvariant() switch
+      {
+         "EC" => CertificateKeyType.Ec,
+         "ECHSM" => CertificateKeyType.EcHsm,
+         "RSAHSM" => CertificateKeyType.RsaHsm,
+         _ => CertificateKeyType.Rsa
+      };
+
+      bool isEc = keyType == CertificateKeyType.Ec || keyType == CertificateKeyType.EcHsm;
+
+      var policy = new CertificatePolicy(issuerName, subjectNameValue)
+      {
+         KeyType = keyType,
+         ReuseKey = reuseKey,
+         Exportable = keyOptions.Exportable,
+         ValidityInMonths = expireMonths,
+      };
+
+      if (isEc)
+      {
+         policy.KeyCurveName = keyOptions.KeyCurveName.ToUpperInvariant() switch
+         {
+            "P256" => CertificateKeyCurveName.P256,
+            "P256K" => CertificateKeyCurveName.P256K,
+            "P521" => CertificateKeyCurveName.P521,
+            _ => CertificateKeyCurveName.P384
+         };
+      }
+      else
+      {
+         policy.KeySize = keyOptions.KeySize;
+      }
+
+      return policy;
    }
 }
