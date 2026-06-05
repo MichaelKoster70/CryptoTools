@@ -8,6 +8,7 @@
 using System.Text;
 using Azure.Core;
 using Azure.Identity;
+using CertTools.AzureCertCore;
 using CommandLine;
 
 namespace CertTools.AzureCreateSslServerCert;
@@ -69,7 +70,7 @@ internal static class Program
 
          Uri keyVaultUri = new(options.KeyVaultUri);
 
-         var resultName = await CertificateWorker.CreateSslServerCertificateAsync(options.CertificateName, options.FQDN, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonth, options.Local, options.Password, new CertTools.AzureCertCore.KeyCreationOptions
+         var resultName = await CertificateWorker.CreateSslServerCertificateAsync(options.CertificateName, options.FQDN, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonth, options.Local, options.Password, new KeyCreationOptions
          {
             KeyType = options.KeyType,
             Exportable = options.Exportable,

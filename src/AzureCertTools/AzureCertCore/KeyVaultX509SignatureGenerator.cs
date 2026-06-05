@@ -241,7 +241,7 @@ public class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri sign
          }
          else
          {
-            throw new ArgumentOutOfRangeException(nameof(hashAlgorithm), $"The hash algorithm {keyUri} is not supported.");
+            throw new ArgumentOutOfRangeException(nameof(hashAlgorithm), $"The hash algorithm {hashAlgorithm.Name} is not supported.");
          }
       }
       else
