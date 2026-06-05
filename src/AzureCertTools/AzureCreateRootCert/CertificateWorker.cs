@@ -52,6 +52,7 @@ internal static class CertificateWorker
          KeyType = CertificateKeyType.Rsa,
          KeySize = CertificateWorkerCore.RsaKeySize,
          ReuseKey = true,
+         Exportable = false,
          ValidityInMonths = expireMonth,
       };
 
