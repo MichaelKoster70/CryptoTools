@@ -68,16 +68,19 @@ public static class OptionsExtensions
       ArgumentNullException.ThrowIfNull(keyType);
       ArgumentNullException.ThrowIfNull(keyCurveName);
 
-      if (!validKeyTypes.Contains(keyType, StringComparer.Ordinal))
+      keyType = keyType.Trim();
+      keyCurveName = keyCurveName.Trim();
+
+      if (!validKeyTypes.Contains(keyType, StringComparer.OrdinalIgnoreCase))
       {
          PrintError($"Invalid KeyType '{keyType}'. Valid values are: Ec, EcHsm, Rsa, RsaHsm");
          return false;
       }
 
-      bool isEcKey = keyType.Equals("Ec", StringComparison.Ordinal) || keyType.Equals("EcHsm", StringComparison.Ordinal);
+      bool isEcKey = keyType.Equals("Ec", StringComparison.OrdinalIgnoreCase) || keyType.Equals("EcHsm", StringComparison.OrdinalIgnoreCase);
       if (isEcKey)
       {
-         if (!validCurveNames.Contains(keyCurveName, StringComparer.Ordinal))
+         if (!validCurveNames.Contains(keyCurveName, StringComparer.OrdinalIgnoreCase))
          {
             PrintError($"Invalid KeyCurveName '{keyCurveName}'. Valid values are: P256, P256K, P384, P521");
             return false;
