@@ -112,7 +112,7 @@ Required permissions on Azure KeyVault:
 
 ### AzureCreateSigningCert
 ```
-AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity] [--Exportable] [--KeyType <keyType>] [--KeySize <keySize> | --KeyCurveName <curveName>]
+AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> --ExpireMonths <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity] [--Exportable] [--KeyType <keyType>] [--KeySize <keySize> | --KeyCurveName <curveName>]
 ```
 or
 ```
