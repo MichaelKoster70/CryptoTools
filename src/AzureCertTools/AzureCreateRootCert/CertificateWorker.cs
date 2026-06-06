@@ -60,8 +60,22 @@ internal static class CertificateWorker
       var certOperationCertSigningRequest = certificateOperation.Properties.Csr;
 
       // Stage 4: Get the .NET CSR object
+      var isEcKey = keyOptions.KeyType.Equals("Ec", StringComparison.OrdinalIgnoreCase) ||
+         keyOptions.KeyType.Equals("EcHsm", StringComparison.OrdinalIgnoreCase);
+
+      var signerHashAlgorithm = isEcKey
+         ? keyOptions.KeyCurveName.ToUpperInvariant() switch
+         {
+            "P256" or "P256K" => HashAlgorithmName.SHA256,
+            "P521" => HashAlgorithmName.SHA512,
+            _ => HashAlgorithmName.SHA384
+         }
+         : HashAlgorithmName.SHA384;
+
+      var signerSignaturePadding = isEcKey ? null : RSASignaturePadding.Pkcs1;
+
       var certSigningRequest = CertificateRequest.LoadSigningRequest(pkcs10: certOperationCertSigningRequest,
-         signerHashAlgorithm: HashAlgorithmName.SHA384, signerSignaturePadding: RSASignaturePadding.Pkcs1); 
+         signerHashAlgorithm: signerHashAlgorithm, signerSignaturePadding: signerSignaturePadding); 
       
       // Stage 5: Add the required extensions for a root CA
       certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(true, pathLengthConstraint.HasValue, pathLengthConstraint ?? 0, true));
