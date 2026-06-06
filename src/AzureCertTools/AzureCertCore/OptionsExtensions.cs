@@ -65,22 +65,31 @@ public static class OptionsExtensions
    /// <returns><c>true</c> if all values are valid; <c>false</c> otherwise.</returns>
    public static bool ValidateKeyCreationOptions(string keyType, string keyCurveName, int keySize)
    {
+      ArgumentNullException.ThrowIfNull(keyType);
+      ArgumentNullException.ThrowIfNull(keyCurveName);
+
       if (!_validKeyTypes.Contains(keyType, StringComparer.Ordinal))
       {
          PrintError($"Invalid KeyType '{keyType}'. Valid values are: Ec, EcHsm, Rsa, RsaHsm");
          return false;
       }
 
-      if (!_validCurveNames.Contains(keyCurveName, StringComparer.Ordinal))
+      bool isEcKey = keyType.Equals("Ec", StringComparison.Ordinal) || keyType.Equals("EcHsm", StringComparison.Ordinal);
+      if (isEcKey)
       {
-         PrintError($"Invalid KeyCurveName '{keyCurveName}'. Valid values are: P256, P256K, P384, P521");
-         return false;
+         if (!_validCurveNames.Contains(keyCurveName, StringComparer.Ordinal))
+         {
+            PrintError($"Invalid KeyCurveName '{keyCurveName}'. Valid values are: P256, P256K, P384, P521");
+            return false;
+         }
       }
-
-      if (!_validKeySizes.Contains(keySize))
+      else
       {
-         PrintError($"Invalid KeySize '{keySize}'. Valid values are: 2048, 3072, 4096");
-         return false;
+         if (!_validKeySizes.Contains(keySize))
+         {
+            PrintError($"Invalid KeySize '{keySize}'. Valid values are: 2048, 3072, 4096");
+            return false;
+         }
       }
 
       return true;
