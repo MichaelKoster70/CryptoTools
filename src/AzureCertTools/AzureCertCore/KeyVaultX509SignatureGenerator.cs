@@ -207,6 +207,11 @@ public class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri sign
    /// </summary>
    private static byte[] ConvertEcdsaSignatureToDer(byte[] rawSignature)
    {
+      if (rawSignature.Length == 0 || rawSignature.Length % 2 != 0)
+      {
+         throw new CryptographicException("ECDSA signature must be a non-empty, even-length r||s byte array.");
+      }
+
       int halfLen = rawSignature.Length / 2;
 
       var writer = new AsnWriter(AsnEncodingRules.DER);
