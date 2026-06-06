@@ -178,8 +178,14 @@ public class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri sign
    private async Task<byte[]> KeyVaultSignEcDigestAsync(Uri keyUri, byte[] digest, HashAlgorithmName hashAlgorithm)
    {
       SignatureAlgorithm algorithm;
+      var curveOid = GetEcCurveOid();
 
-      if (hashAlgorithm == HashAlgorithmName.SHA256)
+      // P-256K requires ES256K in Key Vault
+      if (curveOid == "1.3.132.0.10")
+      {
+         algorithm = new SignatureAlgorithm("ES256K");
+      }
+      else if (hashAlgorithm == HashAlgorithmName.SHA256)
       {
          algorithm = SignatureAlgorithm.ES256;
       }
