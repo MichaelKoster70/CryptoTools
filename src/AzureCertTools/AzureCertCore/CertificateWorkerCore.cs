@@ -135,10 +135,11 @@ public static class CertificateWorkerCore
 
       var keyType = keyOptions.KeyType.ToUpperInvariant() switch
       {
+         "RSA" => CertificateKeyType.Rsa,
+         "RSAHSM" => CertificateKeyType.RsaHsm,
          "EC" => CertificateKeyType.Ec,
          "ECHSM" => CertificateKeyType.EcHsm,
-         "RSAHSM" => CertificateKeyType.RsaHsm,
-         _ => CertificateKeyType.Rsa
+         _ => throw new ArgumentOutOfRangeException(nameof(keyOptions.KeyType), keyOptions.KeyType, "Unsupported KeyType."),
       };
 
       bool isEc = keyType == CertificateKeyType.Ec || keyType == CertificateKeyType.EcHsm;
