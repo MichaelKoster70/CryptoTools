@@ -90,9 +90,13 @@ internal static class CertificateWorker
       // Stage 3: Get the CSR from the certificate operation
       var certOperationCertSigningRequest = certificateOperation.Properties.Csr;
 
+      bool isEcKeyType = keyOptions.KeyType.ToUpperInvariant() is "EC" or "ECHSM";
+      var signerHashAlgorithm = isEcKeyType ? GetEcSignerHashAlgorithm(keyOptions.KeyCurveName) : HashAlgorithmName.SHA384;
+      var signerSignaturePadding = isEcKeyType ? null : RSASignaturePadding.Pkcs1;
+
       // Stage 4: Get the .NET CSR object
       var certSigningRequest = CertificateRequest.LoadSigningRequest(pkcs10: certOperationCertSigningRequest,
-         signerHashAlgorithm: HashAlgorithmName.SHA384, signerSignaturePadding: RSASignaturePadding.Pkcs1);
+         signerHashAlgorithm: signerHashAlgorithm, signerSignaturePadding: signerSignaturePadding);
 
       // Stage 5: Add required extensions for a SSL Server certificate
       await AddCertificateExtensionsAsync(certSigningRequest, fullQualifiedDomainName);
@@ -138,4 +142,11 @@ internal static class CertificateWorker
       certSigningRequest.CertificateExtensions.Add(new X509Extension(new AsnEncodedData(
          new Oid(Constants.AspNetHttpsEnhancedKeyUsageOid, Constants.AspNetHttpsEnhancedKeyUsageOidFriendlyName), [Constants.AspNetCurrentCertificateVersion]), false));
    }
+
+   private static HashAlgorithmName GetEcSignerHashAlgorithm(string keyCurveName) => keyCurveName.ToUpperInvariant() switch
+   {
+      "P256" or "P256K" => HashAlgorithmName.SHA256,
+      "P521" => HashAlgorithmName.SHA512,
+      _ => HashAlgorithmName.SHA384,
+   };
 }
