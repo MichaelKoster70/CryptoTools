@@ -149,7 +149,7 @@ public class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri sign
       var curveOid = GetEcCurveOid();
       return curveOid switch
       {
-         P256CurveOid => HashAlgorithmName.SHA256,
+         P256CurveOid or "1.3.132.0.10" => HashAlgorithmName.SHA256,
          P521CurveOid => HashAlgorithmName.SHA512,
          _ => HashAlgorithmName.SHA384   // P-384 and unknown curves default to SHA-384
       };
