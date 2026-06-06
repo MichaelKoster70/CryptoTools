@@ -157,8 +157,9 @@ public static class CertificateWorkerCore
          {
             "P256" => CertificateKeyCurveName.P256,
             "P256K" => CertificateKeyCurveName.P256K,
+            "P384" => CertificateKeyCurveName.P384,
             "P521" => CertificateKeyCurveName.P521,
-            _ => CertificateKeyCurveName.P384
+            _ => throw new ArgumentOutOfRangeException(nameof(keyOptions.KeyCurveName), keyOptions.KeyCurveName, "Unsupported KeyCurveName."),
          };
       }
       else
