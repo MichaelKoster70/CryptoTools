@@ -14,9 +14,9 @@ namespace CertTools.AzureCertCore;
 /// </summary>
 public static class OptionsExtensions
 {
-   private static readonly string[] _validKeyTypes = ["Ec", "EcHsm", "Rsa", "RsaHsm"];
-   private static readonly string[] _validCurveNames = ["P256", "P256K", "P384", "P521"];
-   private static readonly int[] _validKeySizes = [2048, 3072, 4096];
+   private static readonly string[] validKeyTypes = ["Ec", "EcHsm", "Rsa", "RsaHsm"];
+   private static readonly string[] validCurveNames = ["P256", "P256K", "P384", "P521"];
+   private static readonly int[] validKeySizes = [2048, 3072, 4096];
 
    /// <summary>
    /// Validates the options provided.
@@ -68,7 +68,7 @@ public static class OptionsExtensions
       ArgumentNullException.ThrowIfNull(keyType);
       ArgumentNullException.ThrowIfNull(keyCurveName);
 
-      if (!_validKeyTypes.Contains(keyType, StringComparer.Ordinal))
+      if (!validKeyTypes.Contains(keyType, StringComparer.Ordinal))
       {
          PrintError($"Invalid KeyType '{keyType}'. Valid values are: Ec, EcHsm, Rsa, RsaHsm");
          return false;
@@ -77,7 +77,7 @@ public static class OptionsExtensions
       bool isEcKey = keyType.Equals("Ec", StringComparison.Ordinal) || keyType.Equals("EcHsm", StringComparison.Ordinal);
       if (isEcKey)
       {
-         if (!_validCurveNames.Contains(keyCurveName, StringComparer.Ordinal))
+         if (!validCurveNames.Contains(keyCurveName, StringComparer.Ordinal))
          {
             PrintError($"Invalid KeyCurveName '{keyCurveName}'. Valid values are: P256, P256K, P384, P521");
             return false;
@@ -85,7 +85,7 @@ public static class OptionsExtensions
       }
       else
       {
-         if (!_validKeySizes.Contains(keySize))
+         if (!validKeySizes.Contains(keySize))
          {
             PrintError($"Invalid KeySize '{keySize}'. Valid values are: 2048, 3072, 4096");
             return false;
