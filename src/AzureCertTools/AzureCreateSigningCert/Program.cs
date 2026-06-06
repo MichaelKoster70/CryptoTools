@@ -65,7 +65,13 @@ internal static class Program
 
       if (!string.IsNullOrEmpty(options.CertificateName))
       {
-         CertificateWorker.KeyVaultCreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths).Wait();
+         CertificateWorker.KeyVaultCreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths, new KeyCreationOptions
+         {
+            KeyType = options.KeyType,
+            Exportable = options.Exportable,
+            KeyCurveName = options.KeyCurveName,
+            KeySize = options.KeySize
+         }).Wait();
          Console.WriteLine($"Certificate created: name={options.CertificateName}, Key Vault={keyVaultUri}");
       }
       else if (!string.IsNullOrEmpty(options.FileName))

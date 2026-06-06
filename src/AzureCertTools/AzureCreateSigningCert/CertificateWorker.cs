@@ -33,7 +33,8 @@ internal static class CertificateWorker
    /// <param name="vaultUri">The URI of the Key Vault holding the certificates</param>
    /// <param name="tokenCredential">The authentication token provider.</param>
    /// <param name="expireMonths">The number of months until the certificate expires.</param>
-   public static async Task KeyVaultCreateSigningCertificateAsync(string certificateName, string subjectNameValue, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths)
+   /// <param name="keyOptions">The key creation options controlling the key type, size and exportability.</param>
+   public static async Task KeyVaultCreateSigningCertificateAsync(string certificateName, string subjectNameValue, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths, KeyCreationOptions keyOptions)
    {
       var client = new CertificateClient(vaultUri, tokenCredential);
 
@@ -41,7 +42,7 @@ internal static class CertificateWorker
       (var signerName, var signerSignatureGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
 
       // create a CSR
-      var csr = await KeyVaultCreateSigningCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonths);
+      var csr = await KeyVaultCreateSigningCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonths, keyOptions);
 
       // Sign the CSR
       var cert = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signerSignatureGenerator, expireMonths);
@@ -88,16 +89,9 @@ internal static class CertificateWorker
       await File.WriteAllBytesAsync(fileName, certBytes);
    }
 
-   private static async Task<CertificateRequest> KeyVaultCreateSigningCertificateRequestAsync(string certificateName, string subjectNameValue, CertificateClient client, int expireMonth)
+   private static async Task<CertificateRequest> KeyVaultCreateSigningCertificateRequestAsync(string certificateName, string subjectNameValue, CertificateClient client, int expireMonth, KeyCreationOptions keyOptions)
    {
-      var certificatePolicy = new CertificatePolicy(WellKnownIssuerNames.Unknown, subjectNameValue)
-      {
-         KeyType = CertificateKeyType.Rsa,
-         KeySize = CertificateWorkerCore.RsaKeySize,
-         ReuseKey = true,
-         Exportable = false,
-         ValidityInMonths = expireMonth,
-      };
+      var certificatePolicy = CertificateWorkerCore.CreateCertificatePolicy(WellKnownIssuerNames.Unknown, subjectNameValue, expireMonth, keyOptions);
 
       // Stage 1: Create the certificate, the operation will not be completed yet
       _ = await client.StartCreateCertificateAsync(certificateName, certificatePolicy);
@@ -109,8 +103,11 @@ internal static class CertificateWorker
       var certOperationCertSigningRequest = certificateOperation.Properties.Csr;
 
       // Stage 4: Get the .NET CSR object
+      var signerHashAlgorithm = CertificateWorkerCore.GetHashAlgorithmName(keyOptions);
+      var signerSignaturePadding = CertificateWorkerCore.GetRSASignaturePadding(keyOptions);
+
       var certSigningRequest = CertificateRequest.LoadSigningRequest(pkcs10: certOperationCertSigningRequest, 
-         signerHashAlgorithm: HashAlgorithmName.SHA384, signerSignaturePadding: RSASignaturePadding.Pkcs1);
+         signerHashAlgorithm: signerHashAlgorithm, signerSignaturePadding: signerSignaturePadding);
 
       AddKeyUsageExtensions(certSigningRequest);
 
@@ -122,5 +119,15 @@ internal static class CertificateWorker
       certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(false, false, 0, true));
       certSigningRequest.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature, true));
       certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(CodeSigningEnhancedKeyUsageOid, CodeSigningEnhancedKeyUsageOidFriendlyName)], true));
+   }
+
+   private static HashAlgorithmName GetEcSignerHashAlgorithm(string keyCurveName)
+   {
+      return keyCurveName.ToUpperInvariant() switch
+      {
+         "P256" or "P256K" => HashAlgorithmName.SHA256,
+         "P521" => HashAlgorithmName.SHA512,
+         _ => HashAlgorithmName.SHA384
+      };
    }
 }

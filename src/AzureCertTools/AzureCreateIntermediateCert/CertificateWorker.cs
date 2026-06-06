@@ -28,7 +28,8 @@ internal static class CertificateWorker
    /// <param name="pathLengthConstraint">The path length constraint for the intermediate CA certificate, null if no constraint should be set.</param>
    /// <param name="vaultUri">The URI to the Azure Key Vault.</param>
    /// <param name="tokenCredential">The Azure Key Vault token credential.</param>
-   public static async Task<string> CreateIntermediateCertAsync(string certificateName, string subjectNameValue, string signerCertificateName, int expireMonths, int? pathLengthConstraint, Uri vaultUri, TokenCredential tokenCredential)
+   /// <param name="keyOptions">The key creation options controlling the key type, size and exportability.</param>
+   public static async Task<string> CreateIntermediateCertAsync(string certificateName, string subjectNameValue, string signerCertificateName, int expireMonths, int? pathLengthConstraint, Uri vaultUri, TokenCredential tokenCredential, KeyCreationOptions keyOptions)
    {
       var client = new CertificateClient(vaultUri, tokenCredential);
 
@@ -36,7 +37,7 @@ internal static class CertificateWorker
       (var signerName, var signerSignaturGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
 
       // create a CSR
-      var csr = await KeyVaultCreateCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonths, pathLengthConstraint);
+      var csr = await KeyVaultCreateCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonths, pathLengthConstraint, keyOptions);
 
       // Sign the CSR
       var cert = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signerSignaturGenerator, expireMonths);
@@ -47,16 +48,9 @@ internal static class CertificateWorker
       return certificateName;
    }
 
-   private static async Task<CertificateRequest> KeyVaultCreateCertificateRequestAsync(string certificateName, string subjectNameValue, CertificateClient client, int expireMonth, int? pathLengthConstraint)
+   private static async Task<CertificateRequest> KeyVaultCreateCertificateRequestAsync(string certificateName, string subjectNameValue, CertificateClient client, int expireMonth, int? pathLengthConstraint, KeyCreationOptions keyOptions)
    {
-      var certificatePolicy = new CertificatePolicy(WellKnownIssuerNames.Unknown, subjectNameValue)
-      {
-         KeyType = CertificateKeyType.Rsa,
-         KeySize = CertificateWorkerCore.RsaKeySize,
-         ReuseKey = true,
-         Exportable = false,
-         ValidityInMonths = expireMonth,
-      };
+      var certificatePolicy = CertificateWorkerCore.CreateCertificatePolicy(WellKnownIssuerNames.Unknown, subjectNameValue, expireMonth, keyOptions);
 
       // Stage 1: Create the certificate, the operation will not be completed yet
       _ = await client.StartCreateCertificateAsync(certificateName, certificatePolicy);
@@ -67,9 +61,13 @@ internal static class CertificateWorker
       // Stage 3: Get the CSR from the certificate operation
       var certOperationCertSigningRequest = certificateOperation.Properties.Csr;
 
-      // Stage 4: Get the .NET CSR object
+      // Stage 4: select the hash algorithm based on the key type and curve, Key Vault will require a specific hash algorithm for certain key types/curves
+      var signerHashAlgorithm = CertificateWorkerCore.GetHashAlgorithmName(keyOptions);
+      var signerSignaturePadding = CertificateWorkerCore.GetRSASignaturePadding(keyOptions);
+ 
+      // Stage 5: Get the .NET CSR object
       var certSigningRequest = CertificateRequest.LoadSigningRequest(pkcs10: certOperationCertSigningRequest,
-         signerHashAlgorithm: HashAlgorithmName.SHA384, signerSignaturePadding: RSASignaturePadding.Pkcs1);
+         signerHashAlgorithm: signerHashAlgorithm, signerSignaturePadding: signerSignaturePadding);
 
       // Stage 5: Add required extensions for a CA certificate
       certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(true, pathLengthConstraint.HasValue, pathLengthConstraint ?? 0, true));

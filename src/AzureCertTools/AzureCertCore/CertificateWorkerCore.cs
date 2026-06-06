@@ -27,23 +27,20 @@ public static class CertificateWorkerCore
    /// <param name="subjectNameValue">The certificate subject name</param>
    /// <param name="client">The client representing the Azure Key Vault instance to hold the certificate.</param>
    /// <param name="tokenCredential">The authentication token provider.</param>
+   /// <param name="reuseKey">Whether to reuse the key when renewing the certificate.</param>
    /// <param name="expireMonth">The expiry date in month from now.</param>
+   /// <param name="keyOptions">The key creation options controlling the key type, size and exportability.</param>
    /// <returns>The <see cref="X509SignatureGenerator"/> based on the created certificate.</returns>
-   public static async Task<X509SignatureGenerator> KeyVaultCreateSelfSignedSignatureGeneratorAsync(string certificateName, string subjectNameValue, CertificateClient client, TokenCredential tokenCredential, bool reuseKey, int expireMonth)
+   public static async Task<X509SignatureGenerator> KeyVaultCreateSelfSignedSignatureGeneratorAsync(string certificateName, string subjectNameValue, CertificateClient client, TokenCredential tokenCredential, bool reuseKey, int expireMonth, KeyCreationOptions? keyOptions = null)
    {
       ArgumentNullException.ThrowIfNull(certificateName);
       ArgumentNullException.ThrowIfNull(subjectNameValue);
       ArgumentNullException.ThrowIfNull(client);
       ArgumentNullException.ThrowIfNull(tokenCredential);
 
-      var certificatePolicy = new CertificatePolicy(WellKnownIssuerNames.Self, subjectNameValue)
-      {
-         KeyType = CertificateKeyType.Rsa,
-         KeySize = RsaKeySize,
-         ReuseKey = reuseKey,
-         Exportable = false,
-         ValidityInMonths = expireMonth
-      };
+      keyOptions ??= new KeyCreationOptions();
+
+      var certificatePolicy = CreateCertificatePolicy(WellKnownIssuerNames.Self, subjectNameValue, expireMonth, keyOptions, reuseKey);
 
       // Create the certificate, the operation will complete with the certificate
       var operation = await client.StartCreateCertificateAsync(certificateName, certificatePolicy);
@@ -119,5 +116,85 @@ public static class CertificateWorkerCore
       var x509Certificate = certificate.Export(X509ContentType.Cert);
       var operation = new MergeCertificateOptions(certificateName, [x509Certificate]);
       _ = await client.MergeCertificateAsync(operation);
+   }
+
+   /// <summary>
+   /// Creates an Azure Key Vault <see cref="CertificatePolicy"/> from the given options.
+   /// </summary>
+   /// <param name="issuerName">The issuer name (e.g. <see cref="WellKnownIssuerNames.Self"/> or <see cref="WellKnownIssuerNames.Unknown"/>).</param>
+   /// <param name="subjectNameValue">The certificate subject name.</param>
+   /// <param name="expireMonths">The validity period in months.</param>
+   /// <param name="keyOptions">The key creation options.</param>
+   /// <param name="reuseKey">Whether to reuse the existing key when renewing the certificate.</param>
+   /// <returns>A configured <see cref="CertificatePolicy"/>.</returns>
+   public static CertificatePolicy CreateCertificatePolicy(string issuerName, string subjectNameValue, int expireMonths, KeyCreationOptions keyOptions, bool reuseKey = true)
+   {
+      ArgumentNullException.ThrowIfNull(issuerName);
+      ArgumentNullException.ThrowIfNull(subjectNameValue);
+      ArgumentNullException.ThrowIfNull(keyOptions);
+
+      var keyType = keyOptions.KeyType.ToUpperInvariant() switch
+      {
+         "RSA" => CertificateKeyType.Rsa,
+         "RSAHSM" => CertificateKeyType.RsaHsm,
+         "EC" => CertificateKeyType.Ec,
+         "ECHSM" => CertificateKeyType.EcHsm,
+         _ => throw new ArgumentOutOfRangeException(nameof(keyOptions.KeyType), keyOptions.KeyType, "Unsupported KeyType."),
+      };
+
+      bool isEc = keyType == CertificateKeyType.Ec || keyType == CertificateKeyType.EcHsm;
+
+      var policy = new CertificatePolicy(issuerName, subjectNameValue)
+      {
+         KeyType = keyType,
+         ReuseKey = reuseKey,
+         Exportable = keyOptions.Exportable,
+         ValidityInMonths = expireMonths,
+      };
+
+      if (isEc)
+      {
+         policy.KeyCurveName = keyOptions.KeyCurveName.ToUpperInvariant() switch
+         {
+            "P256" => CertificateKeyCurveName.P256,
+            "P256K" => CertificateKeyCurveName.P256K,
+            "P384" => CertificateKeyCurveName.P384,
+            "P521" => CertificateKeyCurveName.P521,
+            _ => throw new ArgumentOutOfRangeException(nameof(keyOptions), keyOptions.KeyCurveName, "Unsupported KeyCurveName."),
+         };
+      }
+      else
+      {
+         policy.KeySize = keyOptions.KeySize;
+      }
+
+      return policy;
+   }
+
+   /// <summary>
+   /// Determines the appropriate hash algorithm to use based on the provided key creation options. For EC keys, the hash algorithm is selected based on the curve name, while for RSA keys, a default hash algorithm is returned.
+   /// </summary>
+   /// <param name="keyOptions">The key creation options.</param>
+   /// <returns>The appropriate hash algorithm.</returns>
+   public static HashAlgorithmName GetHashAlgorithmName(KeyCreationOptions keyOptions)
+   {
+      ArgumentNullException.ThrowIfNull(keyOptions);
+
+      bool isEcKey = keyOptions.KeyType.Equals("Ec", StringComparison.OrdinalIgnoreCase) || keyOptions.KeyType.Equals("EcHsm", StringComparison.OrdinalIgnoreCase);
+      return isEcKey ? keyOptions.KeyCurveName.ToUpperInvariant() switch
+         {
+            "P256" or "P256K" => HashAlgorithmName.SHA256,
+            "P521" => HashAlgorithmName.SHA512,
+            _ => HashAlgorithmName.SHA384
+         }
+         : HashAlgorithmName.SHA384;
+   }
+
+   public static RSASignaturePadding? GetRSASignaturePadding(KeyCreationOptions keyOptions)
+   {
+      ArgumentNullException.ThrowIfNull(keyOptions);
+
+      bool isEcKey = keyOptions.KeyType.Equals("Ec", StringComparison.OrdinalIgnoreCase) || keyOptions.KeyType.Equals("EcHsm", StringComparison.OrdinalIgnoreCase);
+      return isEcKey ? null : RSASignaturePadding.Pkcs1;
    }
 }

@@ -31,8 +31,9 @@ internal static class CertificateWorker
    /// <param name="expireMonths">The expire months.</param>
    /// <param name="local">if set to <c>true</c> [local].</param>
    /// <param name="password">The password.</param>
+   /// <param name="keyOptions">The key creation options controlling the key type, size and exportability.</param>
    /// <returns>A Task&lt;System.String&gt; representing the asynchronous operation.</returns>
-   public static async Task<string> CreateSslServerCertificateAsync(string certificateName, string fullQualifiedDomainName, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths, bool local, string? password)
+   public static async Task<string> CreateSslServerCertificateAsync(string certificateName, string fullQualifiedDomainName, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths, bool local, string? password, KeyCreationOptions keyOptions)
    {
       if (local)
       {
@@ -63,7 +64,7 @@ internal static class CertificateWorker
          (var signerName, var signerSignaturGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
          
          // create a CSR
-         var csr = await KeyVaultCreateCertificateRequestAsync(certificateName, fullQualifiedDomainName, client, expireMonths);
+         var csr = await KeyVaultCreateCertificateRequestAsync(certificateName, fullQualifiedDomainName, client, expireMonths, keyOptions);
          
          // Sign the CSR
          var cert = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signerSignaturGenerator, expireMonths);
@@ -75,17 +76,10 @@ internal static class CertificateWorker
       }
    }
 
-   private static async Task<CertificateRequest> KeyVaultCreateCertificateRequestAsync(string certificateName, string fullQualifiedDomainName, CertificateClient client, int expireMonth)
+   private static async Task<CertificateRequest> KeyVaultCreateCertificateRequestAsync(string certificateName, string fullQualifiedDomainName, CertificateClient client, int expireMonth, KeyCreationOptions keyOptions)
    {
       var subjectNameValue = "CN=" + fullQualifiedDomainName;
-      var certificatePolicy = new CertificatePolicy(WellKnownIssuerNames.Unknown, subjectNameValue)
-      {
-         KeyType = CertificateKeyType.Rsa,
-         KeySize = CertificateWorkerCore.RsaKeySize,
-         ReuseKey = true,
-         Exportable = true,
-         ValidityInMonths = expireMonth
-      };
+      var certificatePolicy = CertificateWorkerCore.CreateCertificatePolicy(WellKnownIssuerNames.Unknown, subjectNameValue, expireMonth, keyOptions);
 
       // Stage 1: Create the certificate, the operation will not be completed yet
       _ = await client.StartCreateCertificateAsync(certificateName, certificatePolicy);
@@ -96,9 +90,16 @@ internal static class CertificateWorker
       // Stage 3: Get the CSR from the certificate operation
       var certOperationCertSigningRequest = certificateOperation.Properties.Csr;
 
+      var (signerHashAlgorithm, signerSignaturePadding) = keyOptions.KeyType.ToUpperInvariant() switch
+      {
+         "EC" or "ECHSM" => (GetEcSignerHashAlgorithm(keyOptions.KeyCurveName), (RSASignaturePadding?)null),
+         "RSA" or "RSAHSM" => (HashAlgorithmName.SHA384, RSASignaturePadding.Pkcs1),
+         _ => throw new NotSupportedException($"Unsupported key type '{keyOptions.KeyType}'."),
+      };
+
       // Stage 4: Get the .NET CSR object
       var certSigningRequest = CertificateRequest.LoadSigningRequest(pkcs10: certOperationCertSigningRequest,
-         signerHashAlgorithm: HashAlgorithmName.SHA384, signerSignaturePadding: RSASignaturePadding.Pkcs1);
+         signerHashAlgorithm: signerHashAlgorithm, signerSignaturePadding: signerSignaturePadding);
 
       // Stage 5: Add required extensions for a SSL Server certificate
       await AddCertificateExtensionsAsync(certSigningRequest, fullQualifiedDomainName);
@@ -144,4 +145,11 @@ internal static class CertificateWorker
       certSigningRequest.CertificateExtensions.Add(new X509Extension(new AsnEncodedData(
          new Oid(Constants.AspNetHttpsEnhancedKeyUsageOid, Constants.AspNetHttpsEnhancedKeyUsageOidFriendlyName), [Constants.AspNetCurrentCertificateVersion]), false));
    }
+
+   private static HashAlgorithmName GetEcSignerHashAlgorithm(string keyCurveName) => keyCurveName.ToUpperInvariant() switch
+   {
+      "P256" or "P256K" => HashAlgorithmName.SHA256,
+      "P521" => HashAlgorithmName.SHA512,
+      _ => HashAlgorithmName.SHA384,
+   };
 }
