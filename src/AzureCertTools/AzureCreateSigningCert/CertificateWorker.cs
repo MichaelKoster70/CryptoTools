@@ -103,8 +103,15 @@ internal static class CertificateWorker
       var certOperationCertSigningRequest = certificateOperation.Properties.Csr;
 
       // Stage 4: Get the .NET CSR object
+      var isEcKeyType = keyOptions.KeyType.Equals("Ec", StringComparison.OrdinalIgnoreCase)
+         || keyOptions.KeyType.Equals("EcHsm", StringComparison.OrdinalIgnoreCase);
+      var signerHashAlgorithm = isEcKeyType
+         ? GetEcSignerHashAlgorithm(keyOptions.KeyCurveName)
+         : HashAlgorithmName.SHA384;
+      var signerSignaturePadding = isEcKeyType ? null : RSASignaturePadding.Pkcs1;
+
       var certSigningRequest = CertificateRequest.LoadSigningRequest(pkcs10: certOperationCertSigningRequest, 
-         signerHashAlgorithm: HashAlgorithmName.SHA384, signerSignaturePadding: RSASignaturePadding.Pkcs1);
+         signerHashAlgorithm: signerHashAlgorithm, signerSignaturePadding: signerSignaturePadding);
 
       AddKeyUsageExtensions(certSigningRequest);
 
@@ -116,5 +123,15 @@ internal static class CertificateWorker
       certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(false, false, 0, true));
       certSigningRequest.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature, true));
       certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(CodeSigningEnhancedKeyUsageOid, CodeSigningEnhancedKeyUsageOidFriendlyName)], true));
+   }
+
+   private static HashAlgorithmName GetEcSignerHashAlgorithm(string keyCurveName)
+   {
+      return keyCurveName.ToUpperInvariant() switch
+      {
+         "P256" or "P256K" => HashAlgorithmName.SHA256,
+         "P521" => HashAlgorithmName.SHA512,
+         _ => HashAlgorithmName.SHA384
+      };
    }
 }
