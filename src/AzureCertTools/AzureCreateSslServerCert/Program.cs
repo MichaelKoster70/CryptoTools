@@ -35,6 +35,12 @@ internal static class Program
          return result;
       }
 
+      // Validate key creation options
+      if (!OptionsExtensions.ValidateKeyCreationOptions(options.KeyType, options.KeyCurveName, options.KeySize))
+      {
+         return result;
+      }
+
       if (options.Local)
       {
          Console.WriteLine("Creating certificate locally");
