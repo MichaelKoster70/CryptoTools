@@ -76,7 +76,13 @@ internal static class Program
       }
       else if (!string.IsNullOrEmpty(options.FileName))
       {
-         CertificateWorker.LocalCreateSigningCertificateAsync(options.FileName, options.Password, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths).Wait();
+         CertificateWorker.LocalCreateSigningCertificateAsync(options.FileName, options.Password, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths, new KeyCreationOptions
+         {
+            KeyType = options.KeyType,
+            Exportable = options.Exportable,
+            KeyCurveName = options.KeyCurveName,
+            KeySize = options.KeySize
+         }).Wait();
          Console.WriteLine($"PFX file created: {options.FileName}");
       }
       else

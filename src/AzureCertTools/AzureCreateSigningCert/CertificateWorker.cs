@@ -61,31 +61,26 @@ internal static class CertificateWorker
    /// <param name="vaultUri">The URI of the Key Vault holding the certificates</param>
    /// <param name="tokenCredential">The authentication token provider.</param>
    /// <param name="expireMonths">The number of months until the certificate expires.</param>
-   public static async Task LocalCreateSigningCertificateAsync(string fileName, string? password, string subjectNameValue, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths)
+   /// <param name="keyOptions">The key creation options controlling the key type, size and exportability.</param>
+   public static async Task LocalCreateSigningCertificateAsync(string fileName, string? password, string subjectNameValue, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths, KeyCreationOptions keyOptions)
    {
       var client = new CertificateClient(vaultUri, tokenCredential);
 
       // Get the signer certificate and its associated keys
       (var signerName, var signerSignatureGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
 
-      // Create a new RSA key pair
-      var cspParameter = new CspParameters();
-      cspParameter = new CspParameters(cspParameter.ProviderType, cspParameter.ProviderName, Guid.NewGuid().ToString());
-
-      using var keyPair = new RSACryptoServiceProvider(CertificateWorkerCore.RsaKeySize, cspParameter);
-
       // create a CSR
-      var subject = new X500DistinguishedName(subjectNameValue);
-      var certSigningRequest = new CertificateRequest(subject, keyPair, HashAlgorithmName.SHA384, RSASignaturePadding.Pkcs1);
+      using var keyPair = CreateKeyPair(keyOptions);
+      var certSigningRequest = CreateLocalSigningCertificateRequest(subjectNameValue, keyPair, keyOptions);
 
       AddKeyUsageExtensions(certSigningRequest);
 
       // Sign the CSR
-      var cert = CertificateWorkerCore.SignCertificateRequest(certSigningRequest, signerName, signerSignatureGenerator, expireMonths);
+      using var cert = CertificateWorkerCore.SignCertificateRequest(certSigningRequest, signerName, signerSignatureGenerator, expireMonths);
 
       // Export the certificate and private key to a PFX file
-      cert = cert.CopyWithPrivateKey(keyPair);
-      var certBytes = cert.Export(X509ContentType.Pfx, password);
+      using var certWithPrivateKey = CopyWithPrivateKey(cert, keyPair);
+      var certBytes = certWithPrivateKey.Export(X509ContentType.Pfx, password);
       await File.WriteAllBytesAsync(fileName, certBytes);
    }
 
@@ -114,20 +109,53 @@ internal static class CertificateWorker
       return certSigningRequest;
    }
 
+   private static CertificateRequest CreateLocalSigningCertificateRequest(string subjectNameValue, AsymmetricAlgorithm keyPair, KeyCreationOptions keyOptions)
+   {
+      var subject = new X500DistinguishedName(subjectNameValue);
+      var signerHashAlgorithm = CertificateWorkerCore.GetHashAlgorithmName(keyOptions);
+      var signerSignaturePadding = CertificateWorkerCore.GetRSASignaturePadding(keyOptions);
+
+      return keyPair switch
+      {
+         RSA rsa => new CertificateRequest(subject, rsa, signerHashAlgorithm, signerSignaturePadding ?? RSASignaturePadding.Pkcs1),
+         ECDsa ecdsa => new CertificateRequest(subject, ecdsa, signerHashAlgorithm),
+         _ => throw new NotSupportedException($"Unsupported key algorithm '{keyPair.GetType().Name}'.")
+      };
+   }
+
+   private static AsymmetricAlgorithm CreateKeyPair(KeyCreationOptions keyOptions)
+   {
+      return keyOptions.KeyType.ToUpperInvariant() switch
+      {
+         "RSA" or "RSAHSM" => RSA.Create(keyOptions.KeySize),
+         "EC" or "ECHSM" => ECDsa.Create(GetEcCurve(keyOptions.KeyCurveName)),
+         _ => throw new NotSupportedException($"Unsupported key type '{keyOptions.KeyType}'.")
+      };
+   }
+
+   private static X509Certificate2 CopyWithPrivateKey(X509Certificate2 certificate, AsymmetricAlgorithm keyPair)
+   {
+      return keyPair switch
+      {
+         RSA rsa => certificate.CopyWithPrivateKey(rsa),
+         ECDsa ecdsa => certificate.CopyWithPrivateKey(ecdsa),
+         _ => throw new NotSupportedException($"Unsupported key algorithm '{keyPair.GetType().Name}'.")
+      };
+   }
+
+   private static ECCurve GetEcCurve(string keyCurveName) => keyCurveName.ToUpperInvariant() switch
+   {
+      "P256" => ECCurve.NamedCurves.nistP256,
+      "P256K" => ECCurve.CreateFromFriendlyName("secp256k1"),
+      "P384" => ECCurve.NamedCurves.nistP384,
+      "P521" => ECCurve.NamedCurves.nistP521,
+      _ => throw new NotSupportedException($"Unsupported EC curve '{keyCurveName}'.")
+   };
+
    private static void AddKeyUsageExtensions(CertificateRequest certSigningRequest)
    {
       certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(false, false, 0, true));
       certSigningRequest.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature, true));
       certSigningRequest.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid(CodeSigningEnhancedKeyUsageOid, CodeSigningEnhancedKeyUsageOidFriendlyName)], true));
-   }
-
-   private static HashAlgorithmName GetEcSignerHashAlgorithm(string keyCurveName)
-   {
-      return keyCurveName.ToUpperInvariant() switch
-      {
-         "P256" or "P256K" => HashAlgorithmName.SHA256,
-         "P521" => HashAlgorithmName.SHA512,
-         _ => HashAlgorithmName.SHA384
-      };
    }
 }
