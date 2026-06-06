@@ -60,19 +60,8 @@ internal static class CertificateWorker
       var certOperationCertSigningRequest = certificateOperation.Properties.Csr;
 
       // Stage 4: Get the .NET CSR object
-      var isEcKey = keyOptions.KeyType.Equals("Ec", StringComparison.OrdinalIgnoreCase) ||
-         keyOptions.KeyType.Equals("EcHsm", StringComparison.OrdinalIgnoreCase);
-
-      var signerHashAlgorithm = isEcKey
-         ? keyOptions.KeyCurveName.ToUpperInvariant() switch
-         {
-            "P256" or "P256K" => HashAlgorithmName.SHA256,
-            "P521" => HashAlgorithmName.SHA512,
-            _ => HashAlgorithmName.SHA384
-         }
-         : HashAlgorithmName.SHA384;
-
-      var signerSignaturePadding = isEcKey ? null : RSASignaturePadding.Pkcs1;
+      var signerHashAlgorithm = CertificateWorkerCore.GetHashAlgorithmName(keyOptions);
+      var signerSignaturePadding = CertificateWorkerCore.GetRSASignaturePadding(keyOptions);
 
       var certSigningRequest = CertificateRequest.LoadSigningRequest(pkcs10: certOperationCertSigningRequest,
          signerHashAlgorithm: signerHashAlgorithm, signerSignaturePadding: signerSignaturePadding); 

@@ -159,7 +159,7 @@ public static class CertificateWorkerCore
             "P256K" => CertificateKeyCurveName.P256K,
             "P384" => CertificateKeyCurveName.P384,
             "P521" => CertificateKeyCurveName.P521,
-            _ => throw new ArgumentOutOfRangeException(nameof(keyOptions.KeyCurveName), keyOptions.KeyCurveName, "Unsupported KeyCurveName."),
+            _ => throw new ArgumentOutOfRangeException(nameof(keyOptions), keyOptions.KeyCurveName, "Unsupported KeyCurveName."),
          };
       }
       else
@@ -168,5 +168,32 @@ public static class CertificateWorkerCore
       }
 
       return policy;
+   }
+
+   /// <summary>
+   /// Determines the appropriate hash algorithm to use based on the provided key creation options. For EC keys, the hash algorithm is selected based on the curve name, while for RSA keys, a default hash algorithm is returned.
+   /// </summary>
+   /// <param name="keyOptions">The key creation options.</param>
+   /// <returns>The appropriate hash algorithm.</returns>
+   public static HashAlgorithmName GetHashAlgorithmName(KeyCreationOptions keyOptions)
+   {
+      ArgumentNullException.ThrowIfNull(keyOptions);
+
+      bool isEcKey = keyOptions.KeyType.Equals("Ec", StringComparison.OrdinalIgnoreCase) || keyOptions.KeyType.Equals("EcHsm", StringComparison.OrdinalIgnoreCase);
+      return isEcKey ? keyOptions.KeyCurveName.ToUpperInvariant() switch
+         {
+            "P256" or "P256K" => HashAlgorithmName.SHA256,
+            "P521" => HashAlgorithmName.SHA512,
+            _ => HashAlgorithmName.SHA384
+         }
+         : HashAlgorithmName.SHA384;
+   }
+
+   public static RSASignaturePadding? GetRSASignaturePadding(KeyCreationOptions keyOptions)
+   {
+      ArgumentNullException.ThrowIfNull(keyOptions);
+
+      bool isEcKey = keyOptions.KeyType.Equals("Ec", StringComparison.OrdinalIgnoreCase) || keyOptions.KeyType.Equals("EcHsm", StringComparison.OrdinalIgnoreCase);
+      return isEcKey ? null : RSASignaturePadding.Pkcs1;
    }
 }
