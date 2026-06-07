@@ -17,9 +17,6 @@ namespace CertTools.AzureCertCore;
 /// </summary>
 public static class CertificateWorkerCore
 {
-   /// <summary>RSA key size in bits</summary>
-   public const int RsaKeySize = 4096;
-
    /// <summary>
    /// Create a self signed certificate with the given subject name in Azure Key Vault.
    /// </summary>

@@ -6,7 +6,6 @@
 // ----------------------------------------------------------------------------
 
 using Azure.Core;
-using Azure.Identity;
 using CertTools.AzureCertCore;
 using CommandLine;
 
@@ -34,17 +33,7 @@ internal static class Program
       ConsoleHelper.PrintToolInfo();
 
       // Create the token provider
-      TokenCredential credentials = options switch
-      {
-         { Interactive: true } => new InteractiveBrowserCredential(new InteractiveBrowserCredentialOptions
-         {
-            TenantId = options.TenantId,
-            ClientId = options.ClientId,
-            RedirectUri = new Uri("http://localhost")
-         }),
-         { WorkloadIdentity: true } => new WorkloadIdentityCredential(),
-         _ => new ClientSecretCredential(options.TenantId, options.ClientId, options.ClientSecret)
-      };
+      TokenCredential credentials = options.GetTokenCredential();
 
       Uri keyVaultUri = new(options.KeyVaultUri);
 

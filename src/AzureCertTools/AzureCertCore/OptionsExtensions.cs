@@ -5,6 +5,9 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
+using Azure.Core;
+using Azure.Identity;
+
 namespace CertTools.AzureCertCore;
 
 /// <summary>
@@ -121,6 +124,23 @@ public static class OptionsExtensions
          }
       };
    }
+
+   /// <summary>
+   /// Returns an appropriate <see cref="TokenCredential"/> instance based on the authentication options provided in the <see cref="OptionsBase"/> instance.
+   /// </summary>
+   /// <param name="options">The <see cref="OptionsBase"/> instance containing the authentication options.</param>
+   /// <returns>A <see cref="TokenCredential"/> instance.</returns>
+   public static TokenCredential GetTokenCredential(this OptionsBase options) => options switch
+   {
+      { Interactive: true } => new InteractiveBrowserCredential(new InteractiveBrowserCredentialOptions
+      {
+         TenantId = options.TenantId,
+         ClientId = options.ClientId,
+         RedirectUri = new Uri("http://localhost")
+      }),
+      { WorkloadIdentity: true } => new WorkloadIdentityCredential(),
+      _ => new ClientSecretCredential(options.TenantId, options.ClientId, options.ClientSecret)
+   };
 
    private static void PrintError(string message)
    {

@@ -20,6 +20,9 @@ namespace CertTools.AzureCreateSslServerCert;
 /// </summary>
 internal static class CertificateWorker
 {
+   /// <summary>RSA key size in bits</summary>
+   private const int RsaKeySize = 4096;
+
    /// <summary>
    /// Create SSL server certificate as an asynchronous operation.
    /// </summary>
@@ -118,7 +121,7 @@ internal static class CertificateWorker
       {
          Flags = CspProviderFlags.UseArchivableKey
       };
-      using var rsaKeyPair = new RSACryptoServiceProvider(CertificateWorkerCore.RsaKeySize, cspParameter);
+      using var rsaKeyPair = new RSACryptoServiceProvider(RsaKeySize, cspParameter);
 
       // Create the CSR
       var subjectName = new X500DistinguishedName(distinguishedName);
