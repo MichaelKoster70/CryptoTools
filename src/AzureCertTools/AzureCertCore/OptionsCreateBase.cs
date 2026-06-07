@@ -17,6 +17,12 @@ public class OptionsCreateBase : OptionsBase
    /// <summary>Default key type: RSA software-backed.</summary>
    public const string DefaultKeyType = "Rsa";
 
+   /// <summary>Default RSA key size in bits.</summary>
+   public const int DefaultKeySize = 4096;
+
+   /// <summary>Default EC key curve name.</summary>
+   public const string DefaultKeyCurveName = "P384";
+
    /// <summary>
    /// Gets or sets the key type for the certificate private key. Supported values: Ec, EcHsm, Rsa, RsaHsm. Default is Rsa.
    /// </summary>
@@ -33,12 +39,12 @@ public class OptionsCreateBase : OptionsBase
    /// Gets or sets the EC key curve name. Applicable only for Ec and EcHsm key types. Supported values: P256, P256K, P384, P521. Default is P384.
    /// </summary>
    [Option("KeyCurveName", Required = false, HelpText = "The EC key curve name (Ec and EcHsm only): P256, P256K, P384, P521. Default is P384.")]
-   public string KeyCurveName { get; set; } = EcKeyCreationOptions.DefaultKeyCurveName;
+   public string KeyCurveName { get; set; } = DefaultKeyCurveName;
 
    /// <summary>
    /// Gets or sets the RSA key size in bits. Applicable only for Rsa and RsaHsm key types. Supported values: 2048, 3072, 4096. Default is 4096.
    /// </summary>
    [Option("KeySize", Required = false, HelpText = "The RSA key size in bits (Rsa and RsaHsm only): 2048, 3072, 4096. Default is 4096.")]
-   public int KeySize { get; set; } = RsaKeyCreationOptions.DefaultKeySize;
+   public int KeySize { get; set; } = DefaultKeySize;
 
 }

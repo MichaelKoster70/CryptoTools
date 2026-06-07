@@ -10,6 +10,10 @@ using Azure.Security.KeyVault.Certificates;
 
 namespace CertTools.AzureCertCore;
 
+/// <summary>
+/// Extension methods for the <see cref="KeyCreationOptions"/> class to map its properties 
+/// to the types used in Azure.Security.KeyVault.Certificates and System.Security.Cryptography.
+/// </summary>
 public static class KeyCreationOptionsExtensions
 {
    /// <summary>
@@ -30,38 +34,38 @@ public static class KeyCreationOptionsExtensions
    }
 
    /// <summary>
-   /// Gets the <see cref="CertificateKeyCurveName"/> for the EC key based on the <see cref="EcKeyCreationOptions.KeyCurveName"/> property.
+   /// Gets the <see cref="CertificateKeyCurveName"/> for the EC key based on the <see cref="EcKeyCreationOptions.KeyCurve"/> property.
    /// </summary>
    /// <param name="options">The EC key creation options.</param>
    public static CertificateKeyCurveName GetCertificateKeyCurveName(this EcKeyCreationOptions options)
    {
       ArgumentNullException.ThrowIfNull(options);
 
-      return options.KeyCurveName.ToUpperInvariant() switch
+      return options.KeyCurve switch
       {
-         "P256" => CertificateKeyCurveName.P256,
-         "P256K" => CertificateKeyCurveName.P256K,
-         "P384" => CertificateKeyCurveName.P384,
-         "P521" => CertificateKeyCurveName.P521,
-         _ => throw new NotSupportedException($"Unsupported EC key curve name '{options.KeyCurveName}'. Supported values are: P256, P256K, P384, P521.")
+         EcKeyCurve.P256 => CertificateKeyCurveName.P256,
+         EcKeyCurve.P256K => CertificateKeyCurveName.P256K,
+         EcKeyCurve.P384 => CertificateKeyCurveName.P384,
+         EcKeyCurve.P521 => CertificateKeyCurveName.P521,
+         _ => throw new NotSupportedException($"Unsupported EC key curve name '{options.KeyCurve}'. Supported values are: P256, P256K, P384, P521.")
       };
    }
 
    /// <summary>
-   /// Gets the <see cref="ECCurve"/> for the EC key based on the <see cref="EcKeyCreationOptions.KeyCurveName"/> property.
+   /// Gets the <see cref="ECCurve"/> for the EC key based on the <see cref="EcKeyCreationOptions.KeyCurve"/> property.
    /// </summary>
    /// <param name="options">The EC key creation options.</param>
    public static ECCurve GetEcCurve(this EcKeyCreationOptions options)
    {
       ArgumentNullException.ThrowIfNull(options);
 
-      return options.KeyCurveName.ToUpperInvariant() switch
+      return options.KeyCurve switch
       {
-         "P256" => ECCurve.NamedCurves.nistP256,
-         "P256K" => ECCurve.CreateFromFriendlyName("secp256k1"),
-         "P384" => ECCurve.NamedCurves.nistP384,
-         "P521" => ECCurve.NamedCurves.nistP521,
-         _ => throw new NotSupportedException($"Unsupported EC curve '{options.KeyCurveName}'.")
+         EcKeyCurve.P256 => ECCurve.NamedCurves.nistP256,
+         EcKeyCurve.P256K => ECCurve.CreateFromFriendlyName("secp256k1"),
+         EcKeyCurve.P384 => ECCurve.NamedCurves.nistP384,
+         EcKeyCurve.P521 => ECCurve.NamedCurves.nistP521,
+         _ => throw new NotSupportedException($"Unsupported EC curve '{options.KeyCurve}'.")
       };
    }
 }

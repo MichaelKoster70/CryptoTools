@@ -113,7 +113,13 @@ public static class OptionsExtensions
          "EC" or "ECHSM" => new EcKeyCreationOptions
          {
             Exportable = options.Exportable,
-            KeyCurveName = options.KeyCurveName,
+            KeyCurve = options.KeyCurveName.ToUpperInvariant() switch
+            {
+               "P256" => EcKeyCurve.P256,
+               "P256K" => EcKeyCurve.P256K,
+               "P384" => EcKeyCurve.P384,
+               _ => EcKeyCurve.P521,
+            },
             HsmBacked = options.KeyType.Equals("ECHSM", StringComparison.OrdinalIgnoreCase)
          },
          _ => new RsaKeyCreationOptions

@@ -28,13 +28,21 @@ public abstract class KeyCreationOptions
 /// </summary>
 public class RsaKeyCreationOptions : KeyCreationOptions
 {
-   /// <summary>Default RSA key size in bits.</summary>
-   public const int DefaultKeySize = 4096;
-
    /// <summary>
    /// Gets or sets the RSA key size in bits. Supported values: 2048, 3072, 4096.
    /// </summary>
-   public int KeySize { get; init; } = DefaultKeySize;
+   public int KeySize { get; init; } = 4096;
+}
+
+/// <summary>
+/// Enumeration of supported EC key curves for EC key creation in Azure Key Vault.
+/// </summary>
+public enum EcKeyCurve
+{
+   P256,
+   P256K,
+   P384,
+   P521
 }
 
 /// <summary>
@@ -42,11 +50,8 @@ public class RsaKeyCreationOptions : KeyCreationOptions
 /// </summary>
 public class EcKeyCreationOptions : KeyCreationOptions
 {
-   /// <summary>Default EC key curve name.</summary>
-   public const string DefaultKeyCurveName = "P384";
-
    /// <summary>
-   /// Gets or sets the EC key curve name. Supported values: P256, P256K, P384, P521.
+   /// Gets or sets the EC key curve
    /// </summary>
-   public string KeyCurveName { get; init; } = DefaultKeyCurveName;
+   public EcKeyCurve KeyCurve { get; init; } = EcKeyCurve.P384;
 }

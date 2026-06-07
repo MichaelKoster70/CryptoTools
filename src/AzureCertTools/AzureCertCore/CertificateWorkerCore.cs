@@ -163,10 +163,10 @@ public static class CertificateWorkerCore
 
       return keyOptions switch
       {
-         EcKeyCreationOptions ecOptions => ecOptions.KeyCurveName.ToUpperInvariant() switch
+         EcKeyCreationOptions ecOptions => ecOptions.KeyCurve switch
          {
-            "P256" or "P256K" => HashAlgorithmName.SHA256,
-            "P521" => HashAlgorithmName.SHA512,
+            EcKeyCurve.P256 or EcKeyCurve.P256K => HashAlgorithmName.SHA256,
+            EcKeyCurve.P521 => HashAlgorithmName.SHA512,
             _ => HashAlgorithmName.SHA384,
          },
          _ => HashAlgorithmName.SHA384,
