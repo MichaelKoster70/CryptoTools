@@ -5,8 +5,6 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-using CommandLine.Text;
-
 namespace CertTools.AzureCertCore;
 
 /// <summary>
@@ -96,6 +94,32 @@ public static class OptionsExtensions
       }
 
       return true;
+   }
+
+   /// <summary>
+   /// Converts the key creation related options from the provided OptionsCreateBase instance into a <see cref="KeyCreationOptions"/> object.
+   /// </summary>
+   /// <param name="options">The OptionsCreateBase instance containing the key creation options.</param>
+   /// <returns>A <see cref="KeyCreationOptions"/> object representing the key creation options.</returns>
+   public static KeyCreationOptions GetKeyCreationOptions(this OptionsCreateBase options)
+   {
+      ArgumentNullException.ThrowIfNull(options);
+
+      return options.KeyType.ToUpperInvariant() switch
+      {
+         "EC" or "ECHSM" => new EcKeyCreationOptions
+         {
+            Exportable = options.Exportable,
+            KeyCurveName = options.KeyCurveName,
+            HsmBacked = options.KeyType.Equals("ECHSM", StringComparison.OrdinalIgnoreCase)
+         },
+         _ => new RsaKeyCreationOptions
+         {
+            Exportable = options.Exportable,
+            KeySize = options.KeySize,
+            HsmBacked = options.KeyType.Equals("RSAHSM", StringComparison.OrdinalIgnoreCase)
+         }
+      };
    }
 
    private static void PrintError(string message)

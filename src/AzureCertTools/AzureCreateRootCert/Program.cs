@@ -48,13 +48,7 @@ internal static class Program
 
       Uri keyVaultUri = new(options.KeyVaultUri);
 
-      var cert = await CertificateWorker.CreateRootCertAsync(options.CertificateName, options.Subject, options.ExpireMonths, options.PathLengthConstraint, keyVaultUri, credentials, new KeyCreationOptions
-      {
-         KeyType = options.KeyType,
-         Exportable = options.Exportable,
-         KeyCurveName = options.KeyCurveName,
-         KeySize = options.KeySize
-      });
+      var cert = await CertificateWorker.CreateRootCertAsync(options.CertificateName, options.Subject, options.ExpireMonths, options.PathLengthConstraint, keyVaultUri, credentials, options.GetKeyCreationOptions());
 
       Console.WriteLine($"Certificate created: name={cert}, Key Vault={keyVaultUri}");
    }

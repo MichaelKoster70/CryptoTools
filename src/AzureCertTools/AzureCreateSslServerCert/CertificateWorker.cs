@@ -90,11 +90,11 @@ internal static class CertificateWorker
       // Stage 3: Get the CSR from the certificate operation
       var certOperationCertSigningRequest = certificateOperation.Properties.Csr;
 
-      var (signerHashAlgorithm, signerSignaturePadding) = keyOptions.KeyType.ToUpperInvariant() switch
+      var (signerHashAlgorithm, signerSignaturePadding) = keyOptions switch
       {
-         "EC" or "ECHSM" => (GetEcSignerHashAlgorithm(keyOptions.KeyCurveName), (RSASignaturePadding?)null),
-         "RSA" or "RSAHSM" => (HashAlgorithmName.SHA384, RSASignaturePadding.Pkcs1),
-         _ => throw new NotSupportedException($"Unsupported key type '{keyOptions.KeyType}'."),
+         EcKeyCreationOptions ecOptions => (GetEcSignerHashAlgorithm(ecOptions.KeyCurveName), null),
+         RsaKeyCreationOptions => (HashAlgorithmName.SHA384, RSASignaturePadding.Pkcs1),
+         _ => throw new NotSupportedException($"Unsupported key type '{keyOptions.GetType()}'."),
       };
 
       // Stage 4: Get the .NET CSR object

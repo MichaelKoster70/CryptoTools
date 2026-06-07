@@ -16,6 +16,12 @@ namespace CertTools.AzureCreateSigningCert;
 internal class Options : OptionsCreateBase
 {
    /// <summary>
+   /// Gets or set the x.509 Subject Name for the certificate.
+   /// </summary>
+   [Option("Subject", Required = true, HelpText = "The subject name for the certificate in the form \"CN=<subject name>\"")]
+   public required string Subject { get; set; }
+
+   /// <summary>
    /// Gets or sets the name of the certificate PFX file to create.
    /// </summary>
    [Option("FileName", Required = true, Group = "CertificateNameOrFile", HelpText = "The absolute path for the PFX file to create.")]

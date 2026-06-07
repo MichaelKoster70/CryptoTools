@@ -16,6 +16,12 @@ namespace CertTools.AzureCreateRootCert;
 internal class Options : OptionsCreateBase
 {
    /// <summary>
+   /// Gets or set the x.509 Subject Name for the certificate.
+   /// </summary>
+   [Option("Subject", Required = true, HelpText = "The subject name for the certificate in the form \"CN=<subject name>\"")]
+   public required string Subject { get; set; }
+
+   /// <summary>
    /// Gets or sets the number of month until the certificate expires.
    /// </summary>
    [Option("ExpireMonths", Required = false, HelpText = "The number of months until the certificate expires, default if not specified is 240 months.")]
