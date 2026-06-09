@@ -12,13 +12,10 @@ namespace CertTools.AzureCertCore;
 /// <summary>
 /// Container class for the command line options common to all tools creating certificates.
 /// </summary>
-public class OptionsCreateBase : OptionsBase
+public abstract class OptionsCreateBase : OptionsBase
 {
    /// <summary>Default key type: RSA software-backed.</summary>
    public const string DefaultKeyType = "Rsa";
-
-   /// <summary>Default RSA key size in bits.</summary>
-   public const int DefaultKeySize = 4096;
 
    /// <summary>Default EC key curve name.</summary>
    public const string DefaultKeyCurveName = "P384";
@@ -45,6 +42,17 @@ public class OptionsCreateBase : OptionsBase
    /// Gets or sets the RSA key size in bits. Applicable only for Rsa and RsaHsm key types. Supported values: 2048, 3072, 4096. Default is 4096.
    /// </summary>
    [Option("KeySize", Required = false, HelpText = "The RSA key size in bits (Rsa and RsaHsm only): 2048, 3072, 4096. Default is 4096.")]
-   public int KeySize { get; set; } = DefaultKeySize;
+   public int KeySize { get; set; } = RsaKeyCreationOptions.DefaultKeySize;
+}
 
+/// <summary>
+/// Container class for the command line options common to all tools creating certificates with a specified x.509 Subject Name.
+/// </summary>
+public abstract class OptionsCreateWithSubjectBase : OptionsCreateBase
+{
+   /// <summary>
+   /// Gets or set the x.509 Subject Name for the certificate.
+   /// </summary>
+   [Option("Subject", Required = true, HelpText = "The subject name for the certificate in the form \"CN=<subject name>\"")]
+   public required string Subject { get; set; }
 }

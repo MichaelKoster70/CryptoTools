@@ -12,7 +12,7 @@ namespace CertTools.AzureCertCore;
 /// <summary>
 /// Container class for the command line options common to all tools.
 /// </summary>
-public class OptionsBase
+public abstract class OptionsBase
 {
    /// <summary>
    /// Gets or sets the name of the certificate to create in Key Vault.

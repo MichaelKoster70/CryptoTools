@@ -28,10 +28,13 @@ public abstract class KeyCreationOptions
 /// </summary>
 public class RsaKeyCreationOptions : KeyCreationOptions
 {
+   /// <summary>Default RSA key size in bits.</summary>
+   public const int DefaultKeySize = 4096;
+
    /// <summary>
-   /// Gets or sets the RSA key size in bits. Supported values: 2048, 3072, 4096.
+   /// Gets or sets the RSA key size in bits. Supported values: 2048, 3072, 4096. Default is 4096.
    /// </summary>
-   public int KeySize { get; init; } = 4096;
+   public int KeySize { get; init; } = DefaultKeySize;
 }
 
 /// <summary>
@@ -51,7 +54,7 @@ public enum EcKeyCurve
 public class EcKeyCreationOptions : KeyCreationOptions
 {
    /// <summary>
-   /// Gets or sets the EC key curve
+   /// Gets or sets the EC key curve. Supported values: P256, P256K, P384, P521. Default is P384.
    /// </summary>
    public EcKeyCurve KeyCurve { get; init; } = EcKeyCurve.P384;
 }

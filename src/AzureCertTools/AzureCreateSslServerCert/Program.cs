@@ -23,22 +23,17 @@ internal static class Program
    /// <param name="args">The args</param>
    static async Task<int> Main(string[] args)
    {
-      Console.WriteLine("Crypto Tools - Azure Key Vault create SSL Server certificate");
-
       int result = 1;
 
-      // Parse the command line options, get at least SubjectName and Name
-      var options = Parser.Default.ParseArguments<Options>(args).Value;
+      // Parse the command line options
+      var options = Parser.Default.ParseArguments<Options>(args).Value.Validate();
       if (options == null)
       {
          return result;
       }
 
-      // Validate key creation options
-      if (!OptionsExtensions.ValidateKeyCreationOptions(options.KeyType, options.KeyCurveName, options.KeySize))
-      {
-         return result;
-      }
+      // Write header
+      ConsoleHelper.PrintToolInfo();
 
       if (options.Local)
       {

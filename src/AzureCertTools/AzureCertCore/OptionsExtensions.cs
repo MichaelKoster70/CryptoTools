@@ -108,26 +108,30 @@ public static class OptionsExtensions
    {
       ArgumentNullException.ThrowIfNull(options);
 
-      return options.KeyType.ToUpperInvariant() switch
+      string keyType = options.KeyType.Trim().ToUpperInvariant();
+      string keyCurveName = options.KeyCurveName.Trim().ToUpperInvariant();
+
+      return keyType switch
       {
          "EC" or "ECHSM" => new EcKeyCreationOptions
          {
             Exportable = options.Exportable,
-            KeyCurve = options.KeyCurveName.ToUpperInvariant() switch
+            KeyCurve = keyCurveName switch
             {
                "P256" => EcKeyCurve.P256,
                "P256K" => EcKeyCurve.P256K,
                "P384" => EcKeyCurve.P384,
                _ => EcKeyCurve.P521,
             },
-            HsmBacked = options.KeyType.Equals("ECHSM", StringComparison.OrdinalIgnoreCase)
+            HsmBacked = keyType.Equals("ECHSM", StringComparison.OrdinalIgnoreCase)
          },
-         _ => new RsaKeyCreationOptions
+         "RSA" or "RSAHSM" => new RsaKeyCreationOptions
          {
             Exportable = options.Exportable,
             KeySize = options.KeySize,
-            HsmBacked = options.KeyType.Equals("RSAHSM", StringComparison.OrdinalIgnoreCase)
-         }
+            HsmBacked = keyType.Equals("RSAHSM", StringComparison.OrdinalIgnoreCase)
+         },
+         _ => throw new NotSupportedException($"Unsupported key type '{options.KeyType}'. Supported values are: Ec, EcHsm, Rsa, RsaHsm.")
       };
    }
 

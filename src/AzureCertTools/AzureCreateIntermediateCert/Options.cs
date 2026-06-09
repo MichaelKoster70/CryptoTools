@@ -13,14 +13,8 @@ namespace CertTools.AzureCreateIntermediateCert;
 /// <summary>
 /// Container class for the command line options.
 /// </summary>
-internal class Options : OptionsCreateBase
+internal class Options : OptionsCreateWithSubjectBase
 {
-   /// <summary>
-   /// Gets or set the x.509 Subject Name for the certificate.
-   /// </summary>
-   [Option("Subject", Required = true, HelpText = "The subject name for the certificate in the form \"CN=<subject name>\"")]
-   public required string Subject { get; set; }
-
    /// <summary>
    /// Gets or sets the name of the signer certificate stored in Key Vault.
    /// </summary>
