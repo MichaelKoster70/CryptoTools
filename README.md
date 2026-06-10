@@ -19,13 +19,13 @@ The current release supports the following features:
 ### CreateRootCert
 
 ```
-CreateRootCert --Subject <subject> --Name <name> --Password <password> --ExpiryMonths <months>
+CreateRootCert --Subject <subject> --Name <name> --Password <password> --ExpireMonths <months>
 ```
 Where:
 * Subject: The subject of the certificate in form "CN=\<subject\>".
 * Name: The name of the certificate file (without extension).
 * Password: The password to protect the private key contained in the certificate.
-* ExpiryMonths: The number of months the certificate is valid, default is 240.
+* ExpireMonths: The number of months the certificate is valid, default is 240.
 
 The tool will create a certificate file \<name\>.pfx in the current directory. The certificate file contains the private key and is protected by the password provided.
 The generated certificate will be available in the certificate store of the current user under 'Personal'.

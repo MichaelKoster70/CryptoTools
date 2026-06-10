@@ -29,7 +29,7 @@ Package as dotnet tool
 - packaged some of the Azure certificate creation tools as dotnet global tools for easier usage.
 
 ## Bug Fixes
-- Fixed a problem with ExpiryMonths option
+- Fixed a problem with ExpireMonths option
 
 # 1.6.0
 Streamlined option naming and improved usability
