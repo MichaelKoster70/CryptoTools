@@ -7,6 +7,7 @@
   <Project Path="AzureCertCore/AzureCertCore.csproj" />
   <Project Path="AzureCreateIntermediateCert/AzureCreateIntermediateCert.csproj" />
   <Project Path="AzureCreateRootCert/AzureCreateRootCert.csproj" />
+  <Project Path="AzureCreateRootCert.IntegrationTests/AzureCreateRootCert.IntegrationTests.csproj" />
   <Project Path="AzureCreateSigningCert/AzureCreateSigningCert.csproj" />
   <Project Path="AzureCreateSslServerCert/AzureCreateSslServerCert.csproj" />
 </Solution>

@@ -1,0 +1,72 @@
+name: 'AzureCreateRootCert: Integration Tests'
+
+permissions:
+  contents: read
+  id-token: write  # Required for workload identity (OIDC) tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      run-workload-identity-tests:
+        description: 'Run workload identity authentication tests'
+        type: boolean
+        required: false
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration-tests:
+    name: Run Integration Tests
+    runs-on: windows-2025-vs2026
+    environment: IntegrationTest
+
+    env:
+      AzureCertToolsPath: ${{ github.workspace }}\src\AzureCertTools
+      AzureCertToolsSolutionPath: ${{ github.workspace }}\src\AzureCertTools\AzureCertTools.slnx
+      TestProjectPath: ${{ github.workspace }}\src\AzureCertTools\AzureCreateRootCert.IntegrationTests
+      # Key Vault URLs for integration tests
+      AZURE_KEYVAULT_URL_STANDARD: ${{ vars.AZURE_KEYVAULT_URL_STANDARD }}
+      AZURE_KEYVAULT_URL_PREMIUM: ${{ vars.AZURE_KEYVAULT_URL_PREMIUM }}
+      # Client ID and Tenant ID for both ClientSecret and WorkloadIdentity
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      # Client secret for ClientSecret-based authentication tests
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore
+        run: dotnet restore ${{ env.AzureCertToolsSolutionPath }}
+        shell: pwsh
+
+      - name: Build
+        run: dotnet build ${{ env.AzureCertToolsSolutionPath }} --configuration Release --no-restore
+        shell: pwsh
+
+      - name: Run Integration Tests
+        run: |
+          dotnet test ${{ env.TestProjectPath }} `
+            --configuration Release `
+            --no-build `
+            --logger "trx;LogFileName=TestResults.trx" `
+            --results-directory "${{ github.workspace }}\TestResults"
+        shell: pwsh
+
+      - name: Publish Test Results
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: test-results
+          path: ${{ github.workspace }}\TestResults\*.trx

@@ -39,6 +39,12 @@ The tool will create the certificate in the designated Azure Key Vault.</Descrip
   </ItemGroup>
 
   <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>AzureCreateRootCert.IntegrationTests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AzureCertCore\AzureCertCore.csproj" />
   </ItemGroup>
 
