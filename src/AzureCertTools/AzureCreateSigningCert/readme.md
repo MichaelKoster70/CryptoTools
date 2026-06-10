@@ -4,7 +4,7 @@ AzureCreateSigningCert --Subject <subject> --CertificateName <name> --SignerCert
 ```
 or
 ```
-AzureCreateSigningCert --Subject <subject> --FileName <name> --SignerCertificateName <rootName> --ExpireMonths <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity] [--Exportable] [--KeyType <keyType>] [--KeySize <keySize>] [--KeyCurveName <keyCurveName>]
+AzureCreateSigningCert --Subject <subject> --FileName <name> [--Password <password>] --SignerCertificateName <rootName> --ExpireMonths <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity] [--Exportable] [--KeyType <keyType>] [--KeySize <keySize>] [--KeyCurveName <keyCurveName>]
 ```
 
 Where:

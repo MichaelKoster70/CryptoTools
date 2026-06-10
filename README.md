@@ -71,7 +71,7 @@ Where:
 * KeySize: The size of the RSA key, valid only if KeyType is "Rsa" or "RsaHsm".
 * KeyCurveName: The name of the elliptic curve, valid only if KeyType is "Ec" or "EcHsm".
 
-The tool will create a the certificate in the supplied Azure Key Vault under the <CertificateName> name. The certificate will be created using:
+The tool will create the certificate in the supplied Azure Key Vault under the <CertificateName> name. The certificate will be created using:
 * Private key marked as non exportable by default, or exportable if the Exportable option is set.
 * Cipher Mode: RSA or EC depending on the KeyType option, default is RSA. RSA keys are created with 4096 Bit key size by default, and EC keys are created with P-384 curve by default.
 * Signing: SHA384 for RSA keys; for EC keys: SHA256 (P-256/P-256K), SHA384 (P-384), SHA512 (P-521).
