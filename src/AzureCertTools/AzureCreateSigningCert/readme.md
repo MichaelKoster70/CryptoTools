@@ -20,11 +20,16 @@ Where:
 * WorkloadIdentity: If set, the tool will a Entra ID Managed Identity [Workload identity federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation) to access the Key Vault. Use this option when running the tool in an Azure Pipeline or an GitHub Action with workload identity federation configured.
 * Interactive: If set, the tool will use interactive login to Entra ID to access the Key Vault.
 * ExpiryMonths: The number of months the certificate is valid, default is 1.
+* Exportable: If set, the private key of the certificate will be marked as exportable, only applied for "Rsa" and "Ec" key types.
+* KeyType: The type of key to use for the certificate. Valid values are "Rsa", "RsaHsm", "Ec", and "EcHsm".
+* KeySize: The size of the RSA key, valid only if KeyType is "Rsa" or "RsaHsm".
+* KeyCurveName: The name of the elliptic curve, valid only if KeyType is "Ec" or "EcHsm".
 
 The tool will create the certificate in the supplied Azure Key Vault under the <CertificateName> name, signed by the <SignerCertificateName> certificate. The certificate will be created using:
-* Private key marked as non exportable
-* Cipher Mode: RSA, 4096 Bit
-* Signing: SHA384
+* Private key marked as non exportable by default, or exportable if the Exportable option is set.
+* Cipher Mode: RSA or EC depending on the KeyType option, default is RSA. RSA keysare created with 4096 Bit key size by default, and EC keys are created with P-384 curve by default.
+* Signing: SHA384 for RSA keys; for EC keys: SHA256 (P-256/P-256K), SHA384 (P-384), SHA512 (P-521).
+* The Key Types "RsaHsm" and "EcHsm" create the private key in an HSM backed Azure Key Vault (Premium SKU). Creation will fail if the Key Vault is not backed by an HSM.
 
 Required permissions on Azure KeyVault:
 - Sign with Key (Microsoft.KeyVault/vaults/keys/sign/action)
