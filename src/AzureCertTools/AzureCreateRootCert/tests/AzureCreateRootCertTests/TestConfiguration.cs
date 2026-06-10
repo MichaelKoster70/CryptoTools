@@ -5,7 +5,7 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-namespace CertTools.AzureCreateRootCert.IntegrationTests;
+namespace CertTools.AzureCreateRootCert.Tests;
 
 /// <summary>
 /// Provides configuration for integration tests by reading values from environment variables.

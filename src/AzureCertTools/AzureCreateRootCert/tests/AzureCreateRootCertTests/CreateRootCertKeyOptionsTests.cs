@@ -8,7 +8,7 @@
 using Azure.Security.KeyVault.Certificates;
 using CertTools.AzureCertCore;
 
-namespace CertTools.AzureCreateRootCert.IntegrationTests;
+namespace CertTools.AzureCreateRootCert.Tests;
 
 /// <summary>
 /// Integration tests verifying that <see cref="CertificateWorker"/> correctly creates root CA certificates

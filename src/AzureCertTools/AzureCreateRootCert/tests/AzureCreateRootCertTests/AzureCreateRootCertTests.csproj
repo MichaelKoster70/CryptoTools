@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>CertTools.AzureCreateRootCert.IntegrationTests</RootNamespace>
+    <RootNamespace>CertTools.AzureCreateRootCert.Tests</RootNamespace>
     <Title>Integration Tests for AzureCreateRootCert</Title>
     <AssemblyTitle>$(Title)</AssemblyTitle>
     <!-- Override solution-wide defaults that are not appropriate for a test project -->
@@ -23,10 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Reference AzureCertCore directly for access to public helpers used in parameter validation tests -->
-    <ProjectReference Include="..\AzureCertCore\AzureCertCore.csproj" />
+    <!-- Reference AzureCertCore directly for access to public helpers used in integration tests -->
+    <ProjectReference Include="..\..\..\AzureCertCore\AzureCertCore.csproj" />
     <!-- Reference AzureCreateRootCert for access to CertificateWorker via InternalsVisibleTo -->
-    <ProjectReference Include="..\AzureCreateRootCert\AzureCreateRootCert.csproj" />
+    <ProjectReference Include="..\..\src\AzureCreateRootCert.csproj" />
   </ItemGroup>
 
 </Project>

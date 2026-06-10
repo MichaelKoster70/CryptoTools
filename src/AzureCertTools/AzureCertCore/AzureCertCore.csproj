@@ -12,4 +12,10 @@
     <PackageReference Include="Azure.Security.KeyVault.Keys" />
     <PackageReference Include="CommandLineParser" />
   </ItemGroup>
+
+  <ItemGroup>
+    <!-- Exclude test projects nested under this directory from compilation -->
+    <Compile Remove="tests/**" />
+  </ItemGroup>
+
 </Project>

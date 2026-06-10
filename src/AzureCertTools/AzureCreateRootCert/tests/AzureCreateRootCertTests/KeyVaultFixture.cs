@@ -9,7 +9,7 @@ using Azure.Core;
 using Azure.Identity;
 using Azure.Security.KeyVault.Certificates;
 
-namespace CertTools.AzureCreateRootCert.IntegrationTests;
+namespace CertTools.AzureCreateRootCert.Tests;
 
 /// <summary>
 /// xUnit class fixture that provides shared Azure Key Vault test infrastructure and

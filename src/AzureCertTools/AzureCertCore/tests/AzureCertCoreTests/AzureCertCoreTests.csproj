@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>CertTools.AzureCertCore.Tests</RootNamespace>
+    <Title>Unit Tests for AzureCertCore</Title>
+    <AssemblyTitle>$(Title)</AssemblyTitle>
+    <!-- Override solution-wide defaults that are not appropriate for a test project -->
+    <PackAsTool>false</PackAsTool>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AzureCertCore.csproj" />
+  </ItemGroup>
+
+</Project>

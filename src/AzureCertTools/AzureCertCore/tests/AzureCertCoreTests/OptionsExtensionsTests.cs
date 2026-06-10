@@ -7,14 +7,14 @@
 
 using CertTools.AzureCertCore;
 
-namespace CertTools.AzureCreateRootCert.IntegrationTests;
+namespace CertTools.AzureCertCore.Tests;
 
 /// <summary>
 /// Tests that validate parameter checking in <see cref="OptionsExtensions"/> and
 /// the <see cref="Options"/> command-line model.
 /// These tests do not require Azure connectivity.
 /// </summary>
-public class CreateRootCertParameterValidationTests
+public class OptionsExtensionsTests
 {
    // ------------------------------------------------------------------
    // ValidateKeyCreationOptions – invalid key type
