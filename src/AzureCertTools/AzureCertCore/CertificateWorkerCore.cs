@@ -17,9 +17,6 @@ namespace CertTools.AzureCertCore;
 /// </summary>
 public static class CertificateWorkerCore
 {
-   /// <summary>RSA key size in bits</summary>
-   public const int RsaKeySize = 4096;
-
    /// <summary>
    /// Create a self signed certificate with the given subject name in Azure Key Vault.
    /// </summary>
@@ -38,7 +35,7 @@ public static class CertificateWorkerCore
       ArgumentNullException.ThrowIfNull(client);
       ArgumentNullException.ThrowIfNull(tokenCredential);
 
-      keyOptions ??= new KeyCreationOptions();
+      keyOptions ??= new RsaKeyCreationOptions();
 
       var certificatePolicy = CreateCertificatePolicy(WellKnownIssuerNames.Self, subjectNameValue, expireMonth, keyOptions, reuseKey);
 
@@ -46,7 +43,7 @@ public static class CertificateWorkerCore
       var operation = await client.StartCreateCertificateAsync(certificateName, certificatePolicy);
 
       // Wait for the certificate to be created, get the public and signing key.
-      _= await operation.WaitForCompletionAsync();
+      _ = await operation.WaitForCompletionAsync();
 
       using var x509Cert = X509CertificateLoader.LoadCertificate(operation.Value.Cer);
       var privateKeyId = operation.Value.KeyId;
@@ -133,16 +130,7 @@ public static class CertificateWorkerCore
       ArgumentNullException.ThrowIfNull(subjectNameValue);
       ArgumentNullException.ThrowIfNull(keyOptions);
 
-      var keyType = keyOptions.KeyType.ToUpperInvariant() switch
-      {
-         "RSA" => CertificateKeyType.Rsa,
-         "RSAHSM" => CertificateKeyType.RsaHsm,
-         "EC" => CertificateKeyType.Ec,
-         "ECHSM" => CertificateKeyType.EcHsm,
-         _ => throw new ArgumentOutOfRangeException(nameof(keyOptions.KeyType), keyOptions.KeyType, "Unsupported KeyType."),
-      };
-
-      bool isEc = keyType == CertificateKeyType.Ec || keyType == CertificateKeyType.EcHsm;
+      var keyType = keyOptions.GetCertificateKeyType();
 
       var policy = new CertificatePolicy(issuerName, subjectNameValue)
       {
@@ -152,20 +140,13 @@ public static class CertificateWorkerCore
          ValidityInMonths = expireMonths,
       };
 
-      if (isEc)
+      if (keyOptions is EcKeyCreationOptions ecOptions)
       {
-         policy.KeyCurveName = keyOptions.KeyCurveName.ToUpperInvariant() switch
-         {
-            "P256" => CertificateKeyCurveName.P256,
-            "P256K" => CertificateKeyCurveName.P256K,
-            "P384" => CertificateKeyCurveName.P384,
-            "P521" => CertificateKeyCurveName.P521,
-            _ => throw new ArgumentOutOfRangeException(nameof(keyOptions), keyOptions.KeyCurveName, "Unsupported KeyCurveName."),
-         };
+         policy.KeyCurveName = ecOptions.GetCertificateKeyCurveName();
       }
-      else
+      else if (keyOptions is RsaKeyCreationOptions rsaOptions)
       {
-         policy.KeySize = keyOptions.KeySize;
+         policy.KeySize = rsaOptions.KeySize;
       }
 
       return policy;
@@ -180,21 +161,26 @@ public static class CertificateWorkerCore
    {
       ArgumentNullException.ThrowIfNull(keyOptions);
 
-      bool isEcKey = keyOptions.KeyType.Equals("Ec", StringComparison.OrdinalIgnoreCase) || keyOptions.KeyType.Equals("EcHsm", StringComparison.OrdinalIgnoreCase);
-      return isEcKey ? keyOptions.KeyCurveName.ToUpperInvariant() switch
+      return keyOptions switch
+      {
+         EcKeyCreationOptions ecOptions => ecOptions.KeyCurve switch
          {
-            "P256" or "P256K" => HashAlgorithmName.SHA256,
-            "P521" => HashAlgorithmName.SHA512,
-            _ => HashAlgorithmName.SHA384
-         }
-         : HashAlgorithmName.SHA384;
+            EcKeyCurve.P256 or EcKeyCurve.P256K => HashAlgorithmName.SHA256,
+            EcKeyCurve.P521 => HashAlgorithmName.SHA512,
+            _ => HashAlgorithmName.SHA384,
+         },
+         _ => HashAlgorithmName.SHA384,
+      };
    }
 
    public static RSASignaturePadding? GetRSASignaturePadding(KeyCreationOptions keyOptions)
    {
       ArgumentNullException.ThrowIfNull(keyOptions);
 
-      bool isEcKey = keyOptions.KeyType.Equals("Ec", StringComparison.OrdinalIgnoreCase) || keyOptions.KeyType.Equals("EcHsm", StringComparison.OrdinalIgnoreCase);
-      return isEcKey ? null : RSASignaturePadding.Pkcs1;
+      return keyOptions switch
+      {
+         RsaKeyCreationOptions => RSASignaturePadding.Pkcs1,
+         _ => null,
+      };
    }
 }

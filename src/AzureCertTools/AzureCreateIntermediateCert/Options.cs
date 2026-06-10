@@ -13,7 +13,7 @@ namespace CertTools.AzureCreateIntermediateCert;
 /// <summary>
 /// Container class for the command line options.
 /// </summary>
-internal class Options : OptionsCreateBase
+internal class Options : OptionsCreateWithSubjectBase
 {
    /// <summary>
    /// Gets or sets the name of the signer certificate stored in Key Vault.

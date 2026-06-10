@@ -6,7 +6,6 @@
 // ----------------------------------------------------------------------------
 
 using Azure.Core;
-using Azure.Identity;
 using CertTools.AzureCertCore;
 using CommandLine;
 
@@ -34,27 +33,11 @@ internal static class Program
       ConsoleHelper.PrintToolInfo();
 
       // Create the token provider
-      TokenCredential credentials = options switch
-      {
-         { Interactive: true } => new InteractiveBrowserCredential(new InteractiveBrowserCredentialOptions
-         {
-            TenantId = options.TenantId,
-            ClientId = options.ClientId,
-            RedirectUri = new Uri("http://localhost")
-         }),
-         { WorkloadIdentity: true } => new WorkloadIdentityCredential(),
-         _ => new ClientSecretCredential(options.TenantId, options.ClientId, options.ClientSecret)
-      };
+      TokenCredential credentials = options.GetTokenCredential();
 
       Uri keyVaultUri = new(options.KeyVaultUri);
 
-      var cert = await CertificateWorker.CreateRootCertAsync(options.CertificateName, options.Subject, options.ExpireMonths, options.PathLengthConstraint, keyVaultUri, credentials, new KeyCreationOptions
-      {
-         KeyType = options.KeyType,
-         Exportable = options.Exportable,
-         KeyCurveName = options.KeyCurveName,
-         KeySize = options.KeySize
-      });
+      var cert = await CertificateWorker.CreateRootCertAsync(options.CertificateName, options.Subject, options.ExpireMonths, options.PathLengthConstraint, keyVaultUri, credentials, options.GetKeyCreationOptions());
 
       Console.WriteLine($"Certificate created: name={cert}, Key Vault={keyVaultUri}");
    }

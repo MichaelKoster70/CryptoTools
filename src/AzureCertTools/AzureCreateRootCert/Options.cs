@@ -13,7 +13,7 @@ namespace CertTools.AzureCreateRootCert;
 /// <summary>
 /// Container class for the command line options.
 /// </summary>
-internal class Options : OptionsCreateBase
+internal class Options : OptionsCreateWithSubjectBase
 {
    /// <summary>
    /// Gets or sets the number of month until the certificate expires.

@@ -125,11 +125,11 @@ internal static class CertificateWorker
 
    private static AsymmetricAlgorithm CreateKeyPair(KeyCreationOptions keyOptions)
    {
-      return keyOptions.KeyType.ToUpperInvariant() switch
+      return keyOptions switch
       {
-         "RSA" or "RSAHSM" => RSA.Create(keyOptions.KeySize),
-         "EC" or "ECHSM" => ECDsa.Create(GetEcCurve(keyOptions.KeyCurveName)),
-         _ => throw new NotSupportedException($"Unsupported key type '{keyOptions.KeyType}'.")
+         RsaKeyCreationOptions rsaOptions => RSA.Create(rsaOptions.KeySize),
+         EcKeyCreationOptions ecOptions => ECDsa.Create(ecOptions.GetEcCurve()),
+         _ => throw new NotSupportedException($"Unsupported key type '{keyOptions.GetType()}'.")
       };
    }
 
@@ -142,15 +142,6 @@ internal static class CertificateWorker
          _ => throw new NotSupportedException($"Unsupported key algorithm '{keyPair.GetType().Name}'.")
       };
    }
-
-   private static ECCurve GetEcCurve(string keyCurveName) => keyCurveName.ToUpperInvariant() switch
-   {
-      "P256" => ECCurve.NamedCurves.nistP256,
-      "P256K" => ECCurve.CreateFromFriendlyName("secp256k1"),
-      "P384" => ECCurve.NamedCurves.nistP384,
-      "P521" => ECCurve.NamedCurves.nistP521,
-      _ => throw new NotSupportedException($"Unsupported EC curve '{keyCurveName}'.")
-   };
 
    private static void AddKeyUsageExtensions(CertificateRequest certSigningRequest)
    {

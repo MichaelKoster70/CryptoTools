@@ -20,6 +20,9 @@ namespace CertTools.AzureCreateSslServerCert;
 /// </summary>
 internal static class CertificateWorker
 {
+   /// <summary>RSA key size in bits</summary>
+   private const int RsaKeySize = 4096;
+
    /// <summary>
    /// Create SSL server certificate as an asynchronous operation.
    /// </summary>
@@ -90,11 +93,11 @@ internal static class CertificateWorker
       // Stage 3: Get the CSR from the certificate operation
       var certOperationCertSigningRequest = certificateOperation.Properties.Csr;
 
-      var (signerHashAlgorithm, signerSignaturePadding) = keyOptions.KeyType.ToUpperInvariant() switch
+      var (signerHashAlgorithm, signerSignaturePadding) = keyOptions switch
       {
-         "EC" or "ECHSM" => (GetEcSignerHashAlgorithm(keyOptions.KeyCurveName), (RSASignaturePadding?)null),
-         "RSA" or "RSAHSM" => (HashAlgorithmName.SHA384, RSASignaturePadding.Pkcs1),
-         _ => throw new NotSupportedException($"Unsupported key type '{keyOptions.KeyType}'."),
+         EcKeyCreationOptions ecOptions => (GetEcSignerHashAlgorithm(ecOptions.KeyCurve), null),
+         RsaKeyCreationOptions => (HashAlgorithmName.SHA384, RSASignaturePadding.Pkcs1),
+         _ => throw new NotSupportedException($"Unsupported key type '{keyOptions.GetType()}'."),
       };
 
       // Stage 4: Get the .NET CSR object
@@ -118,7 +121,7 @@ internal static class CertificateWorker
       {
          Flags = CspProviderFlags.UseArchivableKey
       };
-      using var rsaKeyPair = new RSACryptoServiceProvider(CertificateWorkerCore.RsaKeySize, cspParameter);
+      using var rsaKeyPair = new RSACryptoServiceProvider(RsaKeySize, cspParameter);
 
       // Create the CSR
       var subjectName = new X500DistinguishedName(distinguishedName);
@@ -146,10 +149,10 @@ internal static class CertificateWorker
          new Oid(Constants.AspNetHttpsEnhancedKeyUsageOid, Constants.AspNetHttpsEnhancedKeyUsageOidFriendlyName), [Constants.AspNetCurrentCertificateVersion]), false));
    }
 
-   private static HashAlgorithmName GetEcSignerHashAlgorithm(string keyCurveName) => keyCurveName.ToUpperInvariant() switch
+   private static HashAlgorithmName GetEcSignerHashAlgorithm(EcKeyCurve keyCurve) => keyCurve switch
    {
-      "P256" or "P256K" => HashAlgorithmName.SHA256,
-      "P521" => HashAlgorithmName.SHA512,
+      EcKeyCurve.P256 or EcKeyCurve.P256K => HashAlgorithmName.SHA256,
+      EcKeyCurve.P521 => HashAlgorithmName.SHA512,
       _ => HashAlgorithmName.SHA384,
    };
 }

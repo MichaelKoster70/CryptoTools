@@ -5,7 +5,8 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-using CommandLine.Text;
+using Azure.Core;
+using Azure.Identity;
 
 namespace CertTools.AzureCertCore;
 
@@ -97,6 +98,59 @@ public static class OptionsExtensions
 
       return true;
    }
+
+   /// <summary>
+   /// Converts the key creation related options from the provided OptionsCreateBase instance into a <see cref="KeyCreationOptions"/> object.
+   /// </summary>
+   /// <param name="options">The OptionsCreateBase instance containing the key creation options.</param>
+   /// <returns>A <see cref="KeyCreationOptions"/> object representing the key creation options.</returns>
+   public static KeyCreationOptions GetKeyCreationOptions(this OptionsCreateBase options)
+   {
+      ArgumentNullException.ThrowIfNull(options);
+
+      string keyType = options.KeyType.Trim().ToUpperInvariant();
+      string keyCurveName = options.KeyCurveName.Trim().ToUpperInvariant();
+
+      return keyType switch
+      {
+         "EC" or "ECHSM" => new EcKeyCreationOptions
+         {
+            Exportable = options.Exportable,
+            KeyCurve = keyCurveName switch
+            {
+               "P256" => EcKeyCurve.P256,
+               "P256K" => EcKeyCurve.P256K,
+               "P384" => EcKeyCurve.P384,
+               _ => EcKeyCurve.P521,
+            },
+            HsmBacked = keyType.Equals("ECHSM", StringComparison.OrdinalIgnoreCase)
+         },
+         "RSA" or "RSAHSM" => new RsaKeyCreationOptions
+         {
+            Exportable = options.Exportable,
+            KeySize = options.KeySize,
+            HsmBacked = keyType.Equals("RSAHSM", StringComparison.OrdinalIgnoreCase)
+         },
+         _ => throw new NotSupportedException($"Unsupported key type '{options.KeyType}'. Supported values are: Ec, EcHsm, Rsa, RsaHsm.")
+      };
+   }
+
+   /// <summary>
+   /// Returns an appropriate <see cref="TokenCredential"/> instance based on the authentication options provided in the <see cref="OptionsBase"/> instance.
+   /// </summary>
+   /// <param name="options">The <see cref="OptionsBase"/> instance containing the authentication options.</param>
+   /// <returns>A <see cref="TokenCredential"/> instance.</returns>
+   public static TokenCredential GetTokenCredential(this OptionsBase options) => options switch
+   {
+      { Interactive: true } => new InteractiveBrowserCredential(new InteractiveBrowserCredentialOptions
+      {
+         TenantId = options.TenantId,
+         ClientId = options.ClientId,
+         RedirectUri = new Uri("http://localhost")
+      }),
+      { WorkloadIdentity: true } => new WorkloadIdentityCredential(),
+      _ => new ClientSecretCredential(options.TenantId, options.ClientId, options.ClientSecret)
+   };
 
    private static void PrintError(string message)
    {

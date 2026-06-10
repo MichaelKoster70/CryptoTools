@@ -6,7 +6,6 @@
 // ----------------------------------------------------------------------------
 
 using Azure.Core;
-using Azure.Identity;
 using CertTools.AzureCertCore;
 using CommandLine;
 
@@ -49,40 +48,18 @@ internal static class Program
       }
 
       // Create the token provider
-      TokenCredential credentials = options switch
-      {
-         { Interactive: true } => new InteractiveBrowserCredential(new InteractiveBrowserCredentialOptions
-         {
-            TenantId = options.TenantId,
-            ClientId = options.ClientId,
-            RedirectUri = new Uri("http://localhost")
-         }),
-         { WorkloadIdentity: true } => new WorkloadIdentityCredential(),
-         _ => new ClientSecretCredential(options.TenantId, options.ClientId, options.ClientSecret)
-      };
+      TokenCredential credentials = options.GetTokenCredential();
 
       Uri keyVaultUri = new(options.KeyVaultUri);
 
       if (!string.IsNullOrEmpty(options.CertificateName))
       {
-         CertificateWorker.KeyVaultCreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths, new KeyCreationOptions
-         {
-            KeyType = options.KeyType,
-            Exportable = options.Exportable,
-            KeyCurveName = options.KeyCurveName,
-            KeySize = options.KeySize
-         }).Wait();
+         CertificateWorker.KeyVaultCreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths, options.GetKeyCreationOptions()).Wait();
          Console.WriteLine($"Certificate created: name={options.CertificateName}, Key Vault={keyVaultUri}");
       }
       else if (!string.IsNullOrEmpty(options.FileName))
       {
-         CertificateWorker.LocalCreateSigningCertificateAsync(options.FileName, options.Password, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths, new KeyCreationOptions
-         {
-            KeyType = options.KeyType,
-            Exportable = options.Exportable,
-            KeyCurveName = options.KeyCurveName,
-            KeySize = options.KeySize
-         }).Wait();
+         CertificateWorker.LocalCreateSigningCertificateAsync(options.FileName, options.Password, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths, options.GetKeyCreationOptions()).Wait();
          Console.WriteLine($"PFX file created: {options.FileName}");
       }
       else
