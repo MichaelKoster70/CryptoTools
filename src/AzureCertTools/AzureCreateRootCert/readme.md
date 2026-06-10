@@ -12,7 +12,7 @@ Where:
 * ClientSecret: The client secret of the service principal used to access the Key Vault.
 * WorkloadIdentity: If set, the tool will use an Entra ID Managed Identity [Workload identity federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation) to access the Key Vault. Use this option when running the tool in an Azure Pipeline or a GitHub Action with workload identity federation configured.
 * Interactive: If set, the tool will use interactive login to Entra ID to access the Key Vault.
-* ExpiryMonths: The number of months the certificate is valid, default is 240.
+* ExpireMonths: The number of months the certificate is valid, default is 240.
 * Exportable: If set, the private key of the certificate will be marked as exportable, only applied for "Rsa" and "Ec" key types.
 * KeyType: The type of key to use for the certificate. Valid values are "Rsa", "RsaHsm", "Ec", and "EcHsm".
 * KeySize: The size of the RSA key, valid only if KeyType is "Rsa" or "RsaHsm".
