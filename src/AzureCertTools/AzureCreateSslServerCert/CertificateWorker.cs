@@ -20,9 +20,6 @@ namespace CertTools.AzureCreateSslServerCert;
 /// </summary>
 internal static class CertificateWorker
 {
-   /// <summary>RSA key size in bits</summary>
-   private const int RsaKeySize = 4096;
-
    /// <summary>
    /// Create SSL server certificate as an asynchronous operation.
    /// </summary>
@@ -48,7 +45,7 @@ internal static class CertificateWorker
          (var signerName, var signerSignaturGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
 
          // create a CSR
-         var csr = await LocalCreateCertificateRequestAsync(fullQualifiedDomainName);
+         var csr = await LocalCreateCertificateRequestAsync(fullQualifiedDomainName, keyOptions);
 
          // Sign the CSR
          using var certificate = CertificateWorkerCore.SignCertificateRequest(csr, signerName, signerSignaturGenerator, expireMonths);
@@ -111,26 +108,46 @@ internal static class CertificateWorker
    }
 
    [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Tools are Windows only")]
-   private static async Task<CertificateRequest> LocalCreateCertificateRequestAsync(string fullQualifiedDomainName)
+   [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "The asymmetric key is intentionally retained by the certificate request for the subsequent local signing flow.")]
+   private static async Task<CertificateRequest> LocalCreateCertificateRequestAsync(string fullQualifiedDomainName, KeyCreationOptions keyOptions)
    {
-      var distinguishedName = "CN=" + fullQualifiedDomainName;
+      ArgumentNullException.ThrowIfNull(keyOptions);
 
-      // Create a new RSA key and wrap it in a CSP parameters to make it exportable 
-      var cspParameter = new CspParameters();
-      cspParameter = new CspParameters(cspParameter.ProviderType, cspParameter.ProviderName, Guid.NewGuid().ToString())
-      {
-         Flags = CspProviderFlags.UseArchivableKey
-      };
-      using var rsaKeyPair = new RSACryptoServiceProvider(RsaKeySize, cspParameter);
+      var distinguishedName = "CN=" + fullQualifiedDomainName;
 
       // Create the CSR
       var subjectName = new X500DistinguishedName(distinguishedName);
-      var certSigningRequest = new CertificateRequest(subjectName, rsaKeyPair, HashAlgorithmName.SHA384, RSASignaturePadding.Pkcs1);
+      var certSigningRequest = keyOptions switch
+      {
+         EcKeyCreationOptions ecOptions => new CertificateRequest(
+            subjectName,
+            ECDsa.Create(ecOptions.GetEcCurve()),
+            CertificateWorkerCore.GetHashAlgorithmName(ecOptions)),
+         RsaKeyCreationOptions rsaOptions => new CertificateRequest(
+            subjectName,
+            CreateExportableRsaKey(rsaOptions.KeySize),
+            CertificateWorkerCore.GetHashAlgorithmName(rsaOptions),
+            CertificateWorkerCore.GetRSASignaturePadding(rsaOptions)!),
+         _ => throw new NotSupportedException($"Unsupported key type '{keyOptions.GetType()}'."),
+      };
 
       // Add required extensions for a SSL Server certificate
       await AddCertificateExtensionsAsync(certSigningRequest, fullQualifiedDomainName);
 
       return certSigningRequest;
+   }
+
+   [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Tools are Windows only")]
+   [SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance", Justification = "Not relevant as this ie a one time only operation")]
+   private static RSA CreateExportableRsaKey(int keySize)
+   {
+      var cspParameter = new CspParameters();
+      cspParameter = new CspParameters(cspParameter.ProviderType, cspParameter.ProviderName, Guid.NewGuid().ToString())
+      {
+         Flags = CspProviderFlags.UseArchivableKey,
+      };
+
+      return new RSACryptoServiceProvider(keySize, cspParameter);
    }
 
    private static async Task AddCertificateExtensionsAsync(CertificateRequest certSigningRequest, string FQDN)
