@@ -15,7 +15,7 @@ namespace CertTools.AzureCreateRootCert.Tests;
 /// xUnit class fixture that provides shared Azure Key Vault test infrastructure and
 /// handles certificate cleanup after all tests in the collection have run.
 /// </summary>
-public sealed class KeyVaultFixture : IAsyncLifetime
+internal sealed class KeyVaultFixture : IAsyncLifetime
 {
    private readonly List<(string Name, Uri VaultUri, TokenCredential Credential)> _registeredCertificates = [];
 
@@ -27,13 +27,13 @@ public sealed class KeyVaultFixture : IAsyncLifetime
          TestConfiguration.GetClientSecret());
 
    /// <summary>Returns a <see cref="WorkloadIdentityCredential"/> for GitHub Actions OIDC authentication.</summary>
-   public TokenCredential CreateWorkloadIdentityCredential() => new WorkloadIdentityCredential();
+   public static TokenCredential CreateWorkloadIdentityCredential() => new WorkloadIdentityCredential();
 
    /// <summary>Returns the Standard-tier Key Vault URI from the configured environment variable.</summary>
-   public Uri CreateStandardKeyVaultUri() => new Uri(TestConfiguration.GetStandardKeyVaultUrl());
+   public static Uri CreateStandardKeyVaultUri() => new(TestConfiguration.GetStandardKeyVaultUrl());
 
    /// <summary>Returns the Premium-tier Key Vault URI from the configured environment variable.</summary>
-   public Uri CreatePremiumKeyVaultUri() => new Uri(TestConfiguration.GetPremiumKeyVaultUrl());
+   public static Uri CreatePremiumKeyVaultUri() => new(TestConfiguration.GetPremiumKeyVaultUrl());
 
    /// <summary>
    /// Registers a certificate for deletion when the test collection finishes.
@@ -83,11 +83,3 @@ public sealed class KeyVaultFixture : IAsyncLifetime
    }
 }
 
-/// <summary>
-/// xUnit collection definition that shares a single <see cref="KeyVaultFixture"/> instance
-/// across all Key Vault integration test classes.
-/// </summary>
-[CollectionDefinition("KeyVault")]
-public class KeyVaultCollection : ICollectionFixture<KeyVaultFixture>
-{
-}
