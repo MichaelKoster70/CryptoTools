@@ -47,8 +47,8 @@ public class CreateRootCertKeyOptionsTests(KeyVaultFixture fixture)
       }
 
       var certName = KeyVaultFixture.GenerateCertificateName(prefix);
-      var vaultUri = fixture.GetPremiumKeyVaultUri();
-      var credential = fixture.GetClientSecretCredential();
+      var vaultUri = fixture.CreatePremiumKeyVaultUri();
+      var credential = fixture.CreateClientSecretCredential();
       fixture.RegisterForCleanup(certName, vaultUri, credential);
 
       var result = await CertificateWorker.CreateRootCertAsync(
@@ -86,8 +86,8 @@ public class CreateRootCertKeyOptionsTests(KeyVaultFixture fixture)
       }
 
       var certName = KeyVaultFixture.GenerateCertificateName(prefix);
-      var vaultUri = fixture.GetPremiumKeyVaultUri();
-      var credential = fixture.GetClientSecretCredential();
+      var vaultUri = fixture.CreatePremiumKeyVaultUri();
+      var credential = fixture.CreateClientSecretCredential();
       fixture.RegisterForCleanup(certName, vaultUri, credential);
 
       var result = await CertificateWorker.CreateRootCertAsync(
@@ -114,8 +114,8 @@ public class CreateRootCertKeyOptionsTests(KeyVaultFixture fixture)
       }
 
       var certName = KeyVaultFixture.GenerateCertificateName("r4096");
-      var vaultUri = fixture.GetStandardKeyVaultUri();
-      var credential = fixture.GetClientSecretCredential();
+      var vaultUri = fixture.CreateStandardKeyVaultUri();
+      var credential = fixture.CreateClientSecretCredential();
       var keyOptions = new RsaKeyCreationOptions { KeySize = 4096, HsmBacked = false };
       fixture.RegisterForCleanup(certName, vaultUri, credential);
 
@@ -143,8 +143,8 @@ public class CreateRootCertKeyOptionsTests(KeyVaultFixture fixture)
       }
 
       var certName = KeyVaultFixture.GenerateCertificateName("ep384");
-      var vaultUri = fixture.GetStandardKeyVaultUri();
-      var credential = fixture.GetClientSecretCredential();
+      var vaultUri = fixture.CreateStandardKeyVaultUri();
+      var credential = fixture.CreateClientSecretCredential();
       var keyOptions = new EcKeyCreationOptions { KeyCurve = EcKeyCurve.P384, HsmBacked = false };
       fixture.RegisterForCleanup(certName, vaultUri, credential);
 

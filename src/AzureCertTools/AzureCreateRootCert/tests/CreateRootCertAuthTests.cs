@@ -36,8 +36,8 @@ public class CreateRootCertAuthTests(KeyVaultFixture fixture)
 
       // Arrange
       var certName = KeyVaultFixture.GenerateCertificateName("auth-cs");
-      var vaultUri = fixture.GetStandardKeyVaultUri();
-      var credential = fixture.GetClientSecretCredential();
+      var vaultUri = fixture.CreateStandardKeyVaultUri();
+      var credential = fixture.CreateClientSecretCredential();
       var keyOptions = new RsaKeyCreationOptions { KeySize = 4096 };
       fixture.RegisterForCleanup(certName, vaultUri, credential);
 
@@ -65,8 +65,8 @@ public class CreateRootCertAuthTests(KeyVaultFixture fixture)
 
       // Arrange
       var certName = KeyVaultFixture.GenerateCertificateName("auth-wi");
-      var vaultUri = fixture.GetStandardKeyVaultUri();
-      var credential = fixture.GetWorkloadIdentityCredential();
+      var vaultUri = fixture.CreateStandardKeyVaultUri();
+      var credential = fixture.CreateWorkloadIdentityCredential();
       var keyOptions = new RsaKeyCreationOptions { KeySize = 4096 };
       fixture.RegisterForCleanup(certName, vaultUri, credential);
 
