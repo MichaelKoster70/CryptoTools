@@ -26,11 +26,13 @@ public class CreateRootCertAuthTests(KeyVaultFixture fixture)
    /// Requires environment variables: AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID,
    /// AZURE_TENANT_ID, AZURE_CLIENT_SECRET.
    /// </summary>
-   [SkippableFact]
+   [Fact]
    public async Task CreateRootCertAsync_WithClientSecretCredential_Succeeds()
    {
-      Skip.If(!TestConfiguration.HasClientSecretCredentials,
-         "Skipped: AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_CLIENT_SECRET must all be set.");
+      if (!TestConfiguration.HasClientSecretCredentials)
+      {
+         Assert.Skip("AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_CLIENT_SECRET must all be set.");
+      }
 
       // Arrange
       var certName = KeyVaultFixture.GenerateCertificateName("auth-cs");
@@ -53,11 +55,13 @@ public class CreateRootCertAuthTests(KeyVaultFixture fixture)
    /// against the configured Standard Key Vault.
    /// Requires: AZURE_KEYVAULT_URL_STANDARD and a GitHub Actions OIDC token (id-token: write permission).
    /// </summary>
-   [SkippableFact]
+   [Fact]
    public async Task CreateRootCertAsync_WithWorkloadIdentityCredential_Succeeds()
    {
-      Skip.If(!TestConfiguration.HasWorkloadIdentityCredentials,
-         "Skipped: AZURE_KEYVAULT_URL_STANDARD must be set and the runner must have a workload identity configured.");
+      if (!TestConfiguration.HasWorkloadIdentityCredentials)
+      {
+         Assert.Skip("AZURE_KEYVAULT_URL_STANDARD must be set and the runner must have a workload identity configured.");
+      }
 
       // Arrange
       var certName = KeyVaultFixture.GenerateCertificateName("auth-wi");

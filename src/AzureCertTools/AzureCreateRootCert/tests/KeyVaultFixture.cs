@@ -49,9 +49,9 @@ public sealed class KeyVaultFixture : IAsyncLifetime
    public static string GenerateCertificateName(string prefix) =>
       $"it-{prefix}-{Guid.NewGuid():N}";
 
-   Task IAsyncLifetime.InitializeAsync() => Task.CompletedTask;
+   ValueTask IAsyncLifetime.InitializeAsync() => ValueTask.CompletedTask;
 
-   async Task IAsyncLifetime.DisposeAsync()
+   async ValueTask IAsyncDisposable.DisposeAsync()
    {
       foreach (var (name, vaultUri, credential) in _registeredCertificates)
       {

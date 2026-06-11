@@ -37,12 +37,14 @@ public class CreateRootCertKeyOptionsTests(KeyVaultFixture fixture)
    /// for each supported RSA key size (2048, 3072, 4096 bits).
    /// Requires: AZURE_KEYVAULT_URL_PREMIUM and ClientSecret credentials.
    /// </summary>
-   [SkippableTheory]
+   [Theory]
    [MemberData(nameof(RsaHsmKeyOptions))]
    public async Task CreateRootCertAsync_RsaHsmKey_Succeeds(RsaKeyCreationOptions keyOptions, string prefix)
    {
-      Skip.If(!TestConfiguration.HasPremiumKeyVaultCredentials,
-         "Skipped: AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_CLIENT_SECRET must all be set.");
+      if (!TestConfiguration.HasPremiumKeyVaultCredentials)
+      {
+         Assert.Skip("AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_CLIENT_SECRET must all be set.");
+      }
 
       var certName = KeyVaultFixture.GenerateCertificateName(prefix);
       var vaultUri = fixture.GetPremiumKeyVaultUri();
@@ -74,12 +76,14 @@ public class CreateRootCertKeyOptionsTests(KeyVaultFixture fixture)
    /// for each supported EC curve (P-256, P-256K, P-384, P-521).
    /// Requires: AZURE_KEYVAULT_URL_PREMIUM and ClientSecret credentials.
    /// </summary>
-   [SkippableTheory]
+   [Theory]
    [MemberData(nameof(EcHsmKeyOptions))]
    public async Task CreateRootCertAsync_EcHsmKey_Succeeds(EcKeyCreationOptions keyOptions, string prefix)
    {
-      Skip.If(!TestConfiguration.HasPremiumKeyVaultCredentials,
-         "Skipped: AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_CLIENT_SECRET must all be set.");
+      if (!TestConfiguration.HasPremiumKeyVaultCredentials)
+      {
+         Assert.Skip("AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_CLIENT_SECRET must all be set.");
+      }
 
       var certName = KeyVaultFixture.GenerateCertificateName(prefix);
       var vaultUri = fixture.GetPremiumKeyVaultUri();
@@ -101,11 +105,13 @@ public class CreateRootCertKeyOptionsTests(KeyVaultFixture fixture)
    /// Verifies that a software-backed RSA 4096-bit root CA certificate is created in the Standard Key Vault.
    /// Requires: AZURE_KEYVAULT_URL_STANDARD and ClientSecret credentials.
    /// </summary>
-   [SkippableFact]
+   [Fact]
    public async Task CreateRootCertAsync_RsaSoftwareKey_4096_Succeeds()
    {
-      Skip.If(!TestConfiguration.HasClientSecretCredentials,
-         "Skipped: AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_CLIENT_SECRET must all be set.");
+      if (!TestConfiguration.HasClientSecretCredentials)
+      {
+         Assert.Skip("AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_CLIENT_SECRET must all be set.");
+      }
 
       var certName = KeyVaultFixture.GenerateCertificateName("r4096");
       var vaultUri = fixture.GetStandardKeyVaultUri();
@@ -128,11 +134,13 @@ public class CreateRootCertKeyOptionsTests(KeyVaultFixture fixture)
    /// Verifies that a software-backed EC P-384 root CA certificate is created in the Standard Key Vault.
    /// Requires: AZURE_KEYVAULT_URL_STANDARD and ClientSecret credentials.
    /// </summary>
-   [SkippableFact]
+   [Fact]
    public async Task CreateRootCertAsync_EcSoftwareKey_P384_Succeeds()
    {
-      Skip.If(!TestConfiguration.HasClientSecretCredentials,
-         "Skipped: AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_CLIENT_SECRET must all be set.");
+      if (!TestConfiguration.HasClientSecretCredentials)
+      {
+         Assert.Skip("AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_CLIENT_SECRET must all be set.");
+      }
 
       var certName = KeyVaultFixture.GenerateCertificateName("ep384");
       var vaultUri = fixture.GetStandardKeyVaultUri();
