@@ -23,44 +23,55 @@ namespace CertTools.AzureCreateRootCert.Tests;
 internal static class TestConfiguration
 {
    /// <summary>Gets the Standard-tier Azure Key Vault URL.</summary>
-   public static string? StandardKeyVaultUrl => Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URL_STANDARD");
+   public static string GetStandardKeyVaultUrl() => GetRequiredEnvironmentVariable("AZURE_KEYVAULT_URL_STANDARD");
 
    /// <summary>Gets the Premium-tier Azure Key Vault URL (required for HSM-backed keys).</summary>
-   public static string? PremiumKeyVaultUrl => Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URL_PREMIUM");
+   public static string GetPremiumKeyVaultUrl() => GetRequiredEnvironmentVariable("AZURE_KEYVAULT_URL_PREMIUM");
 
    /// <summary>Gets the Azure Entra ID Application (Client) ID.</summary>
-   public static string? ClientId => Environment.GetEnvironmentVariable("AZURE_CLIENT_ID");
+   public static string GetClientId() => GetRequiredEnvironmentVariable("AZURE_CLIENT_ID");
 
    /// <summary>Gets the Azure Entra ID Tenant ID.</summary>
-   public static string? TenantId => Environment.GetEnvironmentVariable("AZURE_TENANT_ID");
+   public static string GetTenantId() => GetRequiredEnvironmentVariable("AZURE_TENANT_ID");
 
    /// <summary>Gets the Azure Entra ID Application (Client) Secret.</summary>
-   public static string? ClientSecret => Environment.GetEnvironmentVariable("AZURE_CLIENT_SECRET");
+   public static string GetClientSecret() => GetRequiredEnvironmentVariable("AZURE_CLIENT_SECRET");
 
    /// <summary>
    /// Gets a value indicating whether all credentials required for client-secret authentication
    /// against the Standard Key Vault are available.
    /// </summary>
    public static bool HasClientSecretCredentials =>
-      !string.IsNullOrEmpty(StandardKeyVaultUrl) &&
-      !string.IsNullOrEmpty(ClientId) &&
-      !string.IsNullOrEmpty(TenantId) &&
-      !string.IsNullOrEmpty(ClientSecret);
+      IsEnvironmentVariableSet("AZURE_KEYVAULT_URL_STANDARD") &&
+      IsEnvironmentVariableSet("AZURE_CLIENT_ID") &&
+      IsEnvironmentVariableSet("AZURE_TENANT_ID") &&
+      IsEnvironmentVariableSet("AZURE_CLIENT_SECRET");
 
    /// <summary>
    /// Gets a value indicating whether a workload identity test can be attempted.
    /// Only the Standard Key Vault URL is required; the OIDC token is injected by the GitHub Actions
    /// environment automatically.
    /// </summary>
-   public static bool HasWorkloadIdentityCredentials => !string.IsNullOrEmpty(StandardKeyVaultUrl);
+   public static bool HasWorkloadIdentityCredentials => IsEnvironmentVariableSet("AZURE_KEYVAULT_URL_STANDARD");
 
    /// <summary>
    /// Gets a value indicating whether all credentials required for client-secret authentication
    /// against the Premium Key Vault (for HSM-backed keys) are available.
    /// </summary>
    public static bool HasPremiumKeyVaultCredentials =>
-      !string.IsNullOrEmpty(PremiumKeyVaultUrl) &&
-      !string.IsNullOrEmpty(ClientId) &&
-      !string.IsNullOrEmpty(TenantId) &&
-      !string.IsNullOrEmpty(ClientSecret);
+      IsEnvironmentVariableSet("AZURE_KEYVAULT_URL_PREMIUM") &&
+      IsEnvironmentVariableSet("AZURE_CLIENT_ID") &&
+      IsEnvironmentVariableSet("AZURE_TENANT_ID") &&
+      IsEnvironmentVariableSet("AZURE_CLIENT_SECRET");
+
+   private static string GetRequiredEnvironmentVariable(string variableName)
+   {
+      var value = Environment.GetEnvironmentVariable(variableName);
+      return !string.IsNullOrWhiteSpace(value)
+         ? value
+         : throw new InvalidOperationException($"Required environment variable '{variableName}' is not set.");
+   }
+
+   private static bool IsEnvironmentVariableSet(string variableName) =>
+      !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(variableName));
 }

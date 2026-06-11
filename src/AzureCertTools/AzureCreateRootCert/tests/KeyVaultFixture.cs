@@ -21,16 +21,19 @@ public sealed class KeyVaultFixture : IAsyncLifetime
 
    /// <summary>Returns a <see cref="ClientSecretCredential"/> built from the configured environment variables.</summary>
    public TokenCredential CreateClientSecretCredential() =>
-      new ClientSecretCredential(TestConfiguration.TenantId!, TestConfiguration.ClientId!, TestConfiguration.ClientSecret!);
+      new ClientSecretCredential(
+         TestConfiguration.GetTenantId(),
+         TestConfiguration.GetClientId(),
+         TestConfiguration.GetClientSecret());
 
    /// <summary>Returns a <see cref="WorkloadIdentityCredential"/> for GitHub Actions OIDC authentication.</summary>
    public TokenCredential CreateWorkloadIdentityCredential() => new WorkloadIdentityCredential();
 
    /// <summary>Returns the Standard-tier Key Vault URI from the configured environment variable.</summary>
-   public Uri CreateStandardKeyVaultUri() => new Uri(TestConfiguration.StandardKeyVaultUrl!);
+   public Uri CreateStandardKeyVaultUri() => new Uri(TestConfiguration.GetStandardKeyVaultUrl());
 
    /// <summary>Returns the Premium-tier Key Vault URI from the configured environment variable.</summary>
-   public Uri CreatePremiumKeyVaultUri() => new Uri(TestConfiguration.PremiumKeyVaultUrl!);
+   public Uri CreatePremiumKeyVaultUri() => new Uri(TestConfiguration.GetPremiumKeyVaultUrl());
 
    /// <summary>
    /// Registers a certificate for deletion when the test collection finishes.
