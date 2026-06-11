@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CertCore\CertCore.csproj" />
+    <ProjectReference Include="..\..\CertCore\src\CertCore.csproj" />
   </ItemGroup>
 
 </Project>

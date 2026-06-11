@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>CertTools.AzureCertCore.Tests</RootNamespace>
-    <Title>Unit Tests for AzureCertCore</Title>
+    <RootNamespace>CertTools.AzureCreateRootCert.Tests</RootNamespace>
+    <Title>Integration Tests for AzureCreateRootCert</Title>
     <AssemblyTitle>$(Title)</AssemblyTitle>
     <!-- Override solution-wide defaults that are not appropriate for a test project -->
     <PackAsTool>false</PackAsTool>
@@ -11,8 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Identity" />
+    <PackageReference Include="Azure.Security.KeyVault.Certificates" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
+    <PackageReference Include="Xunit.SkippableFact" />
     <PackageReference Include="xunit.runner.visualstudio">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -20,7 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AzureCertCore.csproj" />
+    <ProjectReference Include="..\..\AzureCertCore\src\AzureCertCore.csproj" />
+    <ProjectReference Include="..\src\AzureCreateRootCert.csproj" />
   </ItemGroup>
 
 </Project>

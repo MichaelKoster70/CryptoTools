@@ -6,6 +6,7 @@
 // ----------------------------------------------------------------------------
 
 using CertTools.AzureCertCore;
+using Xunit;
 
 namespace CertTools.AzureCertCore.Tests;
 

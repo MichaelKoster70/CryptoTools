@@ -1,44 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>CertTools.AzureDeleteCert</RootNamespace>
-    <Title>Certificate Deletion Tool for Azure Key Vault</Title>
+    <RootNamespace>CertTools.AzureCreateIntermediateCert</RootNamespace>
+    <Title>Intermediate CA Certificate Creation Tool for Azure KeyVault</Title>
     <AssemblyTitle>$(Title)</AssemblyTitle>
-    <ApplicationIcon>AzureDeleteCert.ico</ApplicationIcon>
-    <Description>A console application to delete a x.509 certificate from the designated Azure Key Vault.</Description>
+    <Description>A console application to create a x.509 intermediate CA certificate to issue code signing certificates.
+The tool will create the certificate in the designated Azure Key Vault.</Description>
+    <ApplicationIcon>AzureCreateIntermediateCert.ico</ApplicationIcon>
     <OutputType>Exe</OutputType>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <SupportedOSPlatformVersion>10.0.26100.0</SupportedOSPlatformVersion>
     <InvariantGlobalization>true</InvariantGlobalization>
     <TrimMode>partial</TrimMode>
-    <PackageId>MK.CertTools.AzureDeleteCert</PackageId>
-    <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageIcon>PackageLogo.png</PackageIcon>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageId>MK.CertTools.AzureCreateIntermediateCert</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="AzureDeleteCert.ico" />
+    <Content Include="AzureCreateIntermediateCert.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\PackageLogo.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
     <None Update="readme.md">
-      <Pack>True</Pack>
       <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
+    <None Include="..\..PackageLogo.png">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
     </None>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Azure.Identity" />
     <PackageReference Include="Azure.Security.KeyVault.Certificates" />
-    <PackageReference Include="Azure.Security.KeyVault.Keys" />
     <PackageReference Include="CommandLineParser" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AzureCertCore\AzureCertCore.csproj" />
+    <ProjectReference Include="..\..\AzureCertCore\src\AzureCertCore.csproj" />
   </ItemGroup>
+
 </Project>

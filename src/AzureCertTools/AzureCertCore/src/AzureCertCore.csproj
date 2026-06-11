@@ -14,8 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Exclude test projects nested under this directory from compilation -->
-    <Compile Remove="tests/**" />
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>AzureCertCoreTests</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>
