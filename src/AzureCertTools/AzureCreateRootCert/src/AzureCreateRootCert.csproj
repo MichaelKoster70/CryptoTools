@@ -1,23 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>CertTools.AzureDeleteCert</RootNamespace>
-    <Title>Certificate Deletion Tool for Azure Key Vault</Title>
+    <RootNamespace>CertTools.AzureCreateRootCert</RootNamespace>
+    <Title>Self Signed Root CA Certificate Creation Tool for Azure KeyVault</Title>
     <AssemblyTitle>$(Title)</AssemblyTitle>
-    <ApplicationIcon>AzureDeleteCert.ico</ApplicationIcon>
-    <Description>A console application to delete a x.509 certificate from the designated Azure Key Vault.</Description>
+    <Description>A console application to create a x.509 root CA certificate to issue other CA or signing certificates.
+The tool will create the certificate in the designated Azure Key Vault.</Description>
+    <ApplicationIcon>AzureCreateRootCert.ico</ApplicationIcon>
     <OutputType>Exe</OutputType>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <SupportedOSPlatformVersion>10.0.26100.0</SupportedOSPlatformVersion>
     <InvariantGlobalization>true</InvariantGlobalization>
     <TrimMode>partial</TrimMode>
-    <PackageId>MK.CertTools.AzureDeleteCert</PackageId>
-    <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageIcon>PackageLogo.png</PackageIcon>
+    <PackageId>MK.CertTools.AzureCreateRootCert</PackageId>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="AzureDeleteCert.ico" />
+    <Content Include="AzureCreateRootCert.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,11 +35,17 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" />
     <PackageReference Include="Azure.Security.KeyVault.Certificates" />
-    <PackageReference Include="Azure.Security.KeyVault.Keys" />
     <PackageReference Include="CommandLineParser" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AzureCertCore\AzureCertCore.csproj" />
+    <ProjectReference Include="..\..\AzureCertCore\src\AzureCertCore.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>AzureCreateRootCertTests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
 </Project>

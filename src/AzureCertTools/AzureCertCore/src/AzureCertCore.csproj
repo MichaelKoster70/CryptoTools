@@ -12,4 +12,11 @@
     <PackageReference Include="Azure.Security.KeyVault.Keys" />
     <PackageReference Include="CommandLineParser" />
   </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>AzureCertCoreTests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
 </Project>

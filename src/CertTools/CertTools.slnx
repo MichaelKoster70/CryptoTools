@@ -3,7 +3,7 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
-  <Project Path="CertCore/CertCore.csproj" />
-  <Project Path="CreateRootCert/CreateRootCert.csproj" />
-  <Project Path="CreateSigningCert/CreateSigningCert.csproj" />
+  <Project Path="CertCore/src/CertCore.csproj" />
+  <Project Path="CreateRootCert/src/CreateRootCert.csproj" />
+  <Project Path="CreateSigningCert/src/CreateSigningCert.csproj" />
 </Solution>

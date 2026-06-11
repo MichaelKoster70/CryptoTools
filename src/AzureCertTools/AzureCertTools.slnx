@@ -3,10 +3,12 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
-  <Project Path="AzureDeleteCert/AzureDeleteCert.csproj" />
-  <Project Path="AzureCertCore/AzureCertCore.csproj" />
-  <Project Path="AzureCreateIntermediateCert/AzureCreateIntermediateCert.csproj" />
-  <Project Path="AzureCreateRootCert/AzureCreateRootCert.csproj" />
-  <Project Path="AzureCreateSigningCert/AzureCreateSigningCert.csproj" />
-  <Project Path="AzureCreateSslServerCert/AzureCreateSslServerCert.csproj" />
+  <Project Path="AzureCertCore/src/AzureCertCore.csproj" />
+  <Project Path="AzureCreateRootCert/src/AzureCreateRootCert.csproj" />
+  <Project Path="AzureCreateIntermediateCert/src/AzureCreateIntermediateCert.csproj" />
+  <Project Path="AzureCreateSigningCert/src/AzureCreateSigningCert.csproj" />
+  <Project Path="AzureCreateSslServerCert/src/AzureCreateSslServerCert.csproj" />
+  <Project Path="AzureDeleteCert/src/AzureDeleteCert.csproj" />
+  <Project Path="AzureCertCore/tests/AzureCertCoreTests.csproj" />
+  <Project Path="AzureCreateRootCert/tests/AzureCreateRootCertTests.csproj" />
 </Solution>
