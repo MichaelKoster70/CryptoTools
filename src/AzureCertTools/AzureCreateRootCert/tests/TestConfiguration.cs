@@ -67,9 +67,12 @@ internal static class TestConfiguration
    private static string GetRequiredEnvironmentVariable(string variableName)
    {
       var value = Environment.GetEnvironmentVariable(variableName);
-      return !string.IsNullOrWhiteSpace(value)
-         ? value
-         : throw new InvalidOperationException($"Required environment variable '{variableName}' is not set.");
+      if (string.IsNullOrWhiteSpace(value))
+      {
+         throw new InvalidOperationException($"Required environment variable '{variableName}' is not set.");
+      }
+
+      return value;
    }
 
    private static bool IsEnvironmentVariableSet(string variableName) =>
