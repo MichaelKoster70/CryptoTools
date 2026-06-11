@@ -24,6 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\AzureCertCore\src\AzureCertCore.csproj" />
     <ProjectReference Include="..\src\AzureCreateRootCert.csproj" />
   </ItemGroup>
