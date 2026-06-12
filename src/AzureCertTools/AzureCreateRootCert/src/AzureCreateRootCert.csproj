@@ -22,7 +22,7 @@ The tool will create the certificate in the designated Azure Key Vault.</Descrip
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\PackageLogo.png">
+    <None Include="..\..\PackageLogo.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
