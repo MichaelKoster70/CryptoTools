@@ -15,7 +15,7 @@ namespace CertTools.AzureCreateRootCert.Tests;
 /// using different credential types and successfully create a root CA certificate.
 /// </summary>
 [Collection("KeyVault")]
-public class CreateRootCertAuthTests(KeyVaultFixture fixture)
+public class CreateRootCertAuthTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFixture>
 {
    private const string SubjectName = "CN=Integration Test Root CA";
    private const int ExpireMonths = 12;

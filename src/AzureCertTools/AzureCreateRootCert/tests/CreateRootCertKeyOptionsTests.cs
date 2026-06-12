@@ -15,7 +15,7 @@ namespace CertTools.AzureCreateRootCert.Tests;
 /// for every supported key type, key size, and EC curve combination.
 /// </summary>
 [Collection("KeyVault")]
-public class CreateRootCertKeyOptionsTests(KeyVaultFixture fixture)
+public class CreateRootCertKeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFixture>
 {
    private const string SubjectName = "CN=Integration Test Root CA";
    private const int ExpireMonths = 12;
