@@ -11,23 +11,21 @@ using CertTools.AzureCertCore;
 namespace CertTools.AzureCreateRootCert.Tests;
 
 /// <summary>
-/// Integration tests verifying that <see cref="CertificateWorker"/> can authenticate to Azure Key Vault
+/// Integration tests verifying that <see cref="Program.Main(string[])"/> can authenticate to Azure Key Vault
 /// using different credential types and successfully create a root CA certificate.
 /// </summary>
 [Collection("KeyVault")]
-public class CreateRootCertAuthTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFixture>
+public class AuthTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFixture>
 {
    private const string SubjectName = "CN=Integration Test Root CA";
    private const int ExpireMonths = 12;
 
    /// <summary>
-   /// Verifies end-to-end root CA certificate creation using a client-secret credential
-   /// against the configured Standard Key Vault.
-   /// Requires environment variables: AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID,
-   /// AZURE_TENANT_ID, AZURE_CLIENT_SECRET.
+   /// Verifies end-to-end root CA certificate creation using a client-secret credential against the configured Standard Key Vault.
+   /// Requires environment variables: AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_CLIENT_SECRET.
    /// </summary>
    [Fact]
-   public async Task CreateRootCertAsync_WithClientSecretCredential_Succeeds()
+   public async Task Main_WithClientSecretCredential_Succeeds()
    {
       if (!TestConfiguration.HasClientSecretCredentials)
       {
@@ -38,25 +36,23 @@ public class CreateRootCertAuthTests(KeyVaultFixture fixture) : IClassFixture<Ke
       var certName = KeyVaultFixture.GenerateCertificateName("auth-cs");
       var vaultUri = fixture.CreateStandardKeyVaultUri();
       var credential = fixture.CreateClientSecretCredential();
-      var keyOptions = new RsaKeyCreationOptions { KeySize = 4096 };
       fixture.RegisterForCleanup(certName, vaultUri, credential);
+      var args = CreateClientSecretArgs(certName, vaultUri);
 
       // Act
-      var result = await CertificateWorker.CreateRootCertAsync(
-         certName, SubjectName, ExpireMonths, pathLengthConstraint: null, vaultUri, credential, keyOptions);
+      var exitCode = await Program.Main(args);
 
       // Assert
-      Assert.Equal(certName, result);
+      Assert.Equal(0, exitCode);
       await AssertCertificateExistsAsync(certName, vaultUri, credential);
    }
 
    /// <summary>
-   /// Verifies end-to-end root CA certificate creation using a workload identity credential
-   /// against the configured Standard Key Vault.
+   /// Verifies end-to-end root CA certificate creation using a workload identity credential against the configured Standard Key Vault.
    /// Requires: AZURE_KEYVAULT_URL_STANDARD and a GitHub Actions OIDC token (id-token: write permission).
    /// </summary>
    [Fact]
-   public async Task CreateRootCertAsync_WithWorkloadIdentityCredential_Succeeds()
+   public async Task Main_WithWorkloadIdentityCredential_Succeeds()
    {
       if (!TestConfiguration.HasWorkloadIdentityCredentials)
       {
@@ -67,17 +63,40 @@ public class CreateRootCertAuthTests(KeyVaultFixture fixture) : IClassFixture<Ke
       var certName = KeyVaultFixture.GenerateCertificateName("auth-wi");
       var vaultUri = fixture.CreateStandardKeyVaultUri();
       var credential = fixture.CreateWorkloadIdentityCredential();
-      var keyOptions = new RsaKeyCreationOptions { KeySize = 4096 };
       fixture.RegisterForCleanup(certName, vaultUri, credential);
+      var args = CreateWorkloadIdentityArgs(certName, vaultUri);
 
       // Act
-      var result = await CertificateWorker.CreateRootCertAsync(
-         certName, SubjectName, ExpireMonths, pathLengthConstraint: null, vaultUri, credential, keyOptions);
+      var exitCode = await Program.Main(args);
 
       // Assert
-      Assert.Equal(certName, result);
+      Assert.Equal(0, exitCode);
       await AssertCertificateExistsAsync(certName, vaultUri, credential);
    }
+
+   private static string[] CreateClientSecretArgs(string certName, Uri vaultUri) =>
+   [
+      "--CertificateName", certName,
+      "--Subject", SubjectName,
+      "--ExpireMonths", ExpireMonths.ToString(),
+      "--KeyVaultUri", vaultUri.ToString(),
+      "--TenantId", TestConfiguration.GetTenantId(),
+      "--ClientId", TestConfiguration.GetClientId(),
+      "--ClientSecret", TestConfiguration.GetClientSecret(),
+      "--KeyType", "Rsa",
+      "--KeySize", "4096"
+   ];
+
+   private static string[] CreateWorkloadIdentityArgs(string certName, Uri vaultUri) =>
+   [
+      "--CertificateName", certName,
+      "--Subject", SubjectName,
+      "--ExpireMonths", ExpireMonths.ToString(),
+      "--KeyVaultUri", vaultUri.ToString(),
+      "--WorkloadIdentity",
+      "--KeyType", "Rsa",
+      "--KeySize", "4096"
+   ];
 
    private static async Task AssertCertificateExistsAsync(string certName, Uri vaultUri, Azure.Core.TokenCredential credential)
    {

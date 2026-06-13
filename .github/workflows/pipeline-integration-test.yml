@@ -21,20 +21,23 @@ jobs:
   integration-tests:
     name: Run Integration Tests
     runs-on: windows-2025-vs2026
-    environment: IntegrationTest
+    environment: Test
 
     env:
       AzureCertToolsPath: ${{ github.workspace }}\src\AzureCertTools
       AzureCertToolsSolutionPath: ${{ github.workspace }}\src\AzureCertTools\AzureCertTools.slnx
       TestProjectPath: ${{ github.workspace }}\src\AzureCertTools\AzureCreateRootCert\tests\AzureCreateRootCertTests
+
       # Key Vault URLs for integration tests
-      AZURE_KEYVAULT_URL_STANDARD: ${{ vars.AZURE_KEYVAULT_URL_STANDARD }}
-      AZURE_KEYVAULT_URL_PREMIUM: ${{ vars.AZURE_KEYVAULT_URL_PREMIUM }}
+      AZURE_KEYVAULT_URL_STANDARD: ${{ secrets.TEST_AZURE_KEYVAULT_URL_STANDARD }}
+      AZURE_KEYVAULT_URL_PREMIUM: ${{ secrets.TEST_AZURE_KEYVAULT_URL_PREMIUM }}
+      
       # Client ID and Tenant ID for both ClientSecret and WorkloadIdentity
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.TEST_AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.TEST_AZURE_TENANT_ID }}
+      
       # Client secret for ClientSecret-based authentication tests
-      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      AZURE_CLIENT_SECRET: ${{ secrets.TEST_AZURE_CLIENT_SECRET }}
 
     steps:
       - name: Checkout
@@ -45,17 +48,24 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '10.x'
+          dotnet-version: '10.x' # Use the latest .NET 10 SDK
 
-      - name: Restore
+      - name: 'Build: Restore'
         run: dotnet restore ${{ env.AzureCertToolsSolutionPath }}
         shell: pwsh
 
-      - name: Build
+      - name: 'Build: AzureCertTools'
         run: dotnet build ${{ env.AzureCertToolsSolutionPath }} --configuration Release --no-restore
         shell: pwsh
 
-      - name: Run Integration Tests
+      - name: 'Test: Azure CLI login'
+        uses: azure/login@v3
+        with:
+          allow-no-subscriptions: true
+          client-id: ${{ secrets.TEST_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.TEST_AZURE_TENANT_ID }}        
+
+      - name: 'Test: Run Tests'
         run: |
           dotnet test ${{ env.TestProjectPath }} `
             --configuration Release `
@@ -64,7 +74,7 @@ jobs:
             --results-directory "${{ github.workspace }}\TestResults"
         shell: pwsh
 
-      - name: Publish Test Results
+      - name: 'Test: Publish Test Results'
         uses: actions/upload-artifact@v7
         if: always()
         with:

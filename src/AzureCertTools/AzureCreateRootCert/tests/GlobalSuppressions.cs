@@ -14,4 +14,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Scope = "member", Target = "~M:CertTools.AzureCreateRootCert.Tests.KeyVaultFixture.CreateClientSecretCredential~Azure.Core.TokenCredential")]
 [assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Scope = "member", Target = "~M:CertTools.AzureCreateRootCert.Tests.KeyVaultFixture.CreateWorkloadIdentityCredential~Azure.Core.TokenCredential")]
 [assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Scope = "member", Target = "~M:CertTools.AzureCreateRootCert.Tests.KeyVaultFixture.CreateStandardKeyVaultUri~System.Uri")]
-[assembly: SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Scope = "member", Target = "~M:CertTools.AzureCreateRootCert.Tests.CreateRootCertAuthTests.CreateRootCertAsync_WithClientSecretCredential_Succeeds~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Scope = "namespace", Target = "~N:CertTools.AzureCreateRootCert.Tests")]
