@@ -14,5 +14,6 @@
   <Folder Name="/tests/">
     <Project Path="AzureCertCore/tests/AzureCertCoreTests.csproj" />
     <Project Path="AzureCreateRootCert/tests/AzureCreateRootCertTests.csproj" />
+    <Project Path="TestCore/TestCore.csproj" />
   </Folder>
 </Solution>

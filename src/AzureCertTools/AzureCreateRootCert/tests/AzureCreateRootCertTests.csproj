@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <RootNamespace>CertTools.AzureCreateRootCert.Tests</RootNamespace>
-    <Title>Integration Tests for AzureCreateRootCert</Title>
-    <AssemblyTitle>$(Title)</AssemblyTitle>
     <!-- Override solution-wide defaults that are not appropriate for a test project -->
     <PackAsTool>false</PackAsTool>
     <IsPackable>false</IsPackable>
@@ -28,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AzureCertCore\src\AzureCertCore.csproj" />
+    <ProjectReference Include="..\..\TestCore\TestCore.csproj" />
     <ProjectReference Include="..\src\AzureCreateRootCert.csproj" />
   </ItemGroup>
 

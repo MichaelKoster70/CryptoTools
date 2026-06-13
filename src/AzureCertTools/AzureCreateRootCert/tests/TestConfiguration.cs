@@ -52,17 +52,19 @@ internal static class TestConfiguration
    /// Only the Standard Key Vault URL is required; the OIDC token is injected by the GitHub Actions
    /// environment automatically.
    /// </summary>
-   public static bool HasWorkloadIdentityCredentials => IsEnvironmentVariableSet("AZURE_KEYVAULT_URL_STANDARD");
+   public static bool HasWorkloadIdentityCredentials => 
+      IsEnvironmentVariableSet("AZURE_KEYVAULT_URL_STANDARD") &&
+      IsEnvironmentVariableSet("AZURE_CLIENT_ID") &&
+      IsEnvironmentVariableSet("AZURE_TENANT_ID");
+
 
    /// <summary>
-   /// Gets a value indicating whether all credentials required for client-secret authentication
-   /// against the Premium Key Vault (for HSM-backed keys) are available.
+   /// Gets a value indicating whether a workload identity test can be attempted against the Premium Key Vault.
    /// </summary>
-   public static bool HasPremiumKeyVaultCredentials =>
+   public static bool HasPremiumWorkloadIdentityCredentials =>
       IsEnvironmentVariableSet("AZURE_KEYVAULT_URL_PREMIUM") &&
       IsEnvironmentVariableSet("AZURE_CLIENT_ID") &&
-      IsEnvironmentVariableSet("AZURE_TENANT_ID") &&
-      IsEnvironmentVariableSet("AZURE_CLIENT_SECRET");
+      IsEnvironmentVariableSet("AZURE_TENANT_ID");
 
    private static string GetRequiredEnvironmentVariable(string variableName)
    {

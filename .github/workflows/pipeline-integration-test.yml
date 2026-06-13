@@ -1,17 +1,12 @@
 name: 'AzureCreateRootCert: Integration Tests'
 
 permissions:
+  checks: write
   contents: read
   id-token: write  # Required for workload identity (OIDC) tests
 
 on:
   workflow_dispatch:
-    inputs:
-      run-workload-identity-tests:
-        description: 'Run workload identity authentication tests'
-        type: boolean
-        required: false
-        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -26,11 +21,10 @@ jobs:
     env:
       AzureCertToolsPath: ${{ github.workspace }}\src\AzureCertTools
       AzureCertToolsSolutionPath: ${{ github.workspace }}\src\AzureCertTools\AzureCertTools.slnx
-      TestProjectPath: ${{ github.workspace }}\src\AzureCertTools\AzureCreateRootCert\tests\AzureCreateRootCertTests
 
       # Key Vault URLs for integration tests
-      AZURE_KEYVAULT_URL_STANDARD: ${{ secrets.TEST_AZURE_KEYVAULT_URL_STANDARD }}
-      AZURE_KEYVAULT_URL_PREMIUM: ${{ secrets.TEST_AZURE_KEYVAULT_URL_PREMIUM }}
+      AZURE_KEYVAULT_URL_STANDARD: ${{ vars.TEST_AZURE_KEYVAULT_URL_STANDARD }}
+      AZURE_KEYVAULT_URL_PREMIUM: ${{ vars.TEST_AZURE_KEYVAULT_URL_PREMIUM }}
       
       # Client ID and Tenant ID for both ClientSecret and WorkloadIdentity
       AZURE_CLIENT_ID: ${{ secrets.TEST_AZURE_CLIENT_ID }}
@@ -65,14 +59,49 @@ jobs:
           client-id: ${{ secrets.TEST_AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.TEST_AZURE_TENANT_ID }}        
 
+      - name: 'Test: Validate environment'
+        run: |
+          $requiredVariables = @(
+            'AZURE_KEYVAULT_URL_STANDARD',
+            'AZURE_KEYVAULT_URL_PREMIUM',
+            'AZURE_CLIENT_ID',
+            'AZURE_TENANT_ID',
+            'AZURE_CLIENT_SECRET'
+          )
+
+          $missingVariables = $requiredVariables |
+            Where-Object { [string]::IsNullOrWhiteSpace((Get-Item -Path "env:$_" -ErrorAction SilentlyContinue).Value) }
+
+          if ($missingVariables.Count -gt 0) {
+            throw "Missing required environment variables: $($missingVariables -join ', '). Verify the corresponding GitHub Actions secrets are defined for the Test environment."
+          }
+
       - name: 'Test: Run Tests'
         run: |
-          dotnet test ${{ env.TestProjectPath }} `
-            --configuration Release `
-            --no-build `
-            --logger "trx;LogFileName=TestResults.trx" `
-            --results-directory "${{ github.workspace }}\TestResults"
+          $testProjects = Get-ChildItem -Path "${{ env.AzureCertToolsPath }}" -Filter *.csproj -Recurse |
+            Where-Object { $_.Directory.Name -eq 'tests' }
+
+          if ($testProjects.Count -eq 0) {
+            throw "No test projects found under ${{ env.AzureCertToolsPath }} in folders named 'tests'."
+          }
+
+          foreach ($testProject in $testProjects) {
+            dotnet test $testProject.FullName `
+              --configuration Release `
+              --no-build `
+              --logger "trx;LogFileName=$($testProject.BaseName).trx" `
+              --results-directory "${{ github.workspace }}\TestResults"
+          }
         shell: pwsh
+
+      - name: 'Test: Report Results'
+        uses: dorny/test-reporter@v2
+        if: success() || failure()
+        with:
+          name: Integration Test Results
+          path: ${{ github.workspace }}\TestResults\*.trx
+          reporter: dotnet-trx
+          fail-on-error: true
 
       - name: 'Test: Publish Test Results'
         uses: actions/upload-artifact@v7
