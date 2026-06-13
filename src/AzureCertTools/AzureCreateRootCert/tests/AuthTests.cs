@@ -49,14 +49,14 @@ public class AuthTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFixture>
 
    /// <summary>
    /// Verifies end-to-end root CA certificate creation using a workload identity credential against the configured Standard Key Vault.
-   /// Requires: AZURE_KEYVAULT_URL_STANDARD and a GitHub Actions OIDC token (id-token: write permission).
+   /// Requires: AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, and a valid AZURE_FEDERATED_TOKEN_FILE.
    /// </summary>
    [Fact]
    public async Task Main_WithWorkloadIdentityCredential_Succeeds()
    {
       if (!TestConfiguration.HasWorkloadIdentityCredentials)
       {
-         Assert.Skip("AZURE_KEYVAULT_URL_STANDARD must be set and the runner must have a workload identity configured.");
+         Assert.Skip("AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_FEDERATED_TOKEN_FILE must be set for workload identity authentication.");
       }
 
       // Arrange

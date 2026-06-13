@@ -49,14 +49,14 @@ internal static class TestConfiguration
 
    /// <summary>
    /// Gets a value indicating whether a workload identity test can be attempted.
-   /// Only the Standard Key Vault URL is required; the OIDC token is injected by the GitHub Actions
-   /// environment automatically.
+   /// Requires a Standard Key Vault URL plus the workload identity environment variables expected by
+   /// <see cref="Azure.Identity.WorkloadIdentityCredential"/>.
    /// </summary>
-   public static bool HasWorkloadIdentityCredentials => 
+   public static bool HasWorkloadIdentityCredentials =>
       IsEnvironmentVariableSet("AZURE_KEYVAULT_URL_STANDARD") &&
       IsEnvironmentVariableSet("AZURE_CLIENT_ID") &&
-      IsEnvironmentVariableSet("AZURE_TENANT_ID");
-
+      IsEnvironmentVariableSet("AZURE_TENANT_ID") &&
+      IsExistingFilePathEnvironmentVariable("AZURE_FEDERATED_TOKEN_FILE");
 
    /// <summary>
    /// Gets a value indicating whether a workload identity test can be attempted against the Premium Key Vault.
@@ -64,7 +64,8 @@ internal static class TestConfiguration
    public static bool HasPremiumWorkloadIdentityCredentials =>
       IsEnvironmentVariableSet("AZURE_KEYVAULT_URL_PREMIUM") &&
       IsEnvironmentVariableSet("AZURE_CLIENT_ID") &&
-      IsEnvironmentVariableSet("AZURE_TENANT_ID");
+      IsEnvironmentVariableSet("AZURE_TENANT_ID") &&
+      IsExistingFilePathEnvironmentVariable("AZURE_FEDERATED_TOKEN_FILE");
 
    private static string GetRequiredEnvironmentVariable(string variableName)
    {
@@ -79,4 +80,10 @@ internal static class TestConfiguration
 
    private static bool IsEnvironmentVariableSet(string variableName) =>
       !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(variableName));
+
+   private static bool IsExistingFilePathEnvironmentVariable(string variableName)
+   {
+      var filePath = Environment.GetEnvironmentVariable(variableName);
+      return !string.IsNullOrWhiteSpace(filePath) && File.Exists(filePath);
+   }
 }

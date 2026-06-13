@@ -42,7 +42,7 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    /// <summary>
    /// Verifies that an HSM-backed RSA root CA certificate is created in the Premium Key Vault
    /// for each supported RSA key size (2048, 3072, 4096 bits) and exportability setting.
-   /// Requires: AZURE_KEYVAULT_URL_PREMIUM and a configured workload identity.
+   /// Requires: AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, AZURE_TENANT_ID, and a valid AZURE_FEDERATED_TOKEN_FILE.
    /// </summary>
    [Theory]
    [MemberData(nameof(RsaHsmKeyOptions))]
@@ -50,7 +50,7 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    {
       if (!TestConfiguration.HasPremiumWorkloadIdentityCredentials)
       {
-         Assert.Skip("AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, and AZURE_TENANT_ID must all be set and the runner must have a workload identity configured.");
+         Assert.Skip("AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_FEDERATED_TOKEN_FILE must be set for workload identity authentication.");
       }
 
       var certName = KeyVaultFixture.GenerateCertificateName(prefix);
@@ -89,7 +89,7 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    /// <summary>
    /// Verifies that an HSM-backed EC root CA certificate is created in the Premium Key Vault
    /// for each supported EC curve (P-256, P-256K, P-384, P-521) and exportability setting.
-   /// Requires: AZURE_KEYVAULT_URL_PREMIUM and a configured workload identity.
+   /// Requires: AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, AZURE_TENANT_ID, and a valid AZURE_FEDERATED_TOKEN_FILE.
    /// </summary>
    [Theory]
    [MemberData(nameof(EcHsmKeyOptions))]
@@ -97,7 +97,7 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    {
       if (!TestConfiguration.HasPremiumWorkloadIdentityCredentials)
       {
-         Assert.Skip("AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, and AZURE_TENANT_ID must all be set and the runner must have a workload identity configured.");
+         Assert.Skip("AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_FEDERATED_TOKEN_FILE must be set for workload identity authentication.");
       }
 
       var certName = KeyVaultFixture.GenerateCertificateName(prefix);
@@ -119,7 +119,7 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    /// <summary>
    /// Verifies that a software-backed RSA 4096-bit root CA certificate is created in the Standard Key Vault
    /// for both exportable and non-exportable key settings.
-   /// Requires: AZURE_KEYVAULT_URL_STANDARD and a configured workload identity.
+   /// Requires: AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, and a valid AZURE_FEDERATED_TOKEN_FILE.
    /// </summary>
    [Theory]
    [InlineData(false, "r4096ne")]
@@ -128,7 +128,7 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    {
       if (!TestConfiguration.HasWorkloadIdentityCredentials)
       {
-         Assert.Skip("AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, and AZURE_TENANT_ID must all be set and the runner must have a workload identity configured.");
+         Assert.Skip("AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_FEDERATED_TOKEN_FILE must be set for workload identity authentication.");
       }
 
       var certName = KeyVaultFixture.GenerateCertificateName(prefix);
@@ -150,7 +150,7 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    /// <summary>
    /// Verifies that a software-backed EC P-384 root CA certificate is created in the Standard Key Vault
    /// for both exportable and non-exportable key settings.
-   /// Requires: AZURE_KEYVAULT_URL_STANDARD and a configured workload identity.
+   /// Requires: AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, and a valid AZURE_FEDERATED_TOKEN_FILE.
    /// </summary>
    [Theory]
    [InlineData(false, "ep384ne")]
@@ -159,7 +159,7 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    {
       if (!TestConfiguration.HasWorkloadIdentityCredentials)
       {
-         Assert.Skip("AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, and AZURE_TENANT_ID must all be set and the runner must have a workload identity configured.");
+         Assert.Skip("AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_FEDERATED_TOKEN_FILE must be set for workload identity authentication.");
       }
 
       var certName = KeyVaultFixture.GenerateCertificateName(prefix);
@@ -177,7 +177,7 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    /// <summary>
    /// Verifies that the root CA certificate contains or omits a path length constraint
    /// based on whether the command line argument is provided.
-   /// Requires: AZURE_KEYVAULT_URL_STANDARD and a configured workload identity.
+   /// Requires: AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, and a valid AZURE_FEDERATED_TOKEN_FILE.
    /// </summary>
    [Theory]
    [InlineData(null, "plnone")]
@@ -186,7 +186,7 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    {
       if (!TestConfiguration.HasWorkloadIdentityCredentials)
       {
-         Assert.Skip("AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, and AZURE_TENANT_ID must all be set and the runner must have a workload identity configured.");
+         Assert.Skip("AZURE_KEYVAULT_URL_STANDARD, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_FEDERATED_TOKEN_FILE must be set for workload identity authentication.");
       }
 
       var certName = KeyVaultFixture.GenerateCertificateName(prefix);
