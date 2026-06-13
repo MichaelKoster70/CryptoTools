@@ -56,8 +56,7 @@ internal static class TestConfiguration
       IsEnvironmentVariableSet("AZURE_KEYVAULT_URL_STANDARD") &&
       IsEnvironmentVariableSet("AZURE_CLIENT_ID") &&
       IsEnvironmentVariableSet("AZURE_TENANT_ID") &&
-      IsEnvironmentVariableSet("AZURE_FEDERATED_TOKEN_FILE") &&
-      FederatedTokenFileExists();
+      IsExistingFilePathEnvironmentVariable("AZURE_FEDERATED_TOKEN_FILE");
 
    /// <summary>
    /// Gets a value indicating whether all credentials required for client-secret authentication
@@ -83,9 +82,9 @@ internal static class TestConfiguration
    private static bool IsEnvironmentVariableSet(string variableName) =>
       !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(variableName));
 
-   private static bool FederatedTokenFileExists()
+   private static bool IsExistingFilePathEnvironmentVariable(string variableName)
    {
-      var tokenFile = Environment.GetEnvironmentVariable("AZURE_FEDERATED_TOKEN_FILE");
-      return !string.IsNullOrWhiteSpace(tokenFile) && File.Exists(tokenFile);
+      var filePath = Environment.GetEnvironmentVariable(variableName);
+      return !string.IsNullOrWhiteSpace(filePath) && File.Exists(filePath);
    }
 }
