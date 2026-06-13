@@ -5,6 +5,7 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Azure.Core;
 using Azure.Identity;
 using Azure.Security.KeyVault.Certificates;
@@ -15,11 +16,13 @@ namespace CertTools.AzureCreateRootCert.Tests;
 /// xUnit class fixture that provides shared Azure Key Vault test infrastructure and
 /// handles certificate cleanup after all tests in the collection have run.
 /// </summary>
+[SuppressMessage("Maintainability", "CA1515:Consider making public types internal", Justification = "required for xUnit fixture")]
 public sealed class KeyVaultFixture : IAsyncLifetime
 {
-   private readonly List<(string Name, Uri VaultUri, TokenCredential Credential)> _registeredCertificates = [];
+   private readonly List<(string Name, Uri VaultUri, TokenCredential Credential)> registeredCertificates = [];
 
    /// <summary>Returns a <see cref="ClientSecretCredential"/> built from the configured environment variables.</summary>
+
    public TokenCredential CreateClientSecretCredential() =>
       new ClientSecretCredential(
          TestConfiguration.GetTenantId(),
@@ -42,7 +45,7 @@ public sealed class KeyVaultFixture : IAsyncLifetime
    /// <param name="vaultUri">URI of the Key Vault that contains the certificate.</param>
    /// <param name="credential">Credential with permission to delete from that vault.</param>
    public void RegisterForCleanup(string certificateName, Uri vaultUri, TokenCredential credential) =>
-      _registeredCertificates.Add((certificateName, vaultUri, credential));
+      registeredCertificates.Add((certificateName, vaultUri, credential));
 
    /// <summary>
    /// Generates a unique, Azure Key Vault-compatible certificate name for a test.
@@ -56,7 +59,7 @@ public sealed class KeyVaultFixture : IAsyncLifetime
 
    async ValueTask IAsyncDisposable.DisposeAsync()
    {
-      foreach (var (name, vaultUri, credential) in _registeredCertificates)
+      foreach (var (name, vaultUri, credential) in registeredCertificates)
       {
          try
          {

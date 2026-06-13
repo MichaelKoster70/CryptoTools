@@ -59,14 +59,13 @@ internal static class TestConfiguration
       IsExistingFilePathEnvironmentVariable("AZURE_FEDERATED_TOKEN_FILE");
 
    /// <summary>
-   /// Gets a value indicating whether all credentials required for client-secret authentication
-   /// against the Premium Key Vault (for HSM-backed keys) are available.
+   /// Gets a value indicating whether a workload identity test can be attempted against the Premium Key Vault.
    /// </summary>
-   public static bool HasPremiumKeyVaultCredentials =>
+   public static bool HasPremiumWorkloadIdentityCredentials =>
       IsEnvironmentVariableSet("AZURE_KEYVAULT_URL_PREMIUM") &&
       IsEnvironmentVariableSet("AZURE_CLIENT_ID") &&
       IsEnvironmentVariableSet("AZURE_TENANT_ID") &&
-      IsEnvironmentVariableSet("AZURE_CLIENT_SECRET");
+      IsExistingFilePathEnvironmentVariable("AZURE_FEDERATED_TOKEN_FILE");
 
    private static string GetRequiredEnvironmentVariable(string variableName)
    {

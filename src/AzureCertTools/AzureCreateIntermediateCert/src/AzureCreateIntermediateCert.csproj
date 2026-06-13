@@ -26,7 +26,7 @@ The tool will create the certificate in the designated Azure Key Vault.</Descrip
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>
     </None>
-    <None Include="..\..PackageLogo.png">
+    <None Include="..\..\PackageLogo.png">
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>
     </None>
