@@ -25,16 +25,13 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    // ------------------------------------------------------------------
 
    /// <summary>Provides RSA HSM key sizes supported by Azure Key Vault.</summary>
-   public static TheoryData<int, bool, string> RsaHsmKeyOptions()
+   public static TheoryData<int, string> RsaHsmKeyOptions()
    {
-      var data = new TheoryData<int, bool, string>
+      var data = new TheoryData<int, string>
       {
-         { 2048, false, "rh2048ne" },
-         { 2048, true, "rh2048ex" },
-         { 3072, false, "rh3072ne" },
-         { 3072, true, "rh3072ex" },
-         { 4096, false, "rh4096ne" },
-         { 4096, true, "rh4096ex" }
+         { 2048, "rh2048ne" },
+         { 3072, "rh3072ne" },
+         { 4096, "rh4096ne" }
       };
       return data;
    }
@@ -46,8 +43,10 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    /// </summary>
    [Theory]
    [MemberData(nameof(RsaHsmKeyOptions))]
-   public async Task CreateCertificate_RsaHsmKey_Succeeds(int keySize, bool exportable, string prefix)
+   public async Task CreateCertificate_RsaHsmKey_Succeeds(int keySize, string prefix)
    {
+      const bool exportable = false; // RSA HSM keys only support non-exportable keys per issue
+ 
       if (!TestConfiguration.HasPremiumWorkloadIdentityCredentials)
       {
          Assert.Skip("AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_FEDERATED_TOKEN_FILE must be set for workload identity authentication.");
@@ -70,31 +69,28 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    // ------------------------------------------------------------------
 
    /// <summary>Provides EC HSM key curves supported by Azure Key Vault.</summary>
-   public static TheoryData<string, bool, string> EcHsmKeyOptions()
+   public static TheoryData<string, string> EcHsmKeyOptions()
    {
-      var data = new TheoryData<string, bool, string>
+      var data = new TheoryData<string, string>
       {
-         { "P256", false, "ehp256ne" },
-         { "P256", true, "ehp256ex" },
-         { "P256K", false, "ehp256kne" },
-         { "P256K", true, "ehp256kex" },
-         { "P384", false, "ehp384ne" },
-         { "P384", true, "ehp384ex" },
-         { "P521", false, "ehp521ne" },
-         { "P521", true, "ehp521ex" }
+         { "P256", "ehp256ne" },
+         { "P256K", "ehp256kne" },
+         { "P384", "ehp384ne" },
+         { "P521", "ehp521ne" }
       };
       return data;
    }
 
    /// <summary>
    /// Verifies that an HSM-backed EC root CA certificate is created in the Premium Key Vault
-   /// for each supported EC curve (P-256, P-256K, P-384, P-521) and exportability setting.
+   /// for each supported EC curve (P-256, P-256K, P-384, P-521) with the supported non-exportable HSM setting.
    /// Requires: AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, AZURE_TENANT_ID, and a valid AZURE_FEDERATED_TOKEN_FILE.
    /// </summary>
    [Theory]
    [MemberData(nameof(EcHsmKeyOptions))]
-   public async Task CreateCertificate_EcHsmKey_Succeeds(string keyCurveName, bool exportable, string prefix)
+   public async Task CreateCertificate_EcHsmKey_Succeeds(string keyCurveName,string prefix)
    {
+      const bool exportable = false; // EC HSM keys only support non-exportable keys per issue
       if (!TestConfiguration.HasPremiumWorkloadIdentityCredentials)
       {
          Assert.Skip("AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_FEDERATED_TOKEN_FILE must be set for workload identity authentication.");
@@ -199,6 +195,29 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
 
       Assert.Equal(0, exitCode);
       await AssertCertificatePathLengthConstraintAsync(certName, vaultUri, credential, pathLengthConstraint);
+   }
+
+   /// <summary>
+   /// Verifies that command-line validation fails when exportable is requested for HSM-backed key types.
+   /// </summary>
+   [Theory]
+   [InlineData("RsaHsm", 2048, null)]
+   [InlineData("EcHsm", null, "P256")]
+   public async Task CreateCertificate_ExportableHsmKey_FailsValidation(string keyType, int? keySize, string? keyCurveName)
+   {
+      var args = CliArgumentBuilder.CreateWorkloadIdentityArgs(
+         certName: "test-cert",
+         subjectName: SubjectName,
+         expireMonths: ExpireMonths,
+         vaultUri: new Uri("https://unit-test.vault.azure.net/"),
+         keyType: keyType,
+         exportable: true,
+         keySize: keySize,
+         keyCurveName: keyCurveName);
+
+      var exitCode = await Program.Main(args);
+
+      Assert.Equal(1, exitCode);
    }
 
    // ------------------------------------------------------------------

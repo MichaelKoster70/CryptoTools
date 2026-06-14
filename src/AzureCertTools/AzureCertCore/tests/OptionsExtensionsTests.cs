@@ -5,9 +5,6 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-using CertTools.AzureCertCore;
-using Xunit;
-
 namespace CertTools.AzureCertCore.Tests;
 
 /// <summary>
@@ -97,6 +94,26 @@ public class OptionsExtensionsTests
       Assert.True(result);
    }
 
+   [Theory]
+   [InlineData("RsaHsm", "P384", 2048)]
+   [InlineData("EcHsm", "P256", 4096)]
+   public void ValidateKeyCreationOptions_HsmExportable_ReturnsFalse(string keyType, string keyCurveName, int keySize)
+   {
+      var result = OptionsExtensions.ValidateKeyCreationOptions(keyType, keyCurveName, keySize, exportable: true);
+
+      Assert.False(result);
+   }
+
+   [Theory]
+   [InlineData("Rsa", "P384", 4096)]
+   [InlineData("Ec", "P384", 4096)]
+   public void ValidateKeyCreationOptions_NonHsmExportable_ReturnsTrue(string keyType, string keyCurveName, int keySize)
+   {
+      var result = OptionsExtensions.ValidateKeyCreationOptions(keyType, keyCurveName, keySize, exportable: true);
+
+      Assert.True(result);
+   }
+
    // ------------------------------------------------------------------
    // ValidateKeyCreationOptions – case-insensitive matching
    // ------------------------------------------------------------------
@@ -139,6 +156,16 @@ public class OptionsExtensionsTests
       var rsaOptions = Assert.IsType<RsaKeyCreationOptions>(result);
       Assert.Equal(3072, rsaOptions.KeySize);
       Assert.True(rsaOptions.HsmBacked);
+   }
+
+   [Fact]
+   public void Validate_HsmExportable_ReturnsNull()
+   {
+      var options = MakeCreateOptions(keyType: "RsaHsm", keySize: 3072, exportable: true, keyCurveName: "P384");
+
+      var result = options.Validate();
+
+      Assert.Null(result);
    }
 
    [Fact]
