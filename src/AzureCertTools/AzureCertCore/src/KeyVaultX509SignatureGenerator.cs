@@ -154,7 +154,7 @@ public class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri sign
          P256CurveOid or P256KCurveOid => HashAlgorithmName.SHA256,
          P384CurveOid => HashAlgorithmName.SHA384,
          P521CurveOid => HashAlgorithmName.SHA512,
-         _ => HashAlgorithmName.SHA384   // P-384 and unknown curves default to SHA-384
+         _ => HashAlgorithmName.SHA384   // unknown curves default to SHA-384
       };
    }
 
@@ -174,7 +174,11 @@ public class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri sign
       }
       catch (AsnContentException)
       {
-         return null;
+         // QUICKFIX:
+         // If the parameters are not in the expected format, we won't be able to determine the curve OID.
+         // If we land here, we assume it's a P-256K curve, which is the only non-standard curve currently supported by Azure KeyVault, and return its OID directly.
+         // This allows us to continue functioning even if the parameters are not in the expected format.
+         return P256KCurveOid;
       }
    }
 
