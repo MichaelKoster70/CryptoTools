@@ -116,7 +116,7 @@ jobs:
         if: success() || failure()
         with:
           name: Integration Test Results
-          path: ${{ github.workspace }}\TestResults\*.trx
+          path: ${{ github.workspace }}/TestResults/**/*.trx
           reporter: dotnet-trx
           fail-on-error: true
 
@@ -125,4 +125,4 @@ jobs:
         if: always()
         with:
           name: test-results
-          path: ${{ github.workspace }}\TestResults\*.trx
+          path: ${{ github.workspace }}/TestResults/**/*.trx
