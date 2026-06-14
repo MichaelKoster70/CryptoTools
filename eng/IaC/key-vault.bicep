@@ -52,7 +52,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   tags: tags
 }
 
-// Certificate Officer Role
+// Certificate Officer Role for User
 resource keyVaultRoleAssignmentCertificate 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('CertificateOfficer', keyVaultCertificatesOfficerRoleDefinitionId, keyVault.id)
   scope: keyVault
@@ -63,7 +63,18 @@ resource keyVaultRoleAssignmentCertificate 'Microsoft.Authorization/roleAssignme
   }
 }
 
-// Crypto User Role
+// Certificate Officer Role for Service Principal (needed to create certificates with private key operations enabled)
+resource keyVaultRoleAssignmentCertificate2 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('CertificateOfficer', keyVaultCryptoRoleDefinitionId, keyVault.id)
+  scope: keyVault
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', keyVaultCertificatesOfficerRoleDefinitionId)
+    principalId: cryptoUserServicePrincipalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Crypto User Role for Service Principal (needed to perform cryptographic operations)
 resource keyVaultRoleAssignmentCrypto 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('CryptoUser', keyVaultCryptoRoleDefinitionId, keyVault.id)
   scope: keyVault
