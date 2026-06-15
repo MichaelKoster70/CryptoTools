@@ -4,4 +4,10 @@
     <RootNamespace>CertTools.TestCore</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" />
+    <PackageReference Include="Azure.Security.KeyVault.Certificates" />
+    <PackageReference Include="xunit.v3.extensibility.core" />
+  </ItemGroup>
+
 </Project>

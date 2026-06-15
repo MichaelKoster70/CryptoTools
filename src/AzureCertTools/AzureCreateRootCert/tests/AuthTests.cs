@@ -6,7 +6,7 @@
 // ----------------------------------------------------------------------------
 
 using Azure.Security.KeyVault.Certificates;
-using CertTools.AzureCertCore;
+using CertTools.TestCore;
 
 namespace CertTools.AzureCreateRootCert.Tests;
 

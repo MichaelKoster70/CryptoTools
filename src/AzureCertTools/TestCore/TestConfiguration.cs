@@ -5,7 +5,9 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-namespace CertTools.AzureCreateRootCert.Tests;
+using System.Diagnostics.CodeAnalysis;
+
+namespace CertTools.TestCore;
 
 /// <summary>
 /// Provides configuration for integration tests by reading values from environment variables.
@@ -20,13 +22,13 @@ namespace CertTools.AzureCreateRootCert.Tests;
 ///   <item><description><c>AZURE_CLIENT_SECRET</c> – Azure Entra ID Application (Client) Secret.</description></item>
 /// </list>
 /// </remarks>
-internal static class TestConfiguration
+public static class TestConfiguration
 {
    /// <summary>Gets the Standard-tier Azure Key Vault URL.</summary>
-   public static string GetStandardKeyVaultUrl() => GetRequiredEnvironmentVariable("AZURE_KEYVAULT_URL_STANDARD");
+   public static Uri GetStandardKeyVaultUrl() => new(GetRequiredEnvironmentVariable("AZURE_KEYVAULT_URL_STANDARD"));
 
    /// <summary>Gets the Premium-tier Azure Key Vault URL (required for HSM-backed keys).</summary>
-   public static string GetPremiumKeyVaultUrl() => GetRequiredEnvironmentVariable("AZURE_KEYVAULT_URL_PREMIUM");
+   public static Uri GetPremiumKeyVaultUrl() => new(GetRequiredEnvironmentVariable("AZURE_KEYVAULT_URL_PREMIUM"));
 
    /// <summary>Gets the Azure Entra ID Application (Client) ID.</summary>
    public static string GetClientId() => GetRequiredEnvironmentVariable("AZURE_CLIENT_ID");

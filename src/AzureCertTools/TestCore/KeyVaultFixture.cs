@@ -9,8 +9,10 @@ using System.Diagnostics.CodeAnalysis;
 using Azure.Core;
 using Azure.Identity;
 using Azure.Security.KeyVault.Certificates;
+using CertTools.TestCore;
+using Xunit;
 
-namespace CertTools.AzureCreateRootCert.Tests;
+namespace CertTools.TestCore;
 
 /// <summary>
 /// xUnit class fixture that provides shared Azure Key Vault test infrastructure and
@@ -22,7 +24,6 @@ public sealed class KeyVaultFixture : IAsyncLifetime
    private readonly List<(string Name, Uri VaultUri, TokenCredential Credential)> registeredCertificates = [];
 
    /// <summary>Returns a <see cref="ClientSecretCredential"/> built from the configured environment variables.</summary>
-
    public TokenCredential CreateClientSecretCredential() =>
       new ClientSecretCredential(
          TestConfiguration.GetTenantId(),
@@ -33,10 +34,10 @@ public sealed class KeyVaultFixture : IAsyncLifetime
    public TokenCredential CreateWorkloadIdentityCredential() => new WorkloadIdentityCredential();
 
    /// <summary>Returns the Standard-tier Key Vault URI from the configured environment variable.</summary>
-   public Uri CreateStandardKeyVaultUri() => new(TestConfiguration.GetStandardKeyVaultUrl());
+   public Uri CreateStandardKeyVaultUri() => TestConfiguration.GetStandardKeyVaultUrl();
 
    /// <summary>Returns the Premium-tier Key Vault URI from the configured environment variable.</summary>
-   public Uri CreatePremiumKeyVaultUri() => new(TestConfiguration.GetPremiumKeyVaultUrl());
+   public Uri CreatePremiumKeyVaultUri() => TestConfiguration.GetPremiumKeyVaultUrl();
 
    /// <summary>
    /// Registers a certificate for deletion when the test collection finishes.
