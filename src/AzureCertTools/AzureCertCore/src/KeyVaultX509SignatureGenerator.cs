@@ -232,12 +232,33 @@ public class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri sign
       {
          // WriteInteger treats the span as an unsigned big-endian integer and adds
          // a leading 0x00 byte if the high bit is set, which is correct DER encoding.
-         writer.WriteInteger(rawSignature.AsSpan(0, halfLen));
-         writer.WriteInteger(rawSignature.AsSpan(halfLen));
+         WriteUnsignedInteger(writer, rawSignature.AsSpan(0, halfLen));
+         WriteUnsignedInteger(writer, rawSignature.AsSpan(halfLen));
       }
 
       return writer.Encode();
    }
+
+
+   private static void WriteUnsignedInteger(AsnWriter writer, ReadOnlySpan<byte> value)
+   {
+      // Trim leading zeros
+      while (!value.IsEmpty && value[0] == 0x00)
+      {
+         value = value[1..];
+      }
+
+      // DER INTEGER zero value
+      if (value.IsEmpty)
+      {
+         writer.WriteInteger(0);
+         return;
+      }
+
+      // Write as unsigned big-endian integer
+      writer.WriteIntegerUnsigned(value);
+   }
+
 
    private async Task<byte[]> KeyVaultSignDigestAsync(Uri keyUri, byte[] digest, HashAlgorithmName hashAlgorithm, RSASignaturePadding padding)
    {
