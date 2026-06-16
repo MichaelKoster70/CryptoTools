@@ -8,3 +8,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Scope = "type", Target = "~T:CertTools.AzureDeleteCert.Tests.ProgramTests")]
+[assembly: SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>", Scope = "member", Target = "~M:CertTools.AzureDeleteCert.Tests.DeleteCertProgramTests.InteractiveWithoutTenantId_ReturnsOne")]

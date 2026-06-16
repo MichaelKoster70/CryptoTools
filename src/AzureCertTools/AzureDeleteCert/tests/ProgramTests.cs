@@ -22,7 +22,7 @@ public sealed class KeyVaultCollection : ICollectionFixture<KeyVaultFixture>;
 /// Verifies certificate deletion behavior for the Azure delete tool.
 /// </summary>
 [Collection(nameof(KeyVaultCollection))]
-public sealed class DeleteCertProgramTests
+public sealed class ProgramTests
 {
    private readonly KeyVaultFixture fixture;
 
@@ -30,7 +30,7 @@ public sealed class DeleteCertProgramTests
    /// Initializes a new instance of the <see cref="DeleteCertProgramTests"/> class.
    /// </summary>
    /// <param name="fixture">Shared Key Vault test fixture.</param>
-   public DeleteCertProgramTests(KeyVaultFixture fixture)
+   public ProgramTests(KeyVaultFixture fixture)
    {
       this.fixture = fixture;
    }

@@ -43,7 +43,7 @@ internal static class Program
       {
          // Start delete operation for the specified certificate name
          var operation = client.StartDeleteCertificate(options.CertificateName);
-         operation.WaitForCompletion();
+         _ = operation.WaitForCompletion();
 
          Console.WriteLine($"Deleted certificate '{options.CertificateName}' from Key Vault '{options.KeyVaultUri}'.");
          return 0;
