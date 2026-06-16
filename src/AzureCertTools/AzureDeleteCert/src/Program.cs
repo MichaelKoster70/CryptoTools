@@ -21,10 +21,10 @@ internal static class Program
    /// Application entry point.
    /// </summary>
    /// <param name="args">The args</param>
-   static int Main(string[] args)
+   internal static int Main(string[] args)
    {
       // Parse the command line options
-      var options = Parser.Default.ParseArguments<OptionsBase>(args).Value.Validate();
+      var options = Parser.Default.ParseArguments<Options>(args).Value.Validate();
       if (options == null)
       {
          return 1;

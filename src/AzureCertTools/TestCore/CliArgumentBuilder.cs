@@ -12,7 +12,7 @@ namespace CertTools.TestCore;
 /// </summary>
 public static class CliArgumentBuilder
 {
-   public static string[] CreateWorkloadIdentityArgs(string certName, string subjectName, int expireMonths, Uri vaultUri, string keyType, bool exportable, int? keySize = null, string? keyCurveName = null, int? pathLengthConstraint = null)
+   public static string[] CreateWorkloadIdentityArgs(string certName, string subjectName, int expireMonths, Uri vaultUri, string keyType, bool exportable, int? keySize = null, string? keyCurveName = null, int? pathLengthConstraint = null, string? signerCertificateName = null)
    {
       ArgumentNullException.ThrowIfNull(certName);
       ArgumentNullException.ThrowIfNull(vaultUri);
@@ -37,6 +37,12 @@ public static class CliArgumentBuilder
       {
          args.Add("--PathLengthConstraint");
          args.Add(pathLengthConstraint.Value.ToString());
+      }
+
+      if (!string.IsNullOrWhiteSpace(signerCertificateName))
+      {
+         args.Add("--SignerCertificateName");
+         args.Add(signerCertificateName);
       }
 
       switch (keyType)

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>CertTools.AzureCreateSigningCert.Tests</RootNamespace>
+    <Title>Tests for AzureCreateSigningCert</Title>
+    <AssemblyTitle>$(Title)</AssemblyTitle>
+    <PackAsTool>false</PackAsTool>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.analyzers" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TestCore\TestCore.csproj" />
+    <ProjectReference Include="..\src\AzureCreateSigningCert.csproj" />
+    <ProjectReference Include="..\..\AzureCreateRootCert\src\AzureCreateRootCert.csproj" />
+  </ItemGroup>
+
+</Project>

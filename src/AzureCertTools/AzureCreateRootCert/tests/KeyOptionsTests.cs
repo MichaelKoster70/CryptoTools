@@ -45,7 +45,7 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    [MemberData(nameof(RsaHsmKeyOptions))]
    public async Task CreateCertificate_RsaHsmKey_Succeeds(int keySize, string prefix)
    {
-      const bool exportable = false; // RSA HSM keys only support non-exportable keys per issue
+      const bool Exportable = false; // RSA HSM keys only support non-exportable keys per issue
  
       if (!TestConfiguration.HasPremiumWorkloadIdentityCredentials)
       {
@@ -56,12 +56,12 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
       var vaultUri = fixture.CreatePremiumKeyVaultUri();
       var credential = fixture.CreateWorkloadIdentityCredential();
       fixture.RegisterForCleanup(certName, vaultUri, credential);
-      var args = CliArgumentBuilder.CreateWorkloadIdentityArgs(certName, SubjectName, ExpireMonths, vaultUri, keyType: "RsaHsm", exportable, keySize: keySize);
+      var args = CliArgumentBuilder.CreateWorkloadIdentityArgs(certName, SubjectName, ExpireMonths, vaultUri, keyType: "RsaHsm", exportable: Exportable, keySize: keySize);
 
       var exitCode = await Program.Main(args);
 
       Assert.Equal(0, exitCode);
-      await AssertCertificatePropertiesAsync(certName, vaultUri, credential, CertificateKeyType.RsaHsm, exportable);
+      await CertificateAssertions.AssertCertificatePropertiesAsync(certName, vaultUri, credential, CertificateKeyType.RsaHsm, Exportable);
    }
 
    // ------------------------------------------------------------------
@@ -90,7 +90,8 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    [MemberData(nameof(EcHsmKeyOptions))]
    public async Task CreateCertificate_EcHsmKey_Succeeds(string keyCurveName,string prefix)
    {
-      const bool exportable = false; // EC HSM keys only support non-exportable keys per issue
+      const bool Exportable = false; // EC HSM keys only support non-exportable keys
+
       if (!TestConfiguration.HasPremiumWorkloadIdentityCredentials)
       {
          Assert.Skip("AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_FEDERATED_TOKEN_FILE must be set for workload identity authentication.");
@@ -100,16 +101,16 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
       var vaultUri = fixture.CreatePremiumKeyVaultUri();
       var credential = fixture.CreateWorkloadIdentityCredential();
       fixture.RegisterForCleanup(certName, vaultUri, credential);
-      var args = CliArgumentBuilder.CreateWorkloadIdentityArgs(certName, SubjectName, ExpireMonths, vaultUri, keyType: "EcHsm", exportable, keyCurveName: keyCurveName);
+      var args = CliArgumentBuilder.CreateWorkloadIdentityArgs(certName, SubjectName, ExpireMonths, vaultUri, keyType: "EcHsm", exportable: Exportable, keyCurveName: keyCurveName);
 
       var exitCode = await Program.Main(args);
 
       Assert.Equal(0, exitCode);
-      await AssertCertificatePropertiesAsync(certName, vaultUri, credential, CertificateKeyType.EcHsm, exportable);
+      await CertificateAssertions.AssertCertificatePropertiesAsync(certName, vaultUri, credential, CertificateKeyType.EcHsm, Exportable);
    }
 
    // ------------------------------------------------------------------
-   // Software-backed RSA  (Standard Key Vault, 4096-bit only per issue)
+   // Software-backed RSA  (Standard Key Vault, 4096-bit only)
    // ------------------------------------------------------------------
 
    /// <summary>
@@ -136,11 +137,11 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
       var exitCode = await Program.Main(args);
 
       Assert.Equal(0, exitCode);
-      await AssertCertificatePropertiesAsync(certName, vaultUri, credential, CertificateKeyType.Rsa, exportable);
+      await CertificateAssertions.AssertCertificatePropertiesAsync(certName, vaultUri, credential, CertificateKeyType.Rsa, exportable);
    }
 
    // ------------------------------------------------------------------
-   // Software-backed EC  (Standard Key Vault, P-384 per issue)
+   // Software-backed EC  (Standard Key Vault, P-384)
    // ------------------------------------------------------------------
 
    /// <summary>
@@ -167,7 +168,7 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
       var exitCode = await Program.Main(args);
 
       Assert.Equal(0, exitCode);
-      await AssertCertificatePropertiesAsync(certName, vaultUri, credential, CertificateKeyType.Ec, exportable);
+      await CertificateAssertions.AssertCertificatePropertiesAsync(certName, vaultUri, credential, CertificateKeyType.Ec, exportable);
    }
 
    /// <summary>
@@ -194,7 +195,7 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
       var exitCode = await Program.Main(args);
 
       Assert.Equal(0, exitCode);
-      await AssertCertificatePathLengthConstraintAsync(certName, vaultUri, credential, pathLengthConstraint);
+      await CertificateAssertions.AssertCertificatePathLengthConstraintAsync(certName, vaultUri, credential, pathLengthConstraint);
    }
 
    /// <summary>
@@ -224,37 +225,4 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    // Helper
    // ------------------------------------------------------------------
 
-   private static async Task AssertCertificatePropertiesAsync(string certName, Uri vaultUri, Azure.Core.TokenCredential credential, CertificateKeyType expectedKeyType, bool expectedExportable)
-   {
-      var client = new CertificateClient(vaultUri, credential);
-      var response = await client.GetCertificateAsync(certName);
-      Assert.NotNull(response.Value);
-      Assert.Equal(certName, response.Value.Name);
-      Assert.Equal(expectedKeyType, response.Value.Policy.KeyType);
-      Assert.Equal(expectedExportable, response.Value.Policy.Exportable);
-   }
-
-   private static async Task AssertCertificatePathLengthConstraintAsync(string certName, Uri vaultUri, Azure.Core.TokenCredential credential, int? expectedPathLengthConstraint)
-   {
-      var client = new CertificateClient(vaultUri, credential);
-      var response = await client.GetCertificateAsync(certName);
-      Assert.NotNull(response.Value);
-
-      using var certificate = X509CertificateLoader.LoadCertificate(response.Value.Cer);
-      var basicConstraints = certificate.Extensions
-         .OfType<X509BasicConstraintsExtension>()
-         .Single();
-
-      Assert.True(basicConstraints.CertificateAuthority);
-
-      if (expectedPathLengthConstraint.HasValue)
-      {
-         Assert.True(basicConstraints.HasPathLengthConstraint);
-         Assert.Equal(expectedPathLengthConstraint.Value, basicConstraints.PathLengthConstraint);
-      }
-      else
-      {
-         Assert.False(basicConstraints.HasPathLengthConstraint);
-      }
-   }
 }
