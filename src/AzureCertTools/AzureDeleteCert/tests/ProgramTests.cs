@@ -8,7 +8,6 @@
 using Azure.Core;
 using Azure.Security.KeyVault.Certificates;
 using CertTools.TestCore;
-using Xunit;
 
 namespace CertTools.AzureDeleteCert.Tests;
 
@@ -33,7 +32,7 @@ public sealed class ProgramTests
    /// Verifies that the tool deletes an existing certificate when client-secret authentication is used.
    /// </summary>
    [Fact]
-   public async Task Main_ClientSecretCredentials_DeletesExistingCertificate_ReturnsZero()
+   public async Task ClientSecretCredentials_DeletesExistingCertificate_ReturnsZero()
    {
       if (!TestConfiguration.HasClientSecretCredentials)
       {
@@ -59,7 +58,7 @@ public sealed class ProgramTests
       Assert.Equal(0, result);
 
       var client = new CertificateClient(vaultUri, credential);
-      var deletedCertificate = await client.GetDeletedCertificateAsync(certificateName);
+      var deletedCertificate = await client.GetDeletedCertificateAsync(certificateName, TestContext.Current.CancellationToken);
       Assert.Equal(certificateName, deletedCertificate.Value.Name);
    }
 
@@ -91,7 +90,7 @@ public sealed class ProgramTests
       Assert.Equal(0, result);
 
       var client = new CertificateClient(vaultUri, credential);
-      var deletedCertificate = await client.GetDeletedCertificateAsync(certificateName);
+      var deletedCertificate = await client.GetDeletedCertificateAsync(certificateName, TestContext.Current.CancellationToken);
       Assert.Equal(certificateName, deletedCertificate.Value.Name);
    }
 
