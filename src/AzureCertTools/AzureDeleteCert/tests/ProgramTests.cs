@@ -13,21 +13,15 @@ using Xunit;
 namespace CertTools.AzureDeleteCert.Tests;
 
 /// <summary>
-/// Integration tests for <see cref="Program"/>.
-/// </summary>
-[CollectionDefinition(nameof(KeyVaultCollection))]
-public sealed class KeyVaultCollection : ICollectionFixture<KeyVaultFixture>;
-
-/// <summary>
 /// Verifies certificate deletion behavior for the Azure delete tool.
 /// </summary>
-[Collection(nameof(KeyVaultCollection))]
+[Collection("KeyVault")]
 public sealed class ProgramTests
 {
    private readonly KeyVaultFixture fixture;
 
    /// <summary>
-   /// Initializes a new instance of the <see cref="DeleteCertProgramTests"/> class.
+   /// Initializes a new instance of the <see cref="ProgramTests"/> class.
    /// </summary>
    /// <param name="fixture">Shared Key Vault test fixture.</param>
    public ProgramTests(KeyVaultFixture fixture)

@@ -9,7 +9,6 @@ using System.Diagnostics.CodeAnalysis;
 using Azure.Core;
 using Azure.Identity;
 using Azure.Security.KeyVault.Certificates;
-using CertTools.TestCore;
 using Xunit;
 
 namespace CertTools.TestCore;

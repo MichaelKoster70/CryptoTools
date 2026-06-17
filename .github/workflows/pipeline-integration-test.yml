@@ -116,7 +116,8 @@ jobs:
         if: success() || failure()
         with:
           name: Integration Test Results
-          path: ${{ env.TestResultsPath }}/*.trx
+          path: ${{ env.TestResultsPath }}//**/*.trx
+          path-replace-backslashes: true
           reporter: dotnet-trx
           fail-on-error: true
 
