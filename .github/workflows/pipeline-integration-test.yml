@@ -1,6 +1,7 @@
 name: 'AzureCreateRootCert: Integration Tests'
 
 permissions:
+  checks: write
   contents: read
   id-token: write  # Required for workload identity (OIDC) tests
 
@@ -66,6 +67,15 @@ jobs:
         shell: pwsh
 
       - name: Publish Test Results
+        uses: dorny/test-reporter@vv
+        if: success() || failure()
+        with:
+          name: Integration Test Results
+          path: ${{ env.TestResultsPath }}/*.trx
+          reporter: dotnet-trx
+          fail-on-error: true
+
+      - name: Upload Test Results Artifact
         uses: actions/upload-artifact@v7
         if: always()
         with:
