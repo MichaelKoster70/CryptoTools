@@ -21,7 +21,7 @@ jobs:
     env:
       AzureCertToolsPath: ${{ github.workspace }}\src\AzureCertTools
       AzureCertToolsSolutionPath: ${{ github.workspace }}\src\AzureCertTools\AzureCertTools.slnx
-
+      TestResultsPath: ${{ github.workspace }}/TestResults
       # Key Vault URLs for integration tests
       AZURE_KEYVAULT_URL_STANDARD: ${{ vars.TEST_AZURE_KEYVAULT_URL_STANDARD }}
       AZURE_KEYVAULT_URL_PREMIUM: ${{ vars.TEST_AZURE_KEYVAULT_URL_PREMIUM }}
@@ -107,16 +107,16 @@ jobs:
               --configuration Release `
               --no-build `
               --logger "trx;LogFileName=$($testProject.BaseName).trx" `
-              --results-directory "${{ github.workspace }}\TestResults"
+              --results-directory "${{ env.TestResultsPath }}"
           }
         shell: pwsh
 
       - name: 'Test: Report Results'
-        uses: dorny/test-reporter@v2
+        uses: dorny/test-reporter@v3
         if: success() || failure()
         with:
           name: Integration Test Results
-          path: ${{ github.workspace }}\TestResults\**\*.trx
+          path: ${{ env.TestResultsPath }}/*.trx
           reporter: dotnet-trx
           fail-on-error: true
 
@@ -125,4 +125,4 @@ jobs:
         if: always()
         with:
           name: test-results
-          path: ${{ github.workspace }}\TestResults\**\*.trx
+          path: ${{ env.TestResultsPath }}/*.trx
