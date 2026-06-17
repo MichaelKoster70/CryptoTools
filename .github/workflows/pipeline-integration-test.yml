@@ -26,7 +26,8 @@ jobs:
     env:
       AzureCertToolsPath: ${{ github.workspace }}\src\AzureCertTools
       AzureCertToolsSolutionPath: ${{ github.workspace }}\src\AzureCertTools\AzureCertTools.slnx
-      TestProjectPath: ${{ github.workspace }}\src\AzureCertTools\AzureCreateRootCert\tests\AzureCreateRootCertTests
+      TestProjectPath: ${{ github.workspace }}\src\AzureCertTools\AzureCreateRootCert\tests\AzureCreateRootCertTests.csproj
+      TestResultsPath: ${{ github.workspace }}/TestResults
       # Key Vault URLs for integration tests
       AZURE_KEYVAULT_URL_STANDARD: ${{ vars.AZURE_KEYVAULT_URL_STANDARD }}
       AZURE_KEYVAULT_URL_PREMIUM: ${{ vars.AZURE_KEYVAULT_URL_PREMIUM }}
@@ -61,7 +62,7 @@ jobs:
             --configuration Release `
             --no-build `
             --logger "trx;LogFileName=TestResults.trx" `
-            --results-directory "${{ github.workspace }}\TestResults"
+            --results-directory "${{ env.TestResultsPath }}"
         shell: pwsh
 
       - name: Publish Test Results
@@ -69,4 +70,4 @@ jobs:
         if: always()
         with:
           name: test-results
-          path: ${{ github.workspace }}\TestResults\*.trx
+          path: ${{ env.TestResultsPath }}/*.trx
