@@ -1,4 +1,4 @@
-name: 'AzureCreateRootCert: Integration Tests'
+name: 'AzureCertTools: Integration Tests'
 
 permissions:
   checks: write
