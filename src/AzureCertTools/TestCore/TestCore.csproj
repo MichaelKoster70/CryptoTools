@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <RootNamespace>CertTools.TestCore</RootNamespace>
+    <PackAsTool>false</PackAsTool>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

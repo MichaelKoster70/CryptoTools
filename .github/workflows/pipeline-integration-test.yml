@@ -39,14 +39,16 @@ jobs:
             throw "No test projects found under ${{ env.AzureCertToolsPath }} in folders named 'tests'."
           }
 
-          $matrix = $testProjects |
-            Sort-Object FullName |
-            ForEach-Object {
-              @{
-                projectName = $_.BaseName
-                projectPath = $_.FullName
+          $matrix = @(
+            $testProjects |
+              Sort-Object FullName |
+              ForEach-Object {
+                @{
+                  projectName = $_.BaseName
+                  projectPath = $_.FullName
+                }
               }
-            }
+          )
 
           $matrixJson = $matrix | ConvertTo-Json -Compress
           "projects=$matrixJson" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append

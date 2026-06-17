@@ -15,3 +15,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Scope = "member", Target = "~M:CertTools.TestCore.KeyVaultFixture.CreateClientSecretCredential~Azure.Core.TokenCredential")]
 [assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Scope = "member", Target = "~M:CertTools.TestCore.KeyVaultFixture.CreateWorkloadIdentityCredential~Azure.Core.TokenCredential")]
 [assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Scope = "member", Target = "~M:CertTools.TestCore.KeyVaultFixture.CreateStandardKeyVaultUri~System.Uri")]
+[assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Scope = "member", Target = "~M:CertTools.TestCore.KeyVaultFixture.CreatePremiumKeyVaultUri~System.Uri")]
