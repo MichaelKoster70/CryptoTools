@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // <copyright company="Michael Koster">
 //   Copyright (c) Michael Koster. All rights reserved.
 //   Licensed under the MIT License.
@@ -51,7 +51,7 @@ public static class OptionsExtensions
       // Validate key creation options for OptionsCreateBase-derived types
       if (result != null && options is OptionsCreateBase createOptions)
       {
-         result = ValidateKeyCreationOptions(createOptions.KeyType, createOptions.KeyCurveName, createOptions.KeySize) ? result : null;
+         result = ValidateKeyCreationOptions(createOptions.KeyType, createOptions.KeyCurveName, createOptions.KeySize, createOptions.Exportable) ? result : null;
       }
 
       return result;
@@ -63,8 +63,9 @@ public static class OptionsExtensions
    /// <param name="keyType">The key type value to validate.</param>
    /// <param name="keyCurveName">The EC key curve name value to validate.</param>
    /// <param name="keySize">The RSA key size value to validate.</param>
+   /// <param name="exportable">A value indicating whether the key is requested to be exportable.</param>
    /// <returns><c>true</c> if all values are valid; <c>false</c> otherwise.</returns>
-   public static bool ValidateKeyCreationOptions(string keyType, string keyCurveName, int keySize)
+   public static bool ValidateKeyCreationOptions(string keyType, string keyCurveName, int keySize, bool exportable = false)
    {
       ArgumentNullException.ThrowIfNull(keyType);
       ArgumentNullException.ThrowIfNull(keyCurveName);
@@ -75,6 +76,13 @@ public static class OptionsExtensions
       if (!validKeyTypes.Contains(keyType, StringComparer.OrdinalIgnoreCase))
       {
          PrintError($"Invalid KeyType '{keyType}'. Valid values are: Ec, EcHsm, Rsa, RsaHsm");
+         return false;
+      }
+
+      bool isHsmKey = keyType.Equals("EcHsm", StringComparison.OrdinalIgnoreCase) || keyType.Equals("RsaHsm", StringComparison.OrdinalIgnoreCase);
+      if (exportable && isHsmKey)
+      {
+         PrintError($"Exportable keys are not supported with HSM-backed key type '{keyType}'.");
          return false;
       }
 

@@ -5,7 +5,9 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-namespace CertTools.AzureCreateRootCert.Tests;
+using System.Diagnostics.CodeAnalysis;
+
+namespace CertTools.TestCore;
 
 /// <summary>
 /// Provides configuration for integration tests by reading values from environment variables.
@@ -20,13 +22,13 @@ namespace CertTools.AzureCreateRootCert.Tests;
 ///   <item><description><c>AZURE_CLIENT_SECRET</c> – Azure Entra ID Application (Client) Secret.</description></item>
 /// </list>
 /// </remarks>
-internal static class TestConfiguration
+public static class TestConfiguration
 {
    /// <summary>Gets the Standard-tier Azure Key Vault URL.</summary>
-   public static string GetStandardKeyVaultUrl() => GetRequiredEnvironmentVariable("AZURE_KEYVAULT_URL_STANDARD");
+   public static Uri GetStandardKeyVaultUrl() => new(GetRequiredEnvironmentVariable("AZURE_KEYVAULT_URL_STANDARD"));
 
    /// <summary>Gets the Premium-tier Azure Key Vault URL (required for HSM-backed keys).</summary>
-   public static string GetPremiumKeyVaultUrl() => GetRequiredEnvironmentVariable("AZURE_KEYVAULT_URL_PREMIUM");
+   public static Uri GetPremiumKeyVaultUrl() => new(GetRequiredEnvironmentVariable("AZURE_KEYVAULT_URL_PREMIUM"));
 
    /// <summary>Gets the Azure Entra ID Application (Client) ID.</summary>
    public static string GetClientId() => GetRequiredEnvironmentVariable("AZURE_CLIENT_ID");
@@ -49,20 +51,23 @@ internal static class TestConfiguration
 
    /// <summary>
    /// Gets a value indicating whether a workload identity test can be attempted.
-   /// Only the Standard Key Vault URL is required; the OIDC token is injected by the GitHub Actions
-   /// environment automatically.
+   /// Requires a Standard Key Vault URL plus the workload identity environment variables expected by
+   /// <see cref="Azure.Identity.WorkloadIdentityCredential"/>.
    /// </summary>
-   public static bool HasWorkloadIdentityCredentials => IsEnvironmentVariableSet("AZURE_KEYVAULT_URL_STANDARD");
+   public static bool HasWorkloadIdentityCredentials =>
+      IsEnvironmentVariableSet("AZURE_KEYVAULT_URL_STANDARD") &&
+      IsEnvironmentVariableSet("AZURE_CLIENT_ID") &&
+      IsEnvironmentVariableSet("AZURE_TENANT_ID") &&
+      IsExistingFilePathEnvironmentVariable("AZURE_FEDERATED_TOKEN_FILE");
 
    /// <summary>
-   /// Gets a value indicating whether all credentials required for client-secret authentication
-   /// against the Premium Key Vault (for HSM-backed keys) are available.
+   /// Gets a value indicating whether a workload identity test can be attempted against the Premium Key Vault.
    /// </summary>
-   public static bool HasPremiumKeyVaultCredentials =>
+   public static bool HasPremiumWorkloadIdentityCredentials =>
       IsEnvironmentVariableSet("AZURE_KEYVAULT_URL_PREMIUM") &&
       IsEnvironmentVariableSet("AZURE_CLIENT_ID") &&
       IsEnvironmentVariableSet("AZURE_TENANT_ID") &&
-      IsEnvironmentVariableSet("AZURE_CLIENT_SECRET");
+      IsExistingFilePathEnvironmentVariable("AZURE_FEDERATED_TOKEN_FILE");
 
    private static string GetRequiredEnvironmentVariable(string variableName)
    {
@@ -77,4 +82,10 @@ internal static class TestConfiguration
 
    private static bool IsEnvironmentVariableSet(string variableName) =>
       !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(variableName));
+
+   private static bool IsExistingFilePathEnvironmentVariable(string variableName)
+   {
+      var filePath = Environment.GetEnvironmentVariable(variableName);
+      return !string.IsNullOrWhiteSpace(filePath) && File.Exists(filePath);
+   }
 }

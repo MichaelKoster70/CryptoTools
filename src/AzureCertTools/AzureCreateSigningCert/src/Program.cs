@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // <copyright company="Michael Koster">
 //   Copyright (c) Michael Koster. All rights reserved.
 //   Licensed under the MIT License.
@@ -13,7 +13,7 @@ namespace CertTools.AzureCreateSigningCert;
 
 internal static class Program
 {
-   static int Main(string[] args)
+   internal static async Task<int> Main(string[] args)
    {
       // Parse the command line options
       var options = Parser.Default.ParseArguments<Options>(args).Value.Validate();
@@ -54,12 +54,12 @@ internal static class Program
 
       if (!string.IsNullOrEmpty(options.CertificateName))
       {
-         CertificateWorker.KeyVaultCreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths, options.GetKeyCreationOptions()).Wait();
+         await CertificateWorker.KeyVaultCreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths, options.GetKeyCreationOptions());
          Console.WriteLine($"Certificate created: name={options.CertificateName}, Key Vault={keyVaultUri}");
       }
       else if (!string.IsNullOrEmpty(options.FileName))
       {
-         CertificateWorker.LocalCreateSigningCertificateAsync(options.FileName, options.Password, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths, options.GetKeyCreationOptions()).Wait();
+         await CertificateWorker.LocalCreateSigningCertificateAsync(options.FileName, options.Password, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths, options.GetKeyCreationOptions());
          Console.WriteLine($"PFX file created: {options.FileName}");
       }
       else

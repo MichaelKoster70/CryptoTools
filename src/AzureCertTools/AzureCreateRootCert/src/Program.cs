@@ -20,13 +20,13 @@ internal static class Program
    /// Application entry point.
    /// </summary>
    /// <param name="args">The args</param>
-   static async Task Main(string[] args)
+   internal static async Task<int> Main(string[] args)
    {
       // Parse the command line options
       var options = Parser.Default.ParseArguments<Options>(args).Value.Validate();
       if (options == null)
       {
-         return;
+         return 1;
       }
 
       // Write header
@@ -40,5 +40,6 @@ internal static class Program
       var cert = await CertificateWorker.CreateRootCertAsync(options.CertificateName, options.Subject, options.ExpireMonths, options.PathLengthConstraint, keyVaultUri, credentials, options.GetKeyCreationOptions());
 
       Console.WriteLine($"Certificate created: name={cert}, Key Vault={keyVaultUri}");
+      return 0;
    }
 }

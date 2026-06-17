@@ -5,19 +5,22 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Azure.Core;
 using Azure.Identity;
 using Azure.Security.KeyVault.Certificates;
+using Xunit;
 
-namespace CertTools.AzureCreateRootCert.Tests;
+namespace CertTools.TestCore;
 
 /// <summary>
 /// xUnit class fixture that provides shared Azure Key Vault test infrastructure and
 /// handles certificate cleanup after all tests in the collection have run.
 /// </summary>
-internal sealed class KeyVaultFixture : IAsyncLifetime
+[SuppressMessage("Maintainability", "CA1515:Consider making public types internal", Justification = "required for xUnit fixture")]
+public sealed class KeyVaultFixture : IAsyncLifetime
 {
-   private readonly List<(string Name, Uri VaultUri, TokenCredential Credential)> _registeredCertificates = [];
+   private readonly List<(string Name, Uri VaultUri, TokenCredential Credential)> registeredCertificates = [];
 
    /// <summary>Returns a <see cref="ClientSecretCredential"/> built from the configured environment variables.</summary>
    public TokenCredential CreateClientSecretCredential() =>
@@ -27,13 +30,13 @@ internal sealed class KeyVaultFixture : IAsyncLifetime
          TestConfiguration.GetClientSecret());
 
    /// <summary>Returns a <see cref="WorkloadIdentityCredential"/> for GitHub Actions OIDC authentication.</summary>
-   public static TokenCredential CreateWorkloadIdentityCredential() => new WorkloadIdentityCredential();
+   public TokenCredential CreateWorkloadIdentityCredential() => new WorkloadIdentityCredential();
 
    /// <summary>Returns the Standard-tier Key Vault URI from the configured environment variable.</summary>
-   public static Uri CreateStandardKeyVaultUri() => new(TestConfiguration.GetStandardKeyVaultUrl());
+   public Uri CreateStandardKeyVaultUri() => TestConfiguration.GetStandardKeyVaultUrl();
 
    /// <summary>Returns the Premium-tier Key Vault URI from the configured environment variable.</summary>
-   public static Uri CreatePremiumKeyVaultUri() => new(TestConfiguration.GetPremiumKeyVaultUrl());
+   public Uri CreatePremiumKeyVaultUri() => TestConfiguration.GetPremiumKeyVaultUrl();
 
    /// <summary>
    /// Registers a certificate for deletion when the test collection finishes.
@@ -42,7 +45,7 @@ internal sealed class KeyVaultFixture : IAsyncLifetime
    /// <param name="vaultUri">URI of the Key Vault that contains the certificate.</param>
    /// <param name="credential">Credential with permission to delete from that vault.</param>
    public void RegisterForCleanup(string certificateName, Uri vaultUri, TokenCredential credential) =>
-      _registeredCertificates.Add((certificateName, vaultUri, credential));
+      registeredCertificates.Add((certificateName, vaultUri, credential));
 
    /// <summary>
    /// Generates a unique, Azure Key Vault-compatible certificate name for a test.
@@ -56,7 +59,7 @@ internal sealed class KeyVaultFixture : IAsyncLifetime
 
    async ValueTask IAsyncDisposable.DisposeAsync()
    {
-      foreach (var (name, vaultUri, credential) in _registeredCertificates)
+      foreach (var (name, vaultUri, credential) in registeredCertificates)
       {
          try
          {

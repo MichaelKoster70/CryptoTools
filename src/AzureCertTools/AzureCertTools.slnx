@@ -3,12 +3,21 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
-  <Project Path="AzureCertCore/src/AzureCertCore.csproj" />
-  <Project Path="AzureCreateRootCert/src/AzureCreateRootCert.csproj" />
-  <Project Path="AzureCreateIntermediateCert/src/AzureCreateIntermediateCert.csproj" />
-  <Project Path="AzureCreateSigningCert/src/AzureCreateSigningCert.csproj" />
-  <Project Path="AzureCreateSslServerCert/src/AzureCreateSslServerCert.csproj" />
-  <Project Path="AzureDeleteCert/src/AzureDeleteCert.csproj" />
-  <Project Path="AzureCertCore/tests/AzureCertCoreTests.csproj" />
-  <Project Path="AzureCreateRootCert/tests/AzureCreateRootCertTests.csproj" />
+  <Folder Name="/src/">
+    <Project Path="AzureCertCore/src/AzureCertCore.csproj" />
+    <Project Path="AzureCreateIntermediateCert/src/AzureCreateIntermediateCert.csproj" />
+    <Project Path="AzureCreateRootCert/src/AzureCreateRootCert.csproj" />
+    <Project Path="AzureCreateSigningCert/src/AzureCreateSigningCert.csproj" />
+    <Project Path="AzureCreateSslServerCert/src/AzureCreateSslServerCert.csproj" />
+    <Project Path="AzureDeleteCert/src/AzureDeleteCert.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="AzureCertCore/tests/AzureCertCoreTests.csproj" />
+    <Project Path="AzureCreateIntermediateCert/tests/AzureCreateIntermediateCertTests.csproj" />
+    <Project Path="AzureCreateRootCert/tests/AzureCreateRootCertTests.csproj" />
+    <Project Path="AzureCreateSigningCert/tests/AzureCreateSigningCertTests.csproj" />
+    <Project Path="AzureCreateSslServerCert/tests/AzureCreateSslServerCertTests.csproj" />
+    <Project Path="AzureDeleteCert/tests/AzureDeleteCertTests.csproj" />
+    <Project Path="TestCore/TestCore.csproj" />
+  </Folder>
 </Solution>

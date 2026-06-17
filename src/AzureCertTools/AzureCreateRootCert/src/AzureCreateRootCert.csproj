@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <RootNamespace>CertTools.AzureCreateRootCert</RootNamespace>
@@ -22,7 +22,7 @@ The tool will create the certificate in the designated Azure Key Vault.</Descrip
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\PackageLogo.png">
+    <None Include="..\..\PackageLogo.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
@@ -41,11 +41,11 @@ The tool will create the certificate in the designated Azure Key Vault.</Descrip
   <ItemGroup>
     <ProjectReference Include="..\..\AzureCertCore\src\AzureCertCore.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>AzureCreateRootCertTests</_Parameter1>
-    </AssemblyAttribute>
+    <InternalsVisibleTo Include="AzureCreateRootCertTests" />
+    <InternalsVisibleTo Include="AzureCreateIntermediateCertTests" />
+    <InternalsVisibleTo Include="AzureCreateSigningCertTests" />
   </ItemGroup>
 
 </Project>

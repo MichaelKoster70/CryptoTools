@@ -21,10 +21,10 @@ internal static class Program
    /// Application entry point.
    /// </summary>
    /// <param name="args">The args</param>
-   static int Main(string[] args)
+   internal static int Main(string[] args)
    {
       // Parse the command line options
-      var options = Parser.Default.ParseArguments<OptionsBase>(args).Value.Validate();
+      var options = Parser.Default.ParseArguments<Options>(args).Value.Validate();
       if (options == null)
       {
          return 1;
@@ -43,7 +43,7 @@ internal static class Program
       {
          // Start delete operation for the specified certificate name
          var operation = client.StartDeleteCertificate(options.CertificateName);
-         operation.WaitForCompletion();
+         _ = operation.WaitForCompletion();
 
          Console.WriteLine($"Deleted certificate '{options.CertificateName}' from Key Vault '{options.KeyVaultUri}'.");
          return 0;
