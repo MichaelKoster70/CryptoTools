@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <RootNamespace>CertTools.AzureCreateSslServerCert</RootNamespace>
@@ -32,6 +32,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AzureCertCore\src\AzureCertCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="AzureCreateSslServerCertTests" />
   </ItemGroup>
   
 </Project>

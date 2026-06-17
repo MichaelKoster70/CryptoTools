@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // <copyright company="Michael Koster">
 //   Copyright (c) Michael Koster. All rights reserved.
 //   Licensed under the MIT License.
@@ -27,6 +27,8 @@ public class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri sign
 
    // EC curve OIDs
    private const string P256CurveOid = "1.2.840.10045.3.1.7";
+   private const string P256KCurveOid = "1.3.132.0.10";
+   private const string P384CurveOid = "1.3.132.0.34";
    private const string P521CurveOid = "1.3.132.0.35";
 
    private readonly TokenCredential credential = credential;
@@ -149,9 +151,10 @@ public class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri sign
       var curveOid = GetEcCurveOid();
       return curveOid switch
       {
-         P256CurveOid or "1.3.132.0.10" => HashAlgorithmName.SHA256,
+         P256CurveOid or P256KCurveOid => HashAlgorithmName.SHA256,
+         P384CurveOid => HashAlgorithmName.SHA384,
          P521CurveOid => HashAlgorithmName.SHA512,
-         _ => HashAlgorithmName.SHA384   // P-384 and unknown curves default to SHA-384
+         _ => HashAlgorithmName.SHA384   // unknown curves default to SHA-384
       };
    }
 
@@ -171,7 +174,11 @@ public class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri sign
       }
       catch (AsnContentException)
       {
-         return null;
+         // QUICKFIX:
+         // If the parameters are not in the expected format, we won't be able to determine the curve OID.
+         // If we land here, we assume it's a P-256K curve, which is the only non-standard curve currently supported by Azure KeyVault, and return its OID directly.
+         // This allows us to continue functioning even if the parameters are not in the expected format.
+         return P256KCurveOid;
       }
    }
 
@@ -225,12 +232,33 @@ public class KeyVaultX509SignatureGenerator(TokenCredential credential, Uri sign
       {
          // WriteInteger treats the span as an unsigned big-endian integer and adds
          // a leading 0x00 byte if the high bit is set, which is correct DER encoding.
-         writer.WriteInteger(rawSignature.AsSpan(0, halfLen));
-         writer.WriteInteger(rawSignature.AsSpan(halfLen));
+         WriteUnsignedInteger(writer, rawSignature.AsSpan(0, halfLen));
+         WriteUnsignedInteger(writer, rawSignature.AsSpan(halfLen));
       }
 
       return writer.Encode();
    }
+
+
+   private static void WriteUnsignedInteger(AsnWriter writer, ReadOnlySpan<byte> value)
+   {
+      // Trim leading zeros
+      while (!value.IsEmpty && value[0] == 0x00)
+      {
+         value = value[1..];
+      }
+
+      // DER INTEGER zero value
+      if (value.IsEmpty)
+      {
+         writer.WriteInteger(0);
+         return;
+      }
+
+      // Write as unsigned big-endian integer
+      writer.WriteIntegerUnsigned(value);
+   }
+
 
    private async Task<byte[]> KeyVaultSignDigestAsync(Uri keyUri, byte[] digest, HashAlgorithmName hashAlgorithm, RSASignaturePadding padding)
    {

@@ -1,8 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>CertTools.AzureCreateRootCert.Tests</RootNamespace>
-    <!-- Override solution-wide defaults that are not appropriate for a test project -->
+    <RootNamespace>CertTools.AzureCreateSigningCert.Tests</RootNamespace>
+    <Title>Tests for AzureCreateSigningCert</Title>
+    <AssemblyTitle>$(Title)</AssemblyTitle>
     <PackAsTool>false</PackAsTool>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
@@ -10,8 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Identity" />
-    <PackageReference Include="Azure.Security.KeyVault.Certificates" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit.analyzers" />
     <PackageReference Include="xunit.v3" />
@@ -27,7 +26,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\TestCore\TestCore.csproj" />
-    <ProjectReference Include="..\src\AzureCreateRootCert.csproj" />
+    <ProjectReference Include="..\src\AzureCreateSigningCert.csproj" />
+    <ProjectReference Include="..\..\AzureCreateRootCert\src\AzureCreateRootCert.csproj" />
   </ItemGroup>
 
 </Project>

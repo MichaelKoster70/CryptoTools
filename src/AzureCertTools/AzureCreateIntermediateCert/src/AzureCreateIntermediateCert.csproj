@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <RootNamespace>CertTools.AzureCreateIntermediateCert</RootNamespace>
@@ -17,6 +17,7 @@ The tool will create the certificate in the designated Azure Key Vault.</Descrip
     <PackageId>MK.CertTools.AzureCreateIntermediateCert</PackageId>
   </PropertyGroup>
 
+
   <ItemGroup>
     <Content Include="AzureCreateIntermediateCert.ico" />
   </ItemGroup>
@@ -26,7 +27,7 @@ The tool will create the certificate in the designated Azure Key Vault.</Descrip
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>
     </None>
-    <None Include="..\..PackageLogo.png">
+    <None Include="..\..\PackageLogo.png">
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>
     </None>
@@ -40,6 +41,10 @@ The tool will create the certificate in the designated Azure Key Vault.</Descrip
 
   <ItemGroup>
     <ProjectReference Include="..\..\AzureCertCore\src\AzureCertCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="AzureCreateIntermediateCertTests" />
   </ItemGroup>
 
 </Project>
