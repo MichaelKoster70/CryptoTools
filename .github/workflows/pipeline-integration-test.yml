@@ -58,11 +58,20 @@ jobs:
 
       - name: Run Integration Tests
         run: |
-          dotnet test ${{ env.AzureCertToolsPath }}\AzureCreateRootCert\tests\AzureCreateRootCertTests.csproj `
-            --configuration Release `
-            --no-build `
-            --logger "trx;LogFileName=TestResults.trx" `
-            --results-directory "${{ env.TestResultsPath }}"
+          $testProjects = Get-ChildItem -Path "${{ env.AzureCertToolsPath }}" -Filter *.csproj -Recurse |
+            Where-Object { $_.Directory.Name -eq 'tests' }
+
+          if ($testProjects.Count -eq 0) {
+            throw "No test projects found under ${{ env.AzureCertToolsPath }} in folders named 'tests'."
+          }
+
+          foreach ($testProject in $testProjects) {
+            dotnet test $testProject.FullName `
+              --configuration Release `
+              --no-build `
+              --logger "trx;LogFileName=$($testProject.BaseName).trx" `
+              --results-directory "${{ env.TestResultsPath }}"
+          }
         shell: pwsh
 
       - name: Publish Test Results
