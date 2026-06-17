@@ -27,7 +27,6 @@ jobs:
     env:
       AzureCertToolsPath: ${{ github.workspace }}\src\AzureCertTools
       AzureCertToolsSolutionPath: ${{ github.workspace }}\src\AzureCertTools\AzureCertTools.slnx
-      TestProjectPath: ${{ github.workspace }}\src\AzureCertTools\AzureCreateRootCert\tests\AzureCreateRootCertTests.csproj
       TestResultsPath: ${{ github.workspace }}/TestResults
       # Key Vault URLs for integration tests
       AZURE_KEYVAULT_URL_STANDARD: ${{ vars.AZURE_KEYVAULT_URL_STANDARD }}
@@ -59,7 +58,7 @@ jobs:
 
       - name: Run Integration Tests
         run: |
-          dotnet test ${{ env.TestProjectPath }} `
+          dotnet test ${{ env.AzureCertToolsPath }}\AzureCreateRootCert\tests\AzureCreateRootCertTests.csproj `
             --configuration Release `
             --no-build `
             --logger "trx;LogFileName=TestResults.trx" `
