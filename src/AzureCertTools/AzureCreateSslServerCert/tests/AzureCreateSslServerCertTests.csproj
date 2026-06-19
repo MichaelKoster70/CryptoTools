@@ -25,6 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\TestCore\TestCore.csproj" />
+    <ProjectReference Include="..\..\AzureCreateRootCert\src\AzureCreateRootCert.csproj" />
     <ProjectReference Include="..\src\AzureCreateSslServerCert.csproj" />
   </ItemGroup>
 
