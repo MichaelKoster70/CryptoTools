@@ -120,6 +120,54 @@ public class KeyOptionsTests(KeyVaultFixture fixture) : IClassFixture<KeyVaultFi
    }
 
    /// <summary>
+   /// Verifies cross-vault signing for RSA 4096 by creating the signer root certificate in the Premium Key Vault
+   /// and creating the signed certificate in the Standard Key Vault using SignerKeyVaultUri.
+   /// Requires: AZURE_KEYVAULT_URL_STANDARD, AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, AZURE_TENANT_ID,
+   /// and a valid AZURE_FEDERATED_TOKEN_FILE.
+   /// </summary>
+   [Fact]
+   public async Task CreateCertificate_Rsa4096_WithSignerInPremiumAndTargetInStandard_Succeeds()
+   {
+      if (!TestConfiguration.HasWorkloadIdentityCredentials || !TestConfiguration.HasPremiumWorkloadIdentityCredentials)
+      {
+         Assert.Skip("AZURE_KEYVAULT_URL_STANDARD, AZURE_KEYVAULT_URL_PREMIUM, AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_FEDERATED_TOKEN_FILE must be set for cross-vault workload identity authentication.");
+      }
+
+      // Arrange
+      var standardVaultUri = fixture.CreateStandardKeyVaultUri();
+      var premiumVaultUri = fixture.CreatePremiumKeyVaultUri();
+      var credential = fixture.CreateWorkloadIdentityCredential();
+
+      // 1. Create signer root CA in Premium Key Vault (RSA 4096)
+      var rootCertName = KeyVaultFixture.GenerateCertificateName("xv-r4096-root");
+      fixture.RegisterForCleanup(rootCertName, premiumVaultUri, credential);
+      var rootArgs = CliArgumentBuilder.CreateWorkloadIdentityArgs(rootCertName, RootSubjectName, ExpireMonths, premiumVaultUri, keyType: "Rsa", exportable: false, keySize: 4096);
+      var rootExitCode = await AzureCreateRootCert.Program.Main(rootArgs);
+      Assert.Equal(0, rootExitCode);
+
+      // 2. Create signed certificate in Standard Key Vault using signer from Premium Key Vault
+      var certificateName = KeyVaultFixture.GenerateCertificateName("xv-r4096-sign");
+      fixture.RegisterForCleanup(certificateName, standardVaultUri, credential);
+      var args = CliArgumentBuilder.CreateWorkloadIdentityArgs(
+         certName: certificateName,
+         subjectName: SubjectName,
+         expireMonths: ExpireMonths,
+         vaultUri: standardVaultUri,
+         keyType: "Rsa",
+         exportable: false,
+         keySize: 4096,
+         signerCertificateName: rootCertName,
+         signerVaultUri: premiumVaultUri);
+
+      // Act
+      var exitCode = await Program.Main(args);
+
+      // Assert
+      Assert.Equal(0, exitCode);
+      await CertificateAssertions.AssertCertificatePropertiesAsync(certificateName, standardVaultUri, credential, CertificateKeyType.Rsa, false);
+   }
+
+   /// <summary>
    /// Verifies that command-line validation fails when exportable is requested for HSM-backed key types.
    /// </summary>
    [Theory]
