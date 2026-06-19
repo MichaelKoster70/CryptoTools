@@ -29,12 +29,14 @@ internal static class CertificateWorker
    /// <param name="vaultUri">The URI to the Azure Key Vault.</param>
    /// <param name="tokenCredential">The Azure Key Vault token credential.</param>
    /// <param name="keyOptions">The key creation options controlling the key type, size and exportability.</param>
-   public static async Task<string> CreateIntermediateCertAsync(string certificateName, string subjectNameValue, string signerCertificateName, int expireMonths, int? pathLengthConstraint, Uri vaultUri, TokenCredential tokenCredential, KeyCreationOptions keyOptions)
+   /// <param name="signerVaultUri">The URI to the Azure Key Vault holding the signer certificate. If null, <paramref name="vaultUri"/> is used.</param>
+   public static async Task<string> CreateIntermediateCertAsync(string certificateName, string subjectNameValue, string signerCertificateName, int expireMonths, int? pathLengthConstraint, Uri vaultUri, TokenCredential tokenCredential, KeyCreationOptions keyOptions, Uri? signerVaultUri = null)
    {
       var client = new CertificateClient(vaultUri, tokenCredential);
+      var signerClient = signerVaultUri != null ? new CertificateClient(signerVaultUri, tokenCredential) : client;
 
       // Get the signer certificate and its associated keys
-      (var signerName, var signerSignaturGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
+      (var signerName, var signerSignaturGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, signerClient, tokenCredential);
 
       // create a CSR
       var csr = await KeyVaultCreateCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonths, pathLengthConstraint, keyOptions);

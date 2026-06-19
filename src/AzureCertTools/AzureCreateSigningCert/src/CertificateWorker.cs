@@ -34,12 +34,14 @@ internal static class CertificateWorker
    /// <param name="tokenCredential">The authentication token provider.</param>
    /// <param name="expireMonths">The number of months until the certificate expires.</param>
    /// <param name="keyOptions">The key creation options controlling the key type, size and exportability.</param>
-   public static async Task KeyVaultCreateSigningCertificateAsync(string certificateName, string subjectNameValue, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths, KeyCreationOptions keyOptions)
+   /// <param name="signerVaultUri">The URI of the Key Vault holding the signer certificate. If null, <paramref name="vaultUri"/> is used.</param>
+   public static async Task KeyVaultCreateSigningCertificateAsync(string certificateName, string subjectNameValue, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths, KeyCreationOptions keyOptions, Uri? signerVaultUri = null)
    {
       var client = new CertificateClient(vaultUri, tokenCredential);
+      var signerClient = signerVaultUri != null ? new CertificateClient(signerVaultUri, tokenCredential) : client;
 
       // Get the signer certificate and its associated keys
-      (var signerName, var signerSignatureGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
+      (var signerName, var signerSignatureGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, signerClient, tokenCredential);
 
       // create a CSR
       var csr = await KeyVaultCreateSigningCertificateRequestAsync(certificateName, subjectNameValue, client, expireMonths, keyOptions);
@@ -62,12 +64,13 @@ internal static class CertificateWorker
    /// <param name="tokenCredential">The authentication token provider.</param>
    /// <param name="expireMonths">The number of months until the certificate expires.</param>
    /// <param name="keyOptions">The key creation options controlling the key type, size and exportability.</param>
-   public static async Task LocalCreateSigningCertificateAsync(string fileName, string? password, string subjectNameValue, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths, KeyCreationOptions keyOptions)
+   /// <param name="signerVaultUri">The URI of the Key Vault holding the signer certificate. If null, <paramref name="vaultUri"/> is used.</param>
+   public static async Task LocalCreateSigningCertificateAsync(string fileName, string? password, string subjectNameValue, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths, KeyCreationOptions keyOptions, Uri? signerVaultUri = null)
    {
-      var client = new CertificateClient(vaultUri, tokenCredential);
+      var signerClient = new CertificateClient(signerVaultUri ?? vaultUri, tokenCredential);
 
       // Get the signer certificate and its associated keys
-      (var signerName, var signerSignatureGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
+      (var signerName, var signerSignatureGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, signerClient, tokenCredential);
 
       // create a CSR
       using var keyPair = CreateKeyPair(keyOptions);

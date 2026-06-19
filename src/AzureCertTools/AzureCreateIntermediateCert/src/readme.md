@@ -1,12 +1,13 @@
 # Usage
 ```
-AzureCreateIntermediateCert --Subject <subject> --CertificateName <name> --SignerCertificateName <signerCertificateName> --ExpireMonths <months> [--PathLengthConstraint <length> ] --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity] [--Exportable] [--KeyType <keyType>] [--KeySize <keySize>] [--KeyCurveName <keyCurveName>]
+AzureCreateIntermediateCert --Subject <subject> --CertificateName <name> --SignerCertificateName <signerCertificateName> [--SignerKeyVaultUri <signerVaultUri>] --ExpireMonths <months> [--PathLengthConstraint <length> ] --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity] [--Exportable] [--KeyType <keyType>] [--KeySize <keySize>] [--KeyCurveName <keyCurveName>]
 ```
 
 Where:
 * Subject: The subject of the certificate in form "CN=\<subject\>".
 * CertificateName: The name of the certificate in Azure Key Vault.
 * SignerCertificateName: The name of the CA certificate in Azure Key Vault used for signing the leaf certificate.
+* SignerKeyVaultUri: The URI of the Azure Key Vault holding the signer certificate. If not specified, the signer certificate is expected to be in the same Key Vault as the certificate being created.
 * KeyVaultUri: The URI of the Azure Key Vault to store the certificate (like https://some-name.vault.azure.net/).
 * PathLengthConstraint: If specified, the generated CA certificate will have a path length constraint extension with the provided length. This limits the maximum number of intermediate CA certificates that can be created under this root CA certificate. If not specified, no path length constraint will be set.
 * TenantId: The Entra ID tenant ID.
