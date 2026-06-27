@@ -7,6 +7,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Azure.Core;
@@ -154,10 +155,20 @@ internal static class CertificateWorker
 
    private static async Task AddCertificateExtensionsAsync(CertificateRequest certSigningRequest, string FQDN)
    {
-      var hostEntry = await Dns.GetHostEntryAsync(FQDN);
       var sanBuilder = new SubjectAlternativeNameBuilder();
       sanBuilder.AddDnsName(FQDN);
-      sanBuilder.AddDnsName(hostEntry.HostName);
+
+      try
+      {
+         var hostEntry = await Dns.GetHostEntryAsync(FQDN);
+         if (!string.Equals(hostEntry.HostName, FQDN, StringComparison.OrdinalIgnoreCase))
+         {
+            sanBuilder.AddDnsName(hostEntry.HostName);
+         }
+      }
+      catch (SocketException)
+      {
+      }
 
       certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(false, false, 0, true));
       certSigningRequest.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.KeyEncipherment | X509KeyUsageFlags.DigitalSignature, true));
