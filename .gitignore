@@ -396,3 +396,6 @@ FodyWeavers.xsd
 
 # VisualState launchSettings.json files
 /src/**/Properties/launchSettings.json
+
+#Keep Folderprofile.pubxml files for publishing profiles in source control
++!**/FolderProfile.pubxml
