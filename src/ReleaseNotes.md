@@ -6,6 +6,7 @@ Added support for HSM based and Elliptic Curve certificates, and more options fo
 - Added support for Elliptic Curve certificates in all Azure KeyVault tools.
 - Added support for marking private keys as exportable when creating certificates in Azure Key Vault.
 - Added support for specifying RSA key sizes and Elliptic Curves when creating certificates in Azure Key Vault.
+- Added support for cross-vault certificate signing via the new SignerKeyVaultUri option in AzureCreateIntermediateCert, AzureCreateSigningCert, and AzureCreateSslServerCert.
 
 ## Bug Fixes
 - none

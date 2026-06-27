@@ -34,6 +34,13 @@ internal class Options : OptionsCreateWithSubjectBase
    public required string SignerCertificateName { get; set; }
 
    /// <summary>
+   /// Gets or sets the Azure Key Vault URI where the signer certificate is stored.
+   /// If not specified, the signer certificate is expected to be in the same Key Vault as the certificate being created.
+   /// </summary>
+   [Option("SignerKeyVaultUri", Required = false, HelpText = "The URI to the Azure Key Vault holding the signer certificate. If not specified, the same Key Vault as the target certificate is used.")]
+   public string? SignerKeyVaultUri { get; set; }
+
+   /// <summary>
    /// Gets or sets the number of month until the certificate expires.
    /// </summary>
    [Option("ExpireMonths", Required = false, HelpText = "The number of months until the certificate expires, default if not specified is 1 month.")]

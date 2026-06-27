@@ -46,6 +46,7 @@ The tool will create the certificate in the designated Azure Key Vault.</Descrip
     <InternalsVisibleTo Include="AzureCreateRootCertTests" />
     <InternalsVisibleTo Include="AzureCreateIntermediateCertTests" />
     <InternalsVisibleTo Include="AzureCreateSigningCertTests" />
+    <InternalsVisibleTo Include="AzureCreateSslServerCertTests" />
   </ItemGroup>
 
 </Project>

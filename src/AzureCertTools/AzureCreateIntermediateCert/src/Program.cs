@@ -36,8 +36,9 @@ internal static class Program
       TokenCredential credentials = options.GetTokenCredential();
 
       Uri keyVaultUri = new(options.KeyVaultUri);
+      Uri? signerKeyVaultUri = string.IsNullOrEmpty(options.SignerKeyVaultUri) ? null : new Uri(options.SignerKeyVaultUri);
 
-      var cert = await CertificateWorker.CreateIntermediateCertAsync(options.CertificateName, options.Subject, options.SignerCertificateName, options.ExpireMonths, options.PathLengthConstraint, keyVaultUri, credentials, options.GetKeyCreationOptions());
+      var cert = await CertificateWorker.CreateIntermediateCertAsync(options.CertificateName, options.Subject, options.SignerCertificateName, options.ExpireMonths, options.PathLengthConstraint, keyVaultUri, credentials, options.GetKeyCreationOptions(), signerKeyVaultUri);
 
       Console.WriteLine($"Certificate created: name={cert}, Key Vault={keyVaultUri}");
 

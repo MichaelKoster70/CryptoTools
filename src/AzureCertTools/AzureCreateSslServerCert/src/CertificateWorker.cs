@@ -7,6 +7,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Azure.Core;
@@ -32,17 +33,18 @@ internal static class CertificateWorker
    /// <param name="local">if set to <c>true</c> [local].</param>
    /// <param name="password">The password.</param>
    /// <param name="keyOptions">The key creation options controlling the key type, size and exportability.</param>
+   /// <param name="signerVaultUri">The URI of the Key Vault holding the signer certificate. If null, <paramref name="vaultUri"/> is used.</param>
    /// <returns>A Task&lt;System.String&gt; representing the asynchronous operation.</returns>
-   public static async Task<string> CreateSslServerCertificateAsync(string certificateName, string fullQualifiedDomainName, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths, bool local, string? password, KeyCreationOptions keyOptions)
+   public static async Task<string> CreateSslServerCertificateAsync(string certificateName, string fullQualifiedDomainName, string signerCertificateName, Uri vaultUri, TokenCredential tokenCredential, int expireMonths, bool local, string? password, KeyCreationOptions keyOptions, Uri? signerVaultUri = null)
    {
       if (local)
       {
-         ArgumentNullException.ThrowIfNull(password, nameof(password));
+         ArgumentNullException.ThrowIfNull(password);
 
-         var client = new CertificateClient(vaultUri, tokenCredential);
+         var signerClient = new CertificateClient(signerVaultUri ?? vaultUri, tokenCredential);
 
          // Get the signer certificate and its associated keys
-         (var signerName, var signerSignaturGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
+         (var signerName, var signerSignaturGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, signerClient, tokenCredential);
 
          // create a CSR
          var csr = await LocalCreateCertificateRequestAsync(fullQualifiedDomainName, keyOptions);
@@ -59,9 +61,10 @@ internal static class CertificateWorker
       else
       {
          var client = new CertificateClient(vaultUri, tokenCredential);
+         var signerClient = signerVaultUri != null ? new CertificateClient(signerVaultUri, tokenCredential) : client;
          
          // Get the signer certificate and its associated keys
-         (var signerName, var signerSignaturGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, client, tokenCredential);
+         (var signerName, var signerSignaturGenerator) = await CertificateWorkerCore.KeyVaultGetSignerCertificateAsync(signerCertificateName, signerClient, tokenCredential);
          
          // create a CSR
          var csr = await KeyVaultCreateCertificateRequestAsync(certificateName, fullQualifiedDomainName, client, expireMonths, keyOptions);
@@ -150,12 +153,23 @@ internal static class CertificateWorker
       return new RSACryptoServiceProvider(keySize, cspParameter);
    }
 
-   private static async Task AddCertificateExtensionsAsync(CertificateRequest certSigningRequest, string FQDN)
+   private static async Task AddCertificateExtensionsAsync(CertificateRequest certSigningRequest, string fullQualifiedDomainName)
    {
-      var hostEntry = await Dns.GetHostEntryAsync(FQDN);
       var sanBuilder = new SubjectAlternativeNameBuilder();
-      sanBuilder.AddDnsName(FQDN);
-      sanBuilder.AddDnsName(hostEntry.HostName);
+      sanBuilder.AddDnsName(fullQualifiedDomainName);
+
+      try
+      {
+         var hostEntry = await Dns.GetHostEntryAsync(fullQualifiedDomainName);
+         if (!string.Equals(hostEntry.HostName, fullQualifiedDomainName, StringComparison.OrdinalIgnoreCase))
+         {
+            sanBuilder.AddDnsName(hostEntry.HostName);
+         }
+      }
+      catch (SocketException)
+      {
+         // Ignore DNS resolution errors, as the FQDN may not be resolvable at the time of certificate creation.
+      }
 
       certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(false, false, 0, true));
       certSigningRequest.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.KeyEncipherment | X509KeyUsageFlags.DigitalSignature, true));

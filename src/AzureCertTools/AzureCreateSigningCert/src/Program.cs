@@ -51,15 +51,16 @@ internal static class Program
       TokenCredential credentials = options.GetTokenCredential();
 
       Uri keyVaultUri = new(options.KeyVaultUri);
+      Uri? signerKeyVaultUri = string.IsNullOrEmpty(options.SignerKeyVaultUri) ? null : new Uri(options.SignerKeyVaultUri);
 
       if (!string.IsNullOrEmpty(options.CertificateName))
       {
-         await CertificateWorker.KeyVaultCreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths, options.GetKeyCreationOptions());
+         await CertificateWorker.KeyVaultCreateSigningCertificateAsync(options.CertificateName, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths, options.GetKeyCreationOptions(), signerKeyVaultUri);
          Console.WriteLine($"Certificate created: name={options.CertificateName}, Key Vault={keyVaultUri}");
       }
       else if (!string.IsNullOrEmpty(options.FileName))
       {
-         await CertificateWorker.LocalCreateSigningCertificateAsync(options.FileName, options.Password, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths, options.GetKeyCreationOptions());
+         await CertificateWorker.LocalCreateSigningCertificateAsync(options.FileName, options.Password, options.Subject, options.SignerCertificateName, keyVaultUri, credentials, options.ExpireMonths, options.GetKeyCreationOptions(), signerKeyVaultUri);
          Console.WriteLine($"PFX file created: {options.FileName}");
       }
       else

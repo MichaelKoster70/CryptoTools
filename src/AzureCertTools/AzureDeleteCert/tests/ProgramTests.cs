@@ -14,19 +14,14 @@ namespace CertTools.AzureDeleteCert.Tests;
 /// <summary>
 /// Verifies certificate deletion behavior for the Azure delete tool.
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="ProgramTests"/> class.
+/// </remarks>
+/// <param name="fixture">Shared Key Vault test fixture.</param>
 [Collection("KeyVault")]
-public sealed class ProgramTests
+public sealed class ProgramTests(KeyVaultFixture fixture)
 {
-   private readonly KeyVaultFixture fixture;
-
-   /// <summary>
-   /// Initializes a new instance of the <see cref="ProgramTests"/> class.
-   /// </summary>
-   /// <param name="fixture">Shared Key Vault test fixture.</param>
-   public ProgramTests(KeyVaultFixture fixture)
-   {
-      this.fixture = fixture;
-   }
+   private readonly KeyVaultFixture fixture = fixture;
 
    /// <summary>
    /// Verifies that the tool deletes an existing certificate when client-secret authentication is used.
@@ -128,7 +123,7 @@ public sealed class ProgramTests
       };
 
       var operation = await client.StartCreateCertificateAsync(certificateName, policy);
-      await operation.WaitForCompletionAsync();
+      _ = await operation.WaitForCompletionAsync();
 
       fixture.RegisterForCleanup(certificateName, vaultUri, credential);
       return certificateName;
