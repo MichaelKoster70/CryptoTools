@@ -85,7 +85,7 @@ Required permissions on Azure KeyVault:
 
 ### AzureCreateIntermediateCert
 ```
-AzureCreateIntermediateCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> [--SignerKeyVaultUri <signerVaultUri>] --ExpireMonths <months> [--PathLengthConstraint <length> ]--KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity] [--Exportable] [--KeyType <keyType>] [--KeySize <keySize> | --KeyCurveName <curveName>] 
+AzureCreateIntermediateCert --Subject <subject> --CertificateName <name> --SignerCertificateName <rootName> [--SignerKeyVaultUri <signerVaultUri>] --ExpireMonths <months> [--PathLengthConstraint <length> ] --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity] [--Exportable] [--KeyType <keyType>] [--KeySize <keySize> | --KeyCurveName <curveName>]
 ```
 
 Where:
@@ -160,11 +160,11 @@ Required permissions on Azure KeyVault:
 
 ## AzureCreateSslServerCert
 ```
-AzureCreateSslServerCert --FQDN <fqdn> --CertificateName <name> --SignerCertificateName <signerName> [--SignerKeyVaultUri <signerVaultUri>] --ExpireMonths <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity] [--Exportable] [--KeyType <keyType>] [--KeySize <keySize> | --KeyCurveName <curveName>]
+AzureCreateSslServerCert --FQDN <fqdn> --CertificateName <name> --SignerCertificateName <signerName> [--SignerKeyVaultUri <signerVaultUri>] --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity] [--Exportable] [--KeyType <keyType>] [--KeySize <keySize> | --KeyCurveName <curveName>]
 ```
 or
 ```
-AzureCreateSslServerCert --FQDN <fqdn> --CertificateName <name> --Local [--Password <password>] --SignerCertificateName <signerName> [--SignerKeyVaultUri <signerVaultUri>] --ExpireMonths <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity] [--Exportable] [--KeyType <keyType>] [--KeySize <keySize> | --KeyCurveName <curveName>]
+AzureCreateSslServerCert --FQDN <fqdn> --CertificateName <name> --Local [--Password <password>] --SignerCertificateName <signerName> [--SignerKeyVaultUri <signerVaultUri>] --ExpireMonth <months> --KeyVaultUri <uri> --TenantId <tenantId> --ClientId <clientId> [--ClientSecret <clientSecret> | --Interactive | --WorkloadIdentity] [--Exportable] [--KeyType <keyType>] [--KeySize <keySize> | --KeyCurveName <curveName>]
 ```
 
 Where:
