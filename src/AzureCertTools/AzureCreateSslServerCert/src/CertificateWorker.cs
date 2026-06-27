@@ -39,7 +39,7 @@ internal static class CertificateWorker
    {
       if (local)
       {
-         ArgumentNullException.ThrowIfNull(password, nameof(password));
+         ArgumentNullException.ThrowIfNull(password);
 
          var signerClient = new CertificateClient(signerVaultUri ?? vaultUri, tokenCredential);
 
@@ -168,6 +168,7 @@ internal static class CertificateWorker
       }
       catch (SocketException)
       {
+         // Ignore DNS resolution errors, as the FQDN may not be resolvable at the time of certificate creation.
       }
 
       certSigningRequest.CertificateExtensions.Add(new X509BasicConstraintsExtension(false, false, 0, true));
