@@ -153,15 +153,15 @@ internal static class CertificateWorker
       return new RSACryptoServiceProvider(keySize, cspParameter);
    }
 
-   private static async Task AddCertificateExtensionsAsync(CertificateRequest certSigningRequest, string FQDN)
+   private static async Task AddCertificateExtensionsAsync(CertificateRequest certSigningRequest, string fullQualifiedDomainName)
    {
       var sanBuilder = new SubjectAlternativeNameBuilder();
-      sanBuilder.AddDnsName(FQDN);
+      sanBuilder.AddDnsName(fullQualifiedDomainName);
 
       try
       {
-         var hostEntry = await Dns.GetHostEntryAsync(FQDN);
-         if (!string.Equals(hostEntry.HostName, FQDN, StringComparison.OrdinalIgnoreCase))
+         var hostEntry = await Dns.GetHostEntryAsync(fullQualifiedDomainName);
+         if (!string.Equals(hostEntry.HostName, fullQualifiedDomainName, StringComparison.OrdinalIgnoreCase))
          {
             sanBuilder.AddDnsName(hostEntry.HostName);
          }
