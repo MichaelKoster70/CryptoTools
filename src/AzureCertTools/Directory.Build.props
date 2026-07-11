@@ -18,7 +18,7 @@
     <Product>Crypto Tools</Product>
     <PackAsTool>True</PackAsTool>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageOutputPath>..\..\..\bin</PackageOutputPath>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)..\..\bin</PackageOutputPath>
     <PackageProjectUrl>https://github.com/MichaelKoster70/CryptoTools</PackageProjectUrl>
     <SourceRevisionId Condition="'$(SourceRevisionId)' == ''">$(GITHUB_SHA)</SourceRevisionId>
   </PropertyGroup>
