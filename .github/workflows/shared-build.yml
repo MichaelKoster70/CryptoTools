@@ -118,7 +118,7 @@ jobs:
       run: |
         dotnet publish ${{ env.CertToolsPath }}\CreateRootCert\src\CreateRootCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
       shell: pwsh
-
+  
     - name: 'Build: Publish CertTools/CreateSigningCert'
       if: ${{ inputs.store-artifacts }}
       run: |
@@ -158,6 +158,7 @@ jobs:
       if: ${{ inputs.store-artifacts }}
       run: |
         dotnet publish ${{ env.AzureCertToolsPath }}/AzureCreateSslServerCert/src/AzureCreateSslServerCert.csproj --configuration ${{ inputs.configuration }} --no-restore -p:PublishProfile=FolderProfile
+        dotnet pack ${{ env.AzureCertToolsPath }}/AzureCreateSslServerCert/src/AzureCreateSslServerCert.csproj --configuration ${{ inputs.configuration }} --no-build --no-restore
       shell: pwsh
 
     - name: 'Build: Publish AzureCertTools/AzureDeleteCert'
