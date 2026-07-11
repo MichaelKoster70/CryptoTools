@@ -16,9 +16,6 @@
     <Copyright>(c) 2025 Michael Koster</Copyright>
     <Company>Michael Koster</Company>
     <Product>Crypto Tools</Product>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageOutputPath>$(MSBuildThisFileDirectory)..\..\bin</PackageOutputPath>
-    <PackageProjectUrl>https://github.com/MichaelKoster70/CryptoTools</PackageProjectUrl>
     <SourceRevisionId Condition="'$(SourceRevisionId)' == ''">$(GITHUB_SHA)</SourceRevisionId>
   </PropertyGroup>
 
